@@ -1,6 +1,5 @@
 ### This repository contains my personal dotfiles. Feel free to explore and adapt them for your own use!
 
-Usage
 To use these dotfiles:
 
 - Clone this repository to your home directory
