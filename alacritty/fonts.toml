@@ -1,0 +1,14 @@
+[font]
+size = 12
+
+[font.bold]
+family = "JetBrains Mono NL Nerd Font"
+
+[font.bold_italic]
+family = "JetBrains Mono NL Nerd Font"
+
+[font.italic]
+family = "JetBrains Mono NL Nerd Font"
+
+[font.normal]
+family = "JetBrains Mono NL Nerd Font"

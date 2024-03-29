@@ -1,0 +1,11 @@
+import = ["/home/algernon/.config/alacritty/colors.toml", "/home/algernon/.config/alacritty/fonts.toml"]
+
+[env]
+TERM = "alacritty"
+
+[[keyboard.bindings]]
+action = "ToggleFullscreen"
+key = "F11"
+
+[window]
+opacity = 0.9

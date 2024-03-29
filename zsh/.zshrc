@@ -47,4 +47,5 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#AD8301'
 
-export PATH=~/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin:$PATH
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
