@@ -38,6 +38,7 @@ HIST_STAMPS="dd.mm.yyyy"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
 git
+zsh-bat
 zsh-autosuggestions
 zsh-syntax-highlighting
 )
@@ -48,20 +49,27 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#AD8301'
 
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
+export PATH="$HOME/.local/bin:$PATH"
 
-function mytree() {
+# export PATH="$PATH:/opt/nvim-linux64/bin"
+# export PATH="$HOME/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin:$PATH"
+
+function myTree() {
     if [ -z "$1" ]; then
-        tree -Lha 1
+        tree -LChas 1
     else
-        tree -Lha "$1"
+        tree -LChas "$1"
     fi
 }
 
-alias show='mytree'
+alias show='myTree'
 alias connect-remote="ssh asimov@100.96.1.34"
 alias hist="history | grep"
-alias get-nxp="rsync -avh --progress --delete asimov@100.96.1.34:/home/asimov/yocto/yocto-digest/build/tmp-glibc/deploy/images/imx8mn-lpddr4-evk ./Desktop/nxp-boards/cleaned"
-alias flash-nxp="sudo uuu -b emmc_all imx-boot-imx8mn-lpddr4-evk-sd.bin-flash_evk nxp-custom-image-base-imx8mn-lpddr4-evk.wic.zst"
+alias flash="sudo uuu -b emmc_all imx-boot-imx8mn-lpddr4-evk-sd.bin-flash_evk"
 alias connections="ip -c -h -s addr"
 alias vpn="sudo openvpn ~/Documents/fedora.ovpn"
-alias filter="ls -l | grep"
+alias filter="ls -la | grep"
+alias ls="ls --color=auto"
+
+# source $HOME/.nvm/nvm.sh
+# source $HOME/.cargo/env
