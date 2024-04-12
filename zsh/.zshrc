@@ -47,9 +47,10 @@ source $ZSH/oh-my-zsh.sh
 
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#AD8301'
 
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
-export PATH="$HOME/.local/bin:$PATH"
+export LC_ALL="en_US.UTF-8"
+export LANG="en_US.UTF-8"
+export LANGUAGE="en_US.UTF-8"
+export PATH=$HOME/.local/bin:$PATH
 
 # export PATH="$PATH:/opt/nvim-linux64/bin"
 # export PATH="$HOME/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin:$PATH"
@@ -73,3 +74,20 @@ alias ls="ls --color=auto"
 
 # source $HOME/.nvm/nvm.sh
 # source $HOME/.cargo/env
+
+
+# ---
+# Server settings ----------------------------------------------------------------
+# ---
+
+# export LC_ALL="en_US.UTF-8"
+# export LANG="en_US.UTF-8"
+# export LANGUAGE="en_US.UTF-8"
+
+# start tmux if we ssh into the box
+# if [[ -n "$PS1" ]] && [[ -z "$TMUX" ]] && [[ -n "$SSH_CONNECTION" ]]; then
+#     tmux attach-session -t $USER || tmux new-session -s $USER
+# fi
+
+# export PATH=$PATH:$HOME/bin
+# export PATH=$PATH:$HOME/.local/bin
