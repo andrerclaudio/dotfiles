@@ -67,10 +67,12 @@ alias show='myTree'
 alias connect-remote="ssh asimov@100.96.1.34"
 alias hist="history | grep"
 alias flash="sudo uuu -b emmc_all imx-boot-imx8mn-lpddr4-evk-sd.bin-flash_evk"
-alias connections="ip -c -h -s addr"
+alias my-ip="ip -c -h -s addr"
 alias vpn="sudo openvpn ~/Documents/fedora.ovpn"
 alias filter="ls -la | grep"
 alias ls="ls --color=auto"
+alias lsa="lsa --color=auto"
+alias wget="wget2"
 
 # source $HOME/.nvm/nvm.sh
 # source $HOME/.cargo/env
