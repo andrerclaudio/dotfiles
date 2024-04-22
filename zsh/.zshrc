@@ -45,7 +45,7 @@ zsh-syntax-highlighting
 
 source $ZSH/oh-my-zsh.sh
 
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#AD8301'
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#458588'
 
 export LC_ALL="en_US.UTF-8"
 export LANG="en_US.UTF-8"
