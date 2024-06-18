@@ -38,7 +38,6 @@ HIST_STAMPS="dd.mm.yyyy"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
 git
-zsh-bat
 zsh-autosuggestions
 zsh-syntax-highlighting
 )
@@ -51,9 +50,7 @@ export LC_ALL="en_US.UTF-8"
 export LANG="en_US.UTF-8"
 export LANGUAGE="en_US.UTF-8"
 export PATH=$HOME/.local/bin:$PATH
-
-# export PATH="$PATH:/opt/nvim-linux64/bin"
-# export PATH="$HOME/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin:$PATH"
+export PATH="$HOME/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin:$PATH"
 
 function myTree() {
     if [ -z "$1" ]; then
@@ -64,18 +61,23 @@ function myTree() {
 }
 
 alias show='myTree'
-alias connect-remote="ssh asimov@100.96.1.34"
+alias remote-connect="ssh asimov@100.96.1.34"
+alias stats-connect="ssh stats@100.96.1.34"
 alias hist="history | grep"
-alias flash="sudo uuu -b emmc_all imx-boot-imx8mn-lpddr4-evk-sd.bin-flash_evk"
 alias my-ip="ip -c -h -s addr"
-alias vpn="sudo openvpn ~/Documents/fedora.ovpn"
 alias filter="ls -la | grep"
 alias ls="ls --color=auto"
-alias lsa="lsa --color=auto"
-alias wget="wget2"
+alias update="sudo dnf upgrade"
+alias cd="z"
+alias cat="bat"
+alias tn="tmux new -s"
+alias ta="tmux attach -t"
+alias tl="tmux list-sessions"
+alias fetch-st="rsync -avh --progress --delete \
+                asimov@100.96.1.34:/home/asimov/yocto/STM32MP1-Ecosystem-v5.0.3/Distribution-Package/build-openstlinuxweston-stm32mp13-disco/tmp-glibc/deploy/images/ \
+                /home/algernon/Desktop/ST/images"
 
-# source $HOME/.nvm/nvm.sh
-# source $HOME/.cargo/env
+eval "$(zoxide init zsh)"
 
 
 # ---
