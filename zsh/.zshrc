@@ -37,7 +37,6 @@ HIST_STAMPS="dd.mm.yyyy"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-git
 zsh-autosuggestions
 zsh-syntax-highlighting
 )
@@ -51,6 +50,7 @@ export LANG="en_US.UTF-8"
 export LANGUAGE="en_US.UTF-8"
 export PATH=$HOME/.local/bin:$PATH
 export PATH="$HOME/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin:$PATH"
+export BAT_THEME="Catppuccin Mocha"
 
 function myTree() {
     if [ -z "$1" ]; then
@@ -67,15 +67,17 @@ alias hist="history | grep"
 alias my-ip="ip -c -h -s addr"
 alias filter="ls -la | grep"
 alias ls="ls --color=auto"
-alias update="sudo dnf upgrade"
+alias update="sudo dnf upgrade && sudo snap refresh && flatpak update"
 alias cd="z"
 alias cat="bat"
 alias tn="tmux new -s"
 alias ta="tmux attach -t"
 alias tl="tmux list-sessions"
 alias fetch-st="rsync -avh --progress --delete \
-                asimov@100.96.1.34:/home/asimov/yocto/STM32MP1-Ecosystem-v5.0.3/Distribution-Package/build-openstlinuxweston-stm32mp13-disco/tmp-glibc/deploy/images/ \
+                asimov@100.96.1.34:/home/asimov/yocto/STM32MPU-Ecosystem-v5.1.0/Distribution-Package/build-openstlinuxweston-stm32mp13-disco/tmp-glibc/deploy/images/ \
                 /home/algernon/Desktop/ST/images"
+alias fetch-nxp="rsync -avh --progress --delete \
+                asimov@100.96.1.34:/home/asimov/yocto/imx-6.6.23-2.0.0/build-imx8mn-rpm/tmp/deploy/images/ /home/algernon/Desktop/NXP/images"
 
 eval "$(zoxide init zsh)"
 
