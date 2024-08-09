@@ -1,0 +1,15 @@
+[user]
+	name = Andre Ribeiro
+	email = andre.ribeiro.srs@gmail.com
+
+[format]
+	signoff = true
+
+[core]
+	editor = nano
+
+[sendemail]
+	smtpserver = smtp.googlemail.com
+	smtpencryption = tls
+	smtpserverport = 587
+	smtpuser = andre.ribeiro.srs@gmail.com
