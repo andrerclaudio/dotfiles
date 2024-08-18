@@ -1,0 +1,23 @@
+{
+    "workbench.startupEditor": "none",
+    "workbench.colorTheme": "Gruvbox Dark Hard",
+    "explorer.confirmDelete": false,
+    "workbench.iconTheme": "material-icon-theme",
+    "workbench.colorCustomizations": {
+        "tree.indentGuidesStroke": "#458588"
+    },
+    "workbench.tree.indent": 17,
+    "files.associations": {
+        "*.conf": "ssh_config",
+        "*.bb": "ssh_config",
+        "*.bbappend": "ssh_config",
+        "*.inc": "ssh_config",
+        "*.bbclass": "ssh_config",
+        "*.toml": "toml"
+    },
+    "editor.minimap.enabled": false,
+    "inference.endpoint": "http://100.96.1.34:11434",
+    "CodeGPT.Autocomplete.provider": "Ollama - llama3:instruct",
+    "CodeGPT.apiKey": "Ollama",
+    "task.problemMatchers.neverPrompt": false,
+}
