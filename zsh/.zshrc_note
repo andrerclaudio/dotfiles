@@ -60,7 +60,7 @@ function myTree() {
     fi
 }
 
-alias tock="tock -msc --width=4 --height=2 --color=6"
+# alias tock="tock -msc --width=4 --height=2 --color=6"
 alias show='myTree'
 alias remote-connect="ssh asimov@100.96.1.34"
 alias stats-connect="ssh stats@100.96.1.34"
