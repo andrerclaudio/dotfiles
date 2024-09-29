@@ -60,6 +60,7 @@ function myTree() {
     fi
 }
 
+alias tock="tock -msc --width=4 --height=2 --color=6"
 alias show='myTree'
 alias hist="history | grep"
 alias my-ip="ip -c -h -s addr"
