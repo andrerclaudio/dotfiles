@@ -62,8 +62,8 @@ function myTree() {
 
 # alias tock="tock -msc --width=4 --height=2 --color=6"
 alias show='myTree'
-alias remote-connect="ssh asimov@100.96.1.34"
-alias stats-connect="ssh stats@100.96.1.34"
+alias remote-connect="ssh asimov@192.168.18.155"
+alias stats-connect="ssh stats@192.168.18.155"
 alias hist="history | grep"
 alias my-ip="ip -c -h -s addr"
 alias filter="ls -la | grep"
@@ -77,10 +77,10 @@ alias tl="tmux list-sessions"
 alias tf="tmux new -s Fedora"
 alias temp="curl wttr.in"
 alias fetch-st="rsync -avh --progress --delete \
-                asimov@100.96.1.34:/home/asimov/yocto/STM32MPU-Ecosystem-v5.1.0/Distribution-Package/build-openstlinuxweston-stm32mp13-disco/tmp-glibc/deploy/images/ \
+                asimov@192.168.18.155:/home/asimov/yocto/STM32MPU-Ecosystem-v5.1.0/Distribution-Package/build-openstlinuxweston-stm32mp13-disco/tmp-glibc/deploy/images/ \
                 /home/algernon/Desktop/ST/images"
 alias fetch-nxp="rsync -avh --progress --delete \
-                asimov@100.96.1.34:/home/asimov/yocto/imx-6.6.23-2.0.0/build-imx8mn-rpm/tmp/deploy/images/ \
+                asimov@192.168.18.155:/home/asimov/yocto/imx-6.6.23-2.0.0/build-imx8mn-rpm/tmp/deploy/images/ \
                 /home/algernon/Desktop/NXP/images"
 
 eval "$(zoxide init zsh)"
