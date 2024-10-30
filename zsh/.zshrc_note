@@ -60,7 +60,15 @@ function myTree() {
     fi
 }
 
-# alias tock="tock -msc --width=4 --height=2 --color=6"
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
+
 alias show='myTree'
 alias remote-connect="ssh asimov@192.168.18.155"
 alias stats-connect="ssh stats@192.168.18.155"
@@ -68,7 +76,7 @@ alias hist="history | grep"
 alias my-ip="ip -c -h -s addr"
 alias filter="ls -la | grep"
 alias ls="ls --color=auto"
-alias update="sudo dnf upgrade && sudo snap refresh && flatpak update"
+alias update="sudo dnf upgrade && flatpak update"
 alias cd="z"
 alias cat="bat"
 alias tn="tmux new -s"
