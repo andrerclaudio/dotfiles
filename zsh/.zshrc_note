@@ -50,7 +50,7 @@ export LANG="en_US.UTF-8"
 export LANGUAGE="en_US.UTF-8"
 export PATH=$HOME/.local/bin:$PATH
 export PATH=$HOME/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin:$PATH
-export BAT_THEME="Catppuccin Mocha"
+export BAT_THEME="gruvbox-dark"
 
 function myTree() {
     if [ -z "$1" ]; then
