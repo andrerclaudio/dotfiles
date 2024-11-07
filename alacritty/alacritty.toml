@@ -1,4 +1,3 @@
-import = ["/home/algernon/.config/alacritty/colors.toml", "/home/algernon/.config/alacritty/fonts.toml"]
 
 [env]
 TERM = "alacritty"
@@ -10,3 +9,6 @@ key = "F11"
 [window]
 opacity = 0.9
 padding = { x = 0, y = 0 }
+
+[general]
+import = ["~/.config/alacritt~/colors.toml", "~/.config/alacritty/fonts.toml"]
