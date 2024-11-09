@@ -3,7 +3,7 @@ Description=Ollama Service
 After=network-online.target
 
 [Service]
-ExecStart=/home/asimov/.local/bin/ollama serve
+ExecStart=/home/asimov/.local/bin/bin/ollama serve
 User=asimov
 Group=asimov
 Restart=always

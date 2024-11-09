@@ -49,8 +49,8 @@ export LC_ALL="en_US.UTF-8"
 export LANG="en_US.UTF-8"
 export LANGUAGE="en_US.UTF-8"
 export PATH=$PATH:$HOME/bin
-export PATH=$PATH:$HOME/.local/bin
-export OLLAMA_MODELS=/home/asimov/external/ollama-models/
+export PATH=$PATH:$HOME/.local/bin/
+export PATH=$PATH:$HOME/.local/bin/bin/
 
 function myTree() {
     if [ -z "$1" ]; then
@@ -60,7 +60,6 @@ function myTree() {
     fi
 }
 
-# alias tock="tock -msc --width=4 --height=2 --color=6"
 alias show='myTree'
 alias hist="history | grep"
 alias my-ip="ip -c -h -s addr"
@@ -70,7 +69,7 @@ alias lsa="ls -la --color=auto"
 alias wget="wget2"
 alias cat="batcat"
 alias bat="batcat"
-alias start-ollama="nohup ~/.local/bin/ollama serve > ~/.local/bin/ollama.log 2>&1 &"
+# alias start-ollama="nohup ~/.local/bin/ollama serve > ~/.local/bin/ollama.log 2>&1 &"
 
 # ---
 # Server settings ----------------------------------------------------------------
