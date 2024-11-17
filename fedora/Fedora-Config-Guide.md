@@ -163,3 +163,31 @@
     ```shell
     curl -f https://zed.dev/install.sh | sh
     ```
+
+21. Install Ananicy-Cpp
+
+    ```shell
+    cd Downloads
+    git clone https://gitlab.com/ananicy-cpp/ananicy-cpp.git
+    cd ananicy-cpp
+    cmake -B build -S .
+    cmake --build build --target ananicy-cpp
+    sudo cmake --install build --component Runtime
+    ```
+
+    > Clone the CachyOs rules before starting the Ananicy.
+
+    ```shell
+    cd Downloads
+    https://github.com/CachyOS/ananicy-rules.git
+    cd /etc/ananicy.d
+    sudo rm -rf ./*
+    sudo cp -r /home/algernon/Downloads/ananicy-rules/* .
+    ```
+
+    > Then, make it a service:
+
+    ```shell
+    sudo systemctl enable --now ananicy-cpp.service
+    sudo systemctl start ananicy-cpp.service
+    ```
