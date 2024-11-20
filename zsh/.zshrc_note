@@ -85,7 +85,7 @@ alias tl="tmux list-sessions"
 alias tf="tmux new -s Fedora"
 alias temp="curl wttr.in"
 alias fetch-st="rsync -avh --progress --delete \
-                asimov@192.168.18.155:/home/asimov/yocto/STM32MPU-Ecosystem-v5.1.0/Distribution-Package/build-openstlinuxweston-stm32mp13-disco/tmp-glibc/deploy/images/ \
+                asimov@192.168.18.155:/home/asimov/yocto/STM32MPU-Ecosystem-v6.0.0/Distribution-Package/build-openstlinuxweston-stm32mp13-disco/tmp-glibc/deploy/images/ \
                 /home/algernon/Desktop/ST/images"
 alias fetch-nxp="rsync -avh --progress --delete \
                 asimov@192.168.18.155:/home/asimov/yocto/imx-6.6.23-2.0.0/build-imx8mn-rpm/tmp/deploy/images/ \
