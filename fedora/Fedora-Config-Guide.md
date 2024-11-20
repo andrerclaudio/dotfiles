@@ -60,7 +60,7 @@
     ```
 
    Now, if you open preferences in Gnome Tweaks, you should be able to select the font you just installed.  
-   > Fonts: `JetBrainsMonoNL Nerd Font Mono`
+   > Fonts: `JetBrainsMonoNL Nerd Font Mono`  
    > Appearance (Icons): `Papirus`  
 
 9. Fetch the dotfiles:
@@ -137,8 +137,8 @@
 
 18. Install OpenVPN
 
-    > Go to CloudConnexa [https://myaccount.openvpn.com/signin/cvpn/previous-credentials]
-    > Follow the steps to add a new Host.
+    > Go to CloudConnexa [https://myaccount.openvpn.com/signin/cvpn/previous-credentials]  
+    > Follow the steps to add a new Host.  
     > After installing it, remember to disable the client isntance and avoid it to start at boot time yo avoit clonflicting with TwinGate connector client.
 
     ```shell
@@ -191,3 +191,43 @@
     sudo systemctl enable --now ananicy-cpp.service
     sudo systemctl start ananicy-cpp.service
     ```
+
+22. Install Spicetify
+
+    ```shell
+    curl -fsSL https://raw.githubusercontent.com/spicetify/cli/main/install.sh | sh
+    ```
+
+    > `DO NOT` install the Marketplace when requested.
+
+    Enter with `spicetify apply` in the terminal so it will genrenate the config file.
+
+    ```shell
+    cd .config/spicetify/
+    nano config-xpui.ini
+    ```
+
+    > Then add:
+
+    ```nano
+    prefs_path             = /home/algernon/.var/app/com.spotify.Client/config/spotify/prefs
+    ```
+
+    > Then make:
+
+    ```shell
+    sudo chmod a+wr /var/lib/flatpak/app/com.spotify.Client/x86_64/stable/active/files/extra/share/spotify
+    sudo chmod a+wr -R /var/lib/flatpak/app/com.spotify.Client/x86_64/stable/active/files/extra/share/spotify/Apps
+    spicetify backup apply
+    spicetify apply
+    ```
+
+    > To install the GruvBox exntensio, do as below:
+
+    ```shell
+    git clone --depth=1 https://github.com/spicetify/spicetify-themes.git 
+    cd spicetify-themes
+    cp -r * ~/.config/spicetify/Themes
+    spicetify config current_theme text color_scheme Gruvbox
+    spicetify config inject_css 1 replace_colors 1 overwrite_assets 1 inject_theme_js 1
+    spicetify apply
