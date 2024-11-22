@@ -228,6 +228,6 @@
     git clone --depth=1 https://github.com/spicetify/spicetify-themes.git 
     cd spicetify-themes
     cp -r * ~/.config/spicetify/Themes
-    spicetify config current_theme text color_scheme Gruvbox
+    spicetify config current_theme Onepunch color_scheme dark
     spicetify config inject_css 1 replace_colors 1 overwrite_assets 1 inject_theme_js 1
     spicetify apply
