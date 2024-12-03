@@ -49,6 +49,7 @@ install_flatpak_apps() {
         "io.podman_desktop.PodmanDesktop"
         "org.nickvision.tubeconverter"
         "com.calibre_ebook.calibre"
+        "org.gnome.meld"
     )
 
     for app in "${apps[@]}"; do

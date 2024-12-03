@@ -231,3 +231,12 @@
     spicetify config current_theme Onepunch color_scheme dark
     spicetify config inject_css 1 replace_colors 1 overwrite_assets 1 inject_theme_js 1
     spicetify apply
+    ```
+
+23. Install Gnome Boxes
+
+    > Remove the Boxex default installation and install the one from Flatpak.  
+
+    ```shell
+    flatpak install flathub org.gnome.Boxes
+    ```
