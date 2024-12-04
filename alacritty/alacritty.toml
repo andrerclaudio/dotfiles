@@ -11,4 +11,4 @@ opacity = 0.9
 padding = { x = 0, y = 0 }
 
 [general]
-import = ["~/.config/alacritt~/colors.toml", "~/.config/alacritty/fonts.toml"]
+import = ["~/.config/alacritty/colors.toml", "~/.config/alacritty/fonts.toml"]

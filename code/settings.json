@@ -26,7 +26,7 @@
     "CodeGPT.Autocomplete.provider": "Ollama - llama3:instruct",
     "CodeGPT.apiKey": "Ollama",
     "task.problemMatchers.neverPrompt": false,
-    "inference.temperature": 0.8,
+    "inference.temperature": 1.3,
     "inference.custom.format": "codellama",
     "inference.model": "codellama:7b-code-q4_K_S"
 }
