@@ -34,7 +34,7 @@ install_google_chrome() {
     echo "# Install Google Chrome                                                  #"
     echo "# -----------------------------------------------------------------------#"
     sudo dnf install -y fedora-workstation-repositories
-    sudo dnf config-manager --set-enabled google-chrome
+    sudo dnf config-manager setopt google-chrome.enabled=1
     sudo dnf install -y google-chrome-stable
 }
 
@@ -54,9 +54,10 @@ add_rpm_fusion_repository() {
     echo "# -----------------------------------------------------------------------#"
     echo "# Adding Fusion repository                                               #"
     echo "# -----------------------------------------------------------------------#"
-    sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-    sudo dnf config-manager --enable fedora-cisco-openh264
-    sudo dnf groupupdate -y core
+    sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm 
+    sudo dnf install -y https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+    sudo dnf config-manager setopt fedora-cisco-openh264.enabled=1
+    sudo dnf5 group install -y core
 }
 
 # Function to add Rust and Cargo
