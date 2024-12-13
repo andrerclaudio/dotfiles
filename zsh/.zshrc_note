@@ -70,6 +70,23 @@ function y() {
 	rm -f -- "$tmp"
 }
 
+function start_weather_watch () {
+    # Function to handle termination signals
+    trap 'break' INT TERM
+
+    # Main loop to fetch weather data
+    while true; do
+        # Clear the screen
+        clear
+
+        # Fetch weather data and print it
+        echo "$(curl -s 'wttr.in/Pouso-Alegre' | head -n 7)"
+
+       # Sleep for a specified interval
+        sleep 1
+    done
+}
+
 # alias tock="tock -msc --width=4 --height=2 --color=6"
 alias show='myTree'
 alias remote-connect="ssh asimov@192.168.18.155"
@@ -85,9 +102,9 @@ alias tn="tmux new -s"
 alias ta="tmux attach -t"
 alias tl="tmux list-sessions"
 alias tf="tmux new -s Fedora"
-alias temp="curl wttr.in"
+alias temp='start_weather_watch'
 alias fetch-st="rsync -avh --progress --delete \
-                asimov@192.168.18.155:/home/asimov/yocto/STM32MPU-Ecosystem-v6.0.0/Distribution-Package/build-openstlinuxweston-stm32mp13-disco/tmp-glibc/deploy/images/ \
+                asimov@192.168.18.155:/home/asimov/yocto/STM32MPU-Ecosystem-v6.0.1/Distribution-Package/build-openstlinuxweston-stm32mp13-disco/tmp-glibc/deploy/images/ \
                 /home/algernon/Desktop/ST/images"
 alias fetch-nxp="rsync -avh --progress --delete \
                 asimov@192.168.18.155:/home/asimov/yocto/imx-6.6.52-2.2.0/build-imx8mn-rpm/tmp/deploy/images/ \

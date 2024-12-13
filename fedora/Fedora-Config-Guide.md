@@ -180,8 +180,8 @@
     ```shell
     cd Downloads
     https://github.com/CachyOS/ananicy-rules.git
+    sudo mkdir -p /etc/ananicy.d 
     cd /etc/ananicy.d
-    sudo rm -rf ./*
     sudo cp -r /home/algernon/Downloads/ananicy-rules/* .
     ```
 
