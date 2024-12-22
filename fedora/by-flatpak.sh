@@ -50,6 +50,8 @@ install_flatpak_apps() {
         "org.nickvision.tubeconverter"
         "com.calibre_ebook.calibre"
         "org.gnome.meld"
+        "com.usebottles.bottle"
+        "org.gnome.GHex"
     )
 
     for app in "${apps[@]}"; do
