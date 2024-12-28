@@ -54,9 +54,9 @@
     mkdir JetBrainsMono
     curl -OL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz
     tar -xvf JetBrainsMono.tar.xz -C ./JetBrainsMono
-    sudo mv ./JetBrainsMono /usr/share/fonts/JetBrainsMono
-    cd /usr/share/fonts/
-    sudo fc-cache -f -v
+    cd
+    mkdir .fonts
+    mv Downloads/JetBrainsMono .fonts/
     ```
 
    Now, if you open preferences in Gnome Tweaks, you should be able to select the font you just installed.  
@@ -80,8 +80,9 @@
 11. Install ZSH pluggins:
 
     ```shell
-    sudo git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-    sudo git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+    git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+    git clone --depth 1 -- https://github.com/marlonrichert/zsh-autocomplete.git $ZSH_CUSTOM/plugins/zsh-autocomplete
     ```
 
 12. Install MFGTools:
