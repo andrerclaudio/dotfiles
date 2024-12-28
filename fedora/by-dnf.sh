@@ -70,6 +70,7 @@ install_dnf_packages() {
         "gdk-pixbuf2-devel"
         "glib2-devel"
         "gobject-introspection-devel"
+        "@development-tools"
     )
     sudo dnf install -y "${packages[@]}"
 }

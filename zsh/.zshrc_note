@@ -83,7 +83,7 @@ function start_weather_watch () {
         echo "$(curl -s 'wttr.in/Pouso-Alegre' | head -n 7)"
 
        # Sleep for a specified interval
-        sleep 1
+        sleep 60
     done
 }
 

@@ -241,3 +241,10 @@
     ```shell
     flatpak install flathub org.gnome.Boxes
     ```
+
+24. Install Atuin
+
+    ```shell
+    curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+    atuin import zsh
+    ```
