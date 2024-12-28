@@ -114,3 +114,10 @@ alias fetch-rasp="rsync -avh --progress --delete \
                 /home/algernon/Desktop/RASP/images"
 
 eval "$(zoxide init zsh)"
+
+
+
+echo -e "\n"
+echo $(uptime)
+for i in {7..0}; do echo -n -e "\e[3${i}m███████\e[0m"; done
+echo -e "\n\n"

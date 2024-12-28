@@ -71,6 +71,8 @@ install_dnf_packages() {
         "glib2-devel"
         "gobject-introspection-devel"
         "@development-tools"
+        "gtk4-devel"
+        "libadwaita-devel"
     )
     sudo dnf install -y "${packages[@]}"
 }
