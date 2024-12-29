@@ -11,8 +11,8 @@ export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="agnoster"
 
 # Setting history length  and stuff related to it
-export HISTFILESIZE=100000
-export HISTSIZE=100000
+export HISTFILESIZE=1000000
+export HISTSIZE=1000000
 export HISTFILE=~/.zsh_history
 export HISTTIMEFORMAT="[%F %T] "
 PROMPT_COMMAND="zsh_history -a; $PROMPT_COMMAND"
@@ -37,6 +37,8 @@ HIST_STAMPS="dd.mm.yyyy"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
+git
+autoupdate
 zsh-autocomplete
 zsh-autosuggestions
 zsh-syntax-highlighting
