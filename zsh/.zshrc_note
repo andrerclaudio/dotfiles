@@ -92,6 +92,7 @@ function start_weather_watch () {
 
 # alias tock="tock -msc --width=4 --height=2 --color=6"
 alias show='myTree'
+alias fastfetch="fastfetch --logo-padding-top 3 --logo-padding-left 4"
 alias remote-connect="ssh asimov@192.168.18.155"
 alias stats-connect="ssh stats@192.168.18.155"
 alias hist="history | grep"
@@ -117,10 +118,3 @@ alias fetch-rasp="rsync -avh --progress --delete \
                 /home/algernon/Desktop/RASP/images"
 
 eval "$(zoxide init zsh)"
-
-
-
-echo -e "\n"
-echo $(uptime)
-for i in {7..0}; do echo -n -e "\e[3${i}m███████\e[0m"; done
-echo -e "\n\n"
