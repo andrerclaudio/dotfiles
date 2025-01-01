@@ -2,13 +2,13 @@
 size = 12
 
 [font.bold]
-family = "JetBrains Mono NL Nerd Font"
+family = "JetBrainsMonoNL Nerd Font Mono"
 
 [font.bold_italic]
-family = "JetBrains Mono NL Nerd Font"
+family = "JetBrainsMonoNL Nerd Font Mono"
 
 [font.italic]
-family = "JetBrains Mono NL Nerd Font"
+family = "JetBrainsMonoNL Nerd Font Mono"
 
 [font.normal]
-family = "JetBrains Mono NL Nerd Font"
+family = "JetBrainsMonoNL Nerd Font Mono"
