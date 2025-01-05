@@ -73,6 +73,9 @@ install_dnf_packages() {
         "@development-tools"
         "gtk4-devel"
         "libadwaita-devel"
+        "python3-devel"
+        "libcairo2-dev"
+        "pkg-config"
     )
     sudo dnf install -y "${packages[@]}"
 }
