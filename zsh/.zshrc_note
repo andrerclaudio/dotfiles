@@ -38,6 +38,8 @@ HIST_STAMPS="dd.mm.yyyy"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
 git
+tmux
+history
 autoupdate
 zsh-autocomplete
 zsh-autosuggestions
@@ -90,22 +92,16 @@ function start_weather_watch () {
     done
 }
 
-# alias tock="tock -msc --width=4 --height=2 --color=6"
 alias show='myTree'
 alias fastfetch="fastfetch --logo-padding-top 3 --logo-padding-left 4"
 alias remote-connect="ssh asimov@192.168.18.155"
 alias stats-connect="ssh stats@192.168.18.155"
-alias hist="history | grep"
 alias my-ip="ip -c -h -s addr"
 alias filter="ls -la | grep"
 alias ls="ls --color=auto"
 alias update="sudo dnf upgrade && flatpak update"
 alias cd="z"
 alias cat="bat"
-alias tn="tmux new -s"
-alias ta="tmux attach -t"
-alias tl="tmux list-sessions"
-alias tf="tmux new -s Fedora"
 alias temp='start_weather_watch'
 alias fetch-st="rsync -avh --progress --delete \
                 asimov@192.168.18.155:/home/asimov/yocto/STM32MPU-Ecosystem-v6.0.1/Distribution-Package/build-openstlinuxweston-stm32mp13-disco/tmp-glibc/deploy/images/ \
