@@ -249,4 +249,5 @@
     ```shell
     curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
     atuin import zsh
+    atuin sync
     ```

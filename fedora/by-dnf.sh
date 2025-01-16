@@ -76,6 +76,7 @@ install_dnf_packages() {
         "python3-devel"
         "libcairo2-dev"
         "pkg-config"
+        "0ad"
     )
     sudo dnf install -y "${packages[@]}"
 }
