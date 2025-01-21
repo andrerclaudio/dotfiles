@@ -253,3 +253,12 @@
     atuin import zsh
     atuin sync
     ```
+
+25. Configre Eza
+
+    ```shell
+    mkdir -p ~/.config/eza
+    cd ~/.config/eza
+    git clone https://github.com/eza-community/eza-themes.git
+    ln -sf "$(pwd)/eza-themes/themes/gruvbox-dark.yml" ~/.config/eza/theme.yml
+    ```

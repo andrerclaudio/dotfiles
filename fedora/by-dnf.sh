@@ -77,6 +77,7 @@ install_dnf_packages() {
         "libcairo2-dev"
         "pkg-config"
         "0ad"
+        "eza"
     )
     sudo dnf install -y "${packages[@]}"
 }
