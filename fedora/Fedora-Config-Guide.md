@@ -128,8 +128,10 @@
 
     - Caffeine
     - Just Perfection
-    - Transparent Top Bar
+    - Transparent Top Bar (Adjsutable transparency)
     - Blur my Shell
+    - Logo Menu
+    - Apps Menu
 
 17. Install Cargo Apps
 
