@@ -78,6 +78,7 @@ install_dnf_packages() {
         "pkg-config"
         "0ad"
         "eza"
+        "gdb"
     )
     sudo dnf install -y "${packages[@]}"
 }
