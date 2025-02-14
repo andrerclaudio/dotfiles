@@ -79,6 +79,7 @@ install_dnf_packages() {
         "0ad"
         "eza"
         "gdb"
+        "qemu"
     )
     sudo dnf install -y "${packages[@]}"
 }
