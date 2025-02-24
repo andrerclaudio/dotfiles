@@ -54,7 +54,6 @@ install_dnf_packages() {
         "codespell"
         "zstd"
         "anaconda"
-        "git-email"
         "tree"
         "lazygit"
         "zig"
@@ -74,12 +73,12 @@ install_dnf_packages() {
         "gtk4-devel"
         "libadwaita-devel"
         "python3-devel"
-        "libcairo2-dev"
         "pkg-config"
         "0ad"
         "eza"
         "gdb"
         "qemu"
+        "cairo-devel"
     )
     sudo dnf install -y "${packages[@]}"
 }

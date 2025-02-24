@@ -29,7 +29,6 @@ install_flatpak_apps() {
         "org.videolan.VLC"
         "org.remmina.Remmina"
         "com.heroicgameslauncher.hgl"
-        "com.obsproject.Studio"
         "md.obsidian.Obsidian"
         "org.blender.Blender"
         "de.haeckerfelix.Fragments"
@@ -47,11 +46,9 @@ install_flatpak_apps() {
         "com.spotify.Client"
         "com.jetbrains.PyCharm-Community"
         "io.podman_desktop.PodmanDesktop"
-        "org.nickvision.tubeconverter"
-        "com.calibre_ebook.calibre"
         "org.gnome.meld"
-        "com.usebottles.bottle"
         "org.gnome.GHex"
+        "org.gnome.Boxes"
     )
 
     for app in "${apps[@]}"; do
