@@ -79,6 +79,7 @@ install_dnf_packages() {
         "gdb"
         "qemu"
         "cairo-devel"
+        "cava"
     )
     sudo dnf install -y "${packages[@]}"
 }
