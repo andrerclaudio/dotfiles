@@ -205,9 +205,8 @@
 
     > `DO NOT` install the Marketplace when requested.
 
-    Enter with `spicetify apply` in the terminal so it will genrenate the config file.
-
     ```shell
+    spicetify
     cd .config/spicetify/
     nano config-xpui.ini
     ```
