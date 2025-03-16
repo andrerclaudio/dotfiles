@@ -128,6 +128,7 @@
 
     - Caffeine
     - Just Perfection
+    - Dash to Dock
     - Transparent Top Bar (Adjsutable transparency)
     - Blur my Shell
     - Logo Menu

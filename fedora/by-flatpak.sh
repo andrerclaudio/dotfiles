@@ -40,7 +40,6 @@ install_flatpak_apps() {
         "org.kde.kdenlive"
         "org.octave.Octave"
         "org.libreoffice.LibreOffice"
-        "org.gnome.Extensions"
         "com.jeffser.Alpaca"
         "tv.kodi.Kodi"
         "com.spotify.Client"
@@ -49,6 +48,7 @@ install_flatpak_apps() {
         "org.gnome.meld"
         "org.gnome.GHex"
         "org.gnome.Boxes"
+        "com.mattjakeman.ExtensionManager"
     )
 
     for app in "${apps[@]}"; do
