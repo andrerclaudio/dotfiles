@@ -45,6 +45,7 @@ install_flatpak_apps() {
         "org.gnome.GHex"
         "org.gnome.Boxes"
         "com.mattjakeman.ExtensionManager"
+        "com.github.johnfactotum.Foliate"
     )
 
     for app in "${apps[@]}"; do
