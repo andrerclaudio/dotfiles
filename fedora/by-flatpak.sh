@@ -31,7 +31,6 @@ install_flatpak_apps() {
         "md.obsidian.Obsidian"
         "org.blender.Blender"
         "org.filezillaproject.Filezilla"
-        "org.gimp.GIMP"
         "org.inkscape.Inkscape"
         "org.jupyter.JupyterLab"
         "org.kicad.KiCad"

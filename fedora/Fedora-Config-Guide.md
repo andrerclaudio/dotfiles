@@ -61,7 +61,7 @@
 
    Now, if you open preferences in Gnome Tweaks, you should be able to select the font you just installed.  
    > Fonts: `JetBrainsMonoNL Nerd Font Mono`  
-   > Appearance (Icons): `Papirus`  
+   > Appearance (Icons): `Papirus-Dark`  
 
 9. Fetch the dotfiles:
 
@@ -116,23 +116,19 @@
 
 15. Install PWA appplications:
 
-    - Google Drive
-    - Github
     - Tldr
     - Google Keep
+    - Google Maps
     - Google Photos
-    - Youtube
     - WhatsApp
 
 16. Install Gnome Extensions:
 
     - Caffeine
-    - Just Perfection
     - Dash to Dock
-    - Transparent Top Bar (Adjsutable transparency)
     - Blur my Shell
     - Logo Menu
-    - Apps Menu
+    - Clipboard Indicator
 
 17. Install Cargo Apps
 
@@ -144,58 +140,10 @@
 18. Install OpenVPN
 
     > Go to CloudConnexa [https://myaccount.openvpn.com/signin/cvpn/previous-credentials]  
-    > Follow the steps to add a new Host.  
-    > After installing it, remember to disable the client isntance and avoid it to start at boot time yo avoit clonflicting with TwinGate connector client.
+    > Follow the steps to add a new Host.
 
     ```shell
     sudo systemctl status openvpn3-session@CloudConnexa.service
-    sudo systemctl stop openvpn3-session@CloudConnexa.service
-    sudo systemctl disable openvpn3-session@CloudConnexa.service
-    sudo systemctl daemon-reload
-    ```
-
-19. Install TwinGate client
-
-    ```shell
-    sudo dnf install -y 'dnf-command(config-manager)'
-    sudo dnf config-manager addrepo --set=baseurl="https://packages.twingate.com/rpm/"
-    sudo dnf config-manager setopt "packages.twingate.com_rpm_.gpgcheck=0"
-    sudo dnf install -y "twingate"
-    sudo twingate setup
-    ```
-
-20. Install ZED editor
-
-    ```shell
-    curl -f https://zed.dev/install.sh | sh
-    ```
-
-21. Install Ananicy-Cpp
-
-    ```shell
-    cd Downloads
-    git clone https://gitlab.com/ananicy-cpp/ananicy-cpp.git
-    cd ananicy-cpp
-    cmake -B build -S .
-    cmake --build build --target ananicy-cpp
-    sudo cmake --install build --component Runtime
-    ```
-
-    > Clone the CachyOs rules before starting the Ananicy.
-
-    ```shell
-    cd Downloads
-    https://github.com/CachyOS/ananicy-rules.git
-    sudo mkdir -p /etc/ananicy.d 
-    cd /etc/ananicy.d
-    sudo cp -r /home/algernon/Downloads/ananicy-rules/* .
-    ```
-
-    > Then, make it a service:
-
-    ```shell
-    sudo systemctl enable --now ananicy-cpp.service
-    sudo systemctl start ananicy-cpp.service
     ```
 
 22. Install Spicetify
