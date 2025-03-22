@@ -28,10 +28,8 @@ install_flatpak_apps() {
     local apps=(
         "org.videolan.VLC"
         "org.remmina.Remmina"
-        "com.heroicgameslauncher.hgl"
         "md.obsidian.Obsidian"
         "org.blender.Blender"
-        "de.haeckerfelix.Fragments"
         "org.filezillaproject.Filezilla"
         "org.gimp.GIMP"
         "org.inkscape.Inkscape"
@@ -41,7 +39,6 @@ install_flatpak_apps() {
         "org.octave.Octave"
         "org.libreoffice.LibreOffice"
         "com.jeffser.Alpaca"
-        "tv.kodi.Kodi"
         "com.spotify.Client"
         "com.jetbrains.PyCharm-Community"
         "io.podman_desktop.PodmanDesktop"
