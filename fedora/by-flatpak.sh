@@ -28,8 +28,6 @@ install_flatpak_apps() {
     local apps=(
         "org.videolan.VLC"
         "org.remmina.Remmina"
-        "md.obsidian.Obsidian"
-        "org.blender.Blender"
         "org.filezillaproject.Filezilla"
         "org.inkscape.Inkscape"
         "org.jupyter.JupyterLab"
@@ -40,12 +38,10 @@ install_flatpak_apps() {
         "com.jeffser.Alpaca"
         "com.spotify.Client"
         "com.jetbrains.PyCharm-Community"
-        "io.podman_desktop.PodmanDesktop"
         "org.gnome.meld"
         "org.gnome.GHex"
         "org.gnome.Boxes"
         "com.mattjakeman.ExtensionManager"
-        "com.github.johnfactotum.Foliate"
     )
 
     for app in "${apps[@]}"; do
