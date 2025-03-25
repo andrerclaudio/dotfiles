@@ -80,6 +80,8 @@ install_dnf_packages() {
         "qemu"
         "cairo-devel"
         "cava"
+        "powerline-fonts"
+        "fontawesome-fonts"
     )
     sudo dnf install -y "${packages[@]}"
 }
