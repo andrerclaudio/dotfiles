@@ -135,6 +135,7 @@
     ```shell
     cargo install tock
     cargo install --locked yazi-fm yazi-cli
+    cargo install --locked pueue
     ```
 
 18. Install OpenVPN
@@ -146,7 +147,7 @@
     sudo systemctl status openvpn3-session@CloudConnexa.service
     ```
 
-22. Install Spicetify
+19. Install Spicetify
 
     ```shell
     curl -fsSL https://raw.githubusercontent.com/spicetify/cli/main/install.sh | sh
@@ -186,7 +187,7 @@
     spicetify apply
     ```
 
-23. Install Atuin
+20. Install Atuin
 
     ```shell
     curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
@@ -194,7 +195,7 @@
     atuin sync
     ```
 
-24. Configre Eza
+21. Configre Eza
 
     ```shell
     mkdir -p ~/.config/eza
