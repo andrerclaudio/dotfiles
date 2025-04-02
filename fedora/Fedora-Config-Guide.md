@@ -203,3 +203,16 @@
     git clone https://github.com/eza-community/eza-themes.git
     ln -sf "$(pwd)/eza-themes/themes/gruvbox-dark.yml" ~/.config/eza/theme.yml
     ```
+
+22. Setting up `pueue` daemon
+
+    - Download pueued.service from the GitHub Releases page.  
+    - Place systemd.pueued.service in /usr/lib/systemd/user  
+    - Make sure the pueued binary is placed at /usr/bin/, which is where pueued.service expects it to be.  
+    - Then, run:  
+
+    ```shell
+    systemctl --user enable --now systemd.pueued
+    sudo systemctl daemon-reload
+    systemctl --user status systemd.pueued
+    ```
