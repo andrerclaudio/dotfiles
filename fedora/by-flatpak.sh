@@ -42,6 +42,13 @@ install_flatpak_apps() {
         "org.gnome.GHex"
         "org.gnome.Boxes"
         "com.mattjakeman.ExtensionManager"
+        "org.gnome.Calculator"
+        "org.gnome.TextEditor"
+        "org.gnome.Evince"
+        "org.gnome.font-viewer"
+        "org.gnome.Characters"
+        "org.gnome.Loupe"
+        "org.gnome.Logs"
     )
 
     for app in "${apps[@]}"; do
