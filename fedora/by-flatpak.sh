@@ -49,6 +49,7 @@ install_flatpak_apps() {
         "org.gnome.Characters"
         "org.gnome.Loupe"
         "org.gnome.Logs"
+        "org.fedoraproject.MediaWriter"
     )
 
     for app in "${apps[@]}"; do
