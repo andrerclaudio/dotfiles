@@ -27,7 +27,6 @@ install_flatpak_and_add_flathub() {
 install_flatpak_apps() {
     local apps=(
         "org.videolan.VLC"
-        "org.remmina.Remmina"
         "org.filezillaproject.Filezilla"
         "org.inkscape.Inkscape"
         "org.jupyter.JupyterLab"
