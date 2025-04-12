@@ -86,27 +86,12 @@ install_dnf_packages() {
     sudo dnf install -y "${packages[@]}"
 }
 
-# Function to install Docker
-install_docker() {
-    echo "# -----------------------------------------------------------------------#"
-    echo "# Installing Docker                                                      #"
-    echo "# -----------------------------------------------------------------------#"    
-    sudo dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
-    sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-    sudo groupadd docker
-    sudo usermod -aG docker $USER
-    sudo systemctl enable docker
-}
-
 # Main script execution
 #
 add_apps_repo
 pause_script 2
 
 install_dnf_packages
-pause_script 2
-
-install_docker
 pause_script 2
 
 echo "# -----------------------------------------------------------------------#"
