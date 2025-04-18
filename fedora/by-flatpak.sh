@@ -50,6 +50,9 @@ install_flatpak_apps() {
         "org.gnome.Logs"
         "org.fedoraproject.MediaWriter"
         "org.remmina.Remmina"
+        "com.brave.Browser"
+        "org.gimp.GIMP"
+        "com.usebottles.bottles"
     )
 
     for app in "${apps[@]}"; do
