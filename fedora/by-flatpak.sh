@@ -49,6 +49,7 @@ install_flatpak_apps() {
         "org.gnome.Loupe"
         "org.gnome.Logs"
         "org.fedoraproject.MediaWriter"
+        "org.remmina.Remmina"
     )
 
     for app in "${apps[@]}"; do
