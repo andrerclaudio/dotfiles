@@ -133,7 +133,7 @@
 17. Install Cargo Apps
 
     ```shell
-    cargo install tock
+    cargo install tock bat eza ripgrep
     cargo install --locked yazi-fm yazi-cli
     cargo install --locked pueue
     ```

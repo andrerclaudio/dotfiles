@@ -39,15 +39,6 @@ export BAT_THEME="gruvbox-dark"
 export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH:$HOME/.spicetify
 
-function y() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-	yazi "$@" --cwd-file="$tmp"
-	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-		builtin cd -- "$cwd"
-	fi
-	rm -f -- "$tmp"
-}
-
 alias fastfetch="fastfetch --logo-padding-top 3 --logo-padding-left 4"
 alias remote-connect="ssh asimov@192.168.18.155"
 alias my-ip="ip -c -h -s addr"
@@ -55,6 +46,8 @@ alias e="eza -lbhHigaUm --git --group --group-directories-first --icons=auto --c
 alias update="sudo dnf upgrade --refresh && flatpak update"
 alias cd="z"
 alias cat="bat"
+alias cargo-updt="cargo install --locked yazi-fm yazi-cli pueue && cargo install tock ripgrep bat eza"
+alias backup="rsync -avh --progress --delete /home/algernon/Downloads/ cloud@192.168.1.67:/home/cloud/Backup/Notebook"
 
 alias fetch-st="rsync -avh --progress --delete \
                 asimov@192.168.18.155:/home/asimov/yocto/STM32MPU-Ecosystem-v6.0.1/Distribution-Package/build-openstlinuxweston-stm32mp13-disco/tmp-glibc/deploy/images/ \
@@ -67,5 +60,14 @@ alias fetch-nxp="rsync -avh --progress --delete \
 alias fetch-rasp="rsync -avh --progress --delete \
                 asimov@192.168.18.155:/home/asimov/yocto/rpi-build-rpm/tmp-glibc/deploy/images/ \
                 /home/algernon/Desktop/RASP/images"
+
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
 
 eval "$(zoxide init zsh)"
