@@ -134,8 +134,7 @@
 
     ```shell
     cargo install tock bat eza ripgrep
-    cargo install --locked yazi-fm yazi-cli
-    cargo install --locked pueue
+    cargo install --locked yazi-fm yazi-cli pueue
     ```
 
 18. Install OpenVPN
@@ -187,7 +186,13 @@
     spicetify apply
     ```
 
-20. Install Atuin
+20. Install Zoxide
+
+    ```shell
+    curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+    ```
+
+21. Install Atuin
 
     ```shell
     curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
@@ -195,7 +200,7 @@
     atuin sync
     ```
 
-21. Configre Eza
+22. Configure Eza
 
     ```shell
     mkdir -p ~/.config/eza
@@ -204,7 +209,7 @@
     ln -sf "$(pwd)/eza-themes/themes/gruvbox-dark.yml" ~/.config/eza/theme.yml
     ```
 
-22. Setting up `pueue` daemon
+23. Setting up `pueue` daemon
 
     - Download pueued.service from the GitHub Releases page.  
     - Place systemd.pueued.service in /usr/lib/systemd/user  
@@ -216,3 +221,13 @@
     sudo systemctl daemon-reload
     systemctl --user status systemd.pueued
     ```
+
+24. Change DNS addresses
+
+    > Go to Wifi settings and change DNS from automatic to manual and add.  
+
+    `IPV4`:  
+    8.8.8.8, 8.8.4.4.  
+
+    `IPV6`:  
+    2001:4860:4860::8888, 2001:4860:4860::8844  

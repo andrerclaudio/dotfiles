@@ -43,7 +43,6 @@ install_dnf_packages() {
         "tinyxml2-devel.x86_64"
         "aria2"
         "iperf3"
-        "zoxide"
         "htop"
         "dnf-plugins-core"
         "papirus-icon-theme"
@@ -80,6 +79,7 @@ install_dnf_packages() {
         "cava"
         "powerline-fonts"
         "fontawesome-fonts"
+        "fzf"
     )
     sudo dnf install -y "${packages[@]}"
 }
