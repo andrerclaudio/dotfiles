@@ -12,6 +12,7 @@ add_apps_repo() {
     echo "# Add LazyGit repository                                                 #"
     echo "# -----------------------------------------------------------------------#"
     sudo dnf copr enable -y atim/lazygit
+    sudo dnf copr enable -y lihaohong/yazi
 }
 
 # Function to install packages via DNF package manager
@@ -80,6 +81,10 @@ install_dnf_packages() {
         "powerline-fonts"
         "fontawesome-fonts"
         "fzf"
+        "bat"
+        "eza"
+        "ripgrep"
+        "yazi"
     )
     sudo dnf install -y "${packages[@]}"
 }

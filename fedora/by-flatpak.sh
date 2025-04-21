@@ -32,7 +32,6 @@ install_flatpak_apps() {
         "org.jupyter.JupyterLab"
         "org.kicad.KiCad"
         "org.kde.kdenlive"
-        "org.octave.Octave"
         "org.libreoffice.LibreOffice"
         "com.jeffser.Alpaca"
         "com.spotify.Client"
@@ -49,9 +48,6 @@ install_flatpak_apps() {
         "org.gnome.Loupe"
         "org.gnome.Logs"
         "org.fedoraproject.MediaWriter"
-        "org.remmina.Remmina"
-        "com.brave.Browser"
-        "org.gimp.GIMP"
         "com.usebottles.bottles"
     )
 

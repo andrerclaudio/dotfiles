@@ -133,8 +133,8 @@
 17. Install Cargo Apps
 
     ```shell
-    cargo install tock bat eza ripgrep
-    cargo install --locked yazi-fm yazi-cli pueue
+    cargo install tock
+    cargo install --locked pueue
     ```
 
 18. Install OpenVPN
