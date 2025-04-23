@@ -34,8 +34,8 @@ install_flatpak_apps() {
         "org.kde.kdenlive"
         "org.libreoffice.LibreOffice"
         "com.jeffser.Alpaca"
+        "com.jeffser.Alpaca.Plugins.Ollama"
         "com.spotify.Client"
-        "com.jetbrains.PyCharm-Community"
         "org.gnome.meld"
         "org.gnome.GHex"
         "org.gnome.Boxes"
@@ -49,6 +49,9 @@ install_flatpak_apps() {
         "org.gnome.Logs"
         "org.fedoraproject.MediaWriter"
         "com.usebottles.bottles"
+        "org.gnome.Calendar"
+        "org.gnome.baobab"
+        "org.gnome.clocks"
     )
 
     for app in "${apps[@]}"; do

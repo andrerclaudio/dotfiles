@@ -86,6 +86,8 @@ install_dnf_packages() {
         "ripgrep"
         "yazi"
         "libavcodec-freeworld"
+        "pycharm-community"
+        "python3-tkinter"
     )
     sudo dnf install -y "${packages[@]}"
 }
