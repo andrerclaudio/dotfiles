@@ -85,6 +85,7 @@ install_dnf_packages() {
         "eza"
         "ripgrep"
         "yazi"
+        "libavcodec-freeworld"
     )
     sudo dnf install -y "${packages[@]}"
 }
