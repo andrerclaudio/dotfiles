@@ -88,6 +88,7 @@ install_dnf_packages() {
         "libavcodec-freeworld"
         "pycharm-community"
         "python3-tkinter"
+        "steam"
     )
     sudo dnf install -y "${packages[@]}"
 }
