@@ -10,6 +10,7 @@ key = "F11"
 opacity = 0.9
 padding = { x = 0, y = 0 }
 dynamic_title = false
+decorations = "none"
 
 [general]
 import = ["~/.config/alacritty/colors.toml", "~/.config/alacritty/fonts.toml"]
