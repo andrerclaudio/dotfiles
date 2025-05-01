@@ -227,7 +227,20 @@
     > Go to Wifi settings and change DNS from automatic to manual and add.  
 
     `IPV4`:  
-    8.8.8.8, 8.8.4.4.  
+    8.8.8.8,8.8.4.4
 
     `IPV6`:  
-    2001:4860:4860::8888, 2001:4860:4860::8844  
+    2001:4860:4860::8888,2001:4860:4860::8844  
+
+25. Tune VsCode settings
+
+    ```shell
+    sudo nano /etc/sysctl.conf
+    ```
+
+    Add `fs.inotify.max_user_watches=524288` at the end of the file and save it.  
+    Run the code below to reload the settings.
+
+    ```shell
+    sudo sysctl -p
+    ```
