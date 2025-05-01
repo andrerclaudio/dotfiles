@@ -40,25 +40,23 @@ export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH:$HOME/.spicetify
 
 alias fastfetch="fastfetch --logo-padding-top 3 --logo-padding-left 4"
-alias remote-connect="ssh asimov@192.168.18.155"
+alias remote-connect="ssh asimov@macondo"
 alias my-ip="ip -c -h -s addr"
 alias e="eza -lbhHigaUm --git --group --group-directories-first --icons=auto --color-scale=all --colour=auto"
 alias update="sudo dnf upgrade --refresh && flatpak update"
 alias cd="z"
 alias cat="bat"
-alias cargo-updt="cargo install --locked yazi-fm yazi-cli pueue && cargo install tock ripgrep bat eza"
-alias backup="rsync -avh --progress --delete /home/algernon/Downloads/ cloud@192.168.1.67:/home/cloud/Backup/Notebook"
 
 alias fetch-st="rsync -avh --progress --delete \
-                asimov@192.168.18.155:/home/asimov/yocto/STM32MPU-Ecosystem-v6.0.1/Distribution-Package/build-openstlinuxweston-stm32mp13-disco/tmp-glibc/deploy/images/ \
+                asimov@macondo:/home/asimov/yocto/STM32MPU-Ecosystem-v6.0.1/Distribution-Package/build-openstlinuxweston-stm32mp13-disco/tmp-glibc/deploy/images/ \
                 /home/algernon/Desktop/ST/images"
 
 alias fetch-nxp="rsync -avh --progress --delete \
-                asimov@192.168.18.155:/home/asimov/yocto/imx-6.6.52-2.2.0/build-imx8mn-rpm/tmp/deploy/images/ \
+                asimov@macondo:/home/asimov/yocto/imx-6.6.52-2.2.0/build-imx8mn-rpm/tmp/deploy/images/ \
                 /home/algernon/Desktop/NXP/images"
 
 alias fetch-rasp="rsync -avh --progress --delete \
-                asimov@192.168.18.155:/home/asimov/yocto/rpi-build-rpm/tmp-glibc/deploy/images/ \
+                asimov@macondo:/home/asimov/yocto/rpi-build-rpm/tmp-glibc/deploy/images/ \
                 /home/algernon/Desktop/RASP/images"
 
 function y() {
