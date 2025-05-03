@@ -13,6 +13,7 @@ add_apps_repo() {
     echo "# -----------------------------------------------------------------------#"
     sudo dnf copr enable -y atim/lazygit
     sudo dnf copr enable -y lihaohong/yazi
+    sudo dnf copr enable -y pgdev/ghostty
 }
 
 # Function to install packages via DNF package manager
@@ -88,7 +89,7 @@ install_dnf_packages() {
         "libavcodec-freeworld"
         "pycharm-community"
         "python3-tkinter"
-        "steam"
+        "ghostty"
     )
     sudo dnf install -y "${packages[@]}"
 }
