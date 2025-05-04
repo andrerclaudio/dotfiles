@@ -61,7 +61,6 @@
 
    Now, if you open preferences in Gnome Tweaks, you should be able to select the font you just installed.  
    > Fonts: `JetBrainsMonoNL Nerd Font Mono`  
-   > Appearance (Icons): `Papirus-Dark`  
 
 9. Fetch the dotfiles:
 
@@ -244,3 +243,15 @@
     ```shell
     sudo sysctl -p
     ```
+
+26. Gruvbox Plus icon pack  
+
+    ```shell
+    cd Documents
+    git clone https://github.com/SylEleuth/gruvbox-plus-icon-pack.git
+    ln -s /home/algernon/Documents/gruvbox-plus-icon-pack/Gruvbox-Plus-Dark ~/.local/share/icons/Gruvbox-Plus-Dark
+    ```  
+
+    Now, if you open preferences in Gnome Tweaks, you should be able to select the icon pack you just installed.  
+
+   > Appearance (Icons): `Gruvbox-Plus-Dark`  
