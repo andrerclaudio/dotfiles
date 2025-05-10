@@ -133,7 +133,7 @@
 
     ```shell
     cargo install tock
-    cargo install --locked pueue
+    cargo install --locked pueue dysk
     ```
 
 18. Install OpenVPN
