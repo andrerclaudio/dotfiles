@@ -174,14 +174,16 @@
     spicetify apply
     ```
 
-    > To install the GruvBox exntensio, do as below:
+    > To install the GruvBox extension, do as below:
 
     ```shell
-    git clone --depth=1 https://github.com/spicetify/spicetify-themes.git 
-    cd spicetify-themes
-    cp -r * ~/.config/spicetify/Themes
-    spicetify config current_theme Dribbblish color_scheme gruvbox-material-dark
-    spicetify config inject_css 1 replace_colors 1 overwrite_assets 1 inject_theme_js 1
+    cd
+    cd .config/spicetify/Themes
+    git clone https://github.com/Skaytacium/Gruvify
+    cd Gruvify
+    sudo npm i -g sass
+    sass user.sass user.css
+    spicetify config current_theme Gruvify
     spicetify apply
     ```
 
