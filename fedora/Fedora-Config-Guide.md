@@ -256,4 +256,16 @@
 
     Now, if you open preferences in Gnome Tweaks, you should be able to select the icon pack you just installed.  
 
-   > Appearance (Icons): `Gruvbox-Plus-Dark`  
+    > Appearance (Icons): `Gruvbox-Plus-Dark`  
+
+27. Add the Host Macondo (Server)  
+
+    ```shell
+    nano /etc/hosts
+    ```
+
+    And add the lines below:
+
+    ```shell
+    192.168.1.65 macondo personal.server
+    ```  

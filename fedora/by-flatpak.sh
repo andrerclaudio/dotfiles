@@ -30,7 +30,6 @@ install_flatpak_apps() {
         "org.filezillaproject.Filezilla"
         "org.inkscape.Inkscape"
         "org.jupyter.JupyterLab"
-        "org.kicad.KiCad"
         "org.kde.kdenlive"
         "org.libreoffice.LibreOffice"
         "com.jeffser.Alpaca"
@@ -52,6 +51,9 @@ install_flatpak_apps() {
         "org.gnome.Calendar"
         "org.gnome.baobab"
         "org.gnome.clocks"
+        "com.calibre_ebook.calibre"
+        "org.remmina.Remmina"
+        "org.octave.Octave"
     )
 
     for app in "${apps[@]}"; do
