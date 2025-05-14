@@ -49,6 +49,14 @@ install_visual_studio_code() {
     sudo dnf install -y code
 }
 
+# Function to add RPM Terra repository
+add_rpm_terra_repository() {
+    echo "# -----------------------------------------------------------------------#"
+    echo "# Adding Terra repository                                               #"
+    echo "# -----------------------------------------------------------------------#"
+    dnf install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release
+}
+
 # Function to add RPM Fusion repository
 add_rpm_fusion_repository() {
     echo "# -----------------------------------------------------------------------#"
@@ -101,6 +109,8 @@ add_serial_permissions() {
 
 # Main script execution
 configure_package_management
+add_rpm_fusion_repository
+add_rpm_terra_repository
 update_and_upgrade
 pause_script 2
 
@@ -108,9 +118,6 @@ install_google_chrome
 pause_script 2
 
 install_visual_studio_code
-pause_script 2
-
-add_rpm_fusion_repository
 pause_script 2
 
 install_rust_cargo
