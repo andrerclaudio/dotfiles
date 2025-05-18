@@ -54,6 +54,10 @@ install_flatpak_apps() {
         "com.calibre_ebook.calibre"
         "org.remmina.Remmina"
         "org.octave.Octave"
+        "app.zen_browser.zen"
+        "com.obsproject.Studio"
+        "com.heroicgameslauncher.hgl"
+        "dev.zed.Zed"
     )
 
     for app in "${apps[@]}"; do
