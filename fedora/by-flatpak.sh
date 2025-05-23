@@ -57,7 +57,7 @@ install_flatpak_apps() {
         "app.zen_browser.zen"
         "com.obsproject.Studio"
         "com.heroicgameslauncher.hgl"
-        "dev.zed.Zed"
+        "io.github.flattool.Warehouse"
     )
 
     for app in "${apps[@]}"; do

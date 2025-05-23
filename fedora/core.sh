@@ -110,7 +110,7 @@ add_serial_permissions() {
 # Main script execution
 configure_package_management
 add_rpm_fusion_repository
-add_rpm_terra_repository
+# add_rpm_terra_repository
 update_and_upgrade
 pause_script 2
 
