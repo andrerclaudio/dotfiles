@@ -83,7 +83,6 @@ install_dnf_packages() {
         "fontawesome-fonts"
         "fzf"
         "bat"
-        "eza"
         "ripgrep"
         "yazi"
         "libavcodec-freeworld"
@@ -92,6 +91,8 @@ install_dnf_packages() {
         "ghostty"
     )
     sudo dnf install -y "${packages[@]}"
+    sudo dnf mark user akmod-nvidia
+    sudo dnf install xorg-x11-drv-nvidia-cuda
 }
 
 # Main script execution

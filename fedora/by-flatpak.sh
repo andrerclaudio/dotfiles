@@ -6,23 +6,6 @@ pause_script() {
     sleep "$1"
 }
 
-# Function to remove LibreOffice
-remove_libreoffice() {
-    echo "# -----------------------------------------------------------------------#"
-    echo "# Removing LibreOffice                                                   #"
-    echo "# -----------------------------------------------------------------------#"
-    sudo dnf remove -y libreoffice*
-}
-
-# Function to install Flatpak utility and add Flathub repository
-install_flatpak_and_add_flathub() {
-    echo "# -----------------------------------------------------------------------#"
-    echo "# Adding Flatpak utility, Repository, and Apps                           #"
-    echo "# -----------------------------------------------------------------------#"
-    sudo dnf install -y flatpak
-    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-}
-
 # Function to install a list of Flatpak apps
 install_flatpak_apps() {
     local apps=(
@@ -51,13 +34,11 @@ install_flatpak_apps() {
         "org.gnome.Calendar"
         "org.gnome.baobab"
         "org.gnome.clocks"
-        "com.calibre_ebook.calibre"
         "org.remmina.Remmina"
         "org.octave.Octave"
         "app.zen_browser.zen"
         "com.obsproject.Studio"
         "com.heroicgameslauncher.hgl"
-        "dev.zed.Zed"
     )
 
     for app in "${apps[@]}"; do
@@ -67,12 +48,6 @@ install_flatpak_apps() {
 }
 
 # Main script execution
-remove_libreoffice
-pause_script 2
-
-install_flatpak_and_add_flathub
-pause_script 2
-
 install_flatpak_apps
 pause_script 2
 

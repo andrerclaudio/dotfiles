@@ -132,7 +132,8 @@
 17. Install Cargo Apps
 
     ```shell
-    cargo install tock
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    cargo install tock eza
     cargo install --locked pueue dysk
     ```
 

@@ -6,6 +6,23 @@ pause_script() {
     sleep "$1"
 }
 
+# Function to remove LibreOffice
+remove_libreoffice() {
+    echo "# -----------------------------------------------------------------------#"
+    echo "# Removing LibreOffice                                                   #"
+    echo "# -----------------------------------------------------------------------#"
+    sudo dnf remove -y libreoffice*
+}
+
+# Function to install Flatpak utility and add Flathub repository
+install_flatpak_and_add_flathub() {
+    echo "# -----------------------------------------------------------------------#"
+    echo "# Adding Flatpak utility, Repository, and Apps                           #"
+    echo "# -----------------------------------------------------------------------#"
+    sudo dnf install -y flatpak
+    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+}
+
 # Function to add new settings to improve package management efficiency
 configure_package_management() {
     echo "# -----------------------------------------------------------------------#"
@@ -68,15 +85,6 @@ add_rpm_fusion_repository() {
     sudo dnf5 group install -y core
 }
 
-# Function to add Rust and Cargo
-install_rust_cargo() {
-    echo "# -----------------------------------------------------------------------#"
-    echo "# Install Rust and Cargo                                                 #"
-    echo "# -----------------------------------------------------------------------#"
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-    rustup update
-}
-
 # Function to configure GIT credentials
 configure_git_credentials() {
     echo "# -----------------------------------------------------------------------#"
@@ -110,17 +118,19 @@ add_serial_permissions() {
 # Main script execution
 configure_package_management
 add_rpm_fusion_repository
-add_rpm_terra_repository
 update_and_upgrade
+pause_script 2
+
+remove_libreoffice
+pause_script 2
+
+install_flatpak_and_add_flathub
 pause_script 2
 
 install_google_chrome
 pause_script 2
 
 install_visual_studio_code
-pause_script 2
-
-install_rust_cargo
 pause_script 2
 
 configure_git_credentials
