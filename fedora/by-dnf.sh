@@ -22,6 +22,7 @@ install_dnf_packages() {
     echo "# Install packages via DNF package manager                               #"
     echo "# -----------------------------------------------------------------------#"
     local packages=(
+        "google-chrome-stable"
         "alacritty"
         "zsh"
         "fastfetch"

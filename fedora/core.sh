@@ -45,16 +45,6 @@ update_and_upgrade() {
     sudo dnf upgrade -y
 }
 
-# Function to install Google Chrome
-install_google_chrome() {
-    echo "# -----------------------------------------------------------------------#"
-    echo "# Install Google Chrome                                                  #"
-    echo "# -----------------------------------------------------------------------#"
-    # sudo dnf install -y fedora-workstation-repositories
-    # sudo dnf config-manager setopt google-chrome.enabled=1
-    sudo dnf install -y google-chrome-stable
-}
-
 # Function to install Visual Studio Code
 install_visual_studio_code() {
     echo "# -----------------------------------------------------------------------#"
@@ -64,14 +54,6 @@ install_visual_studio_code() {
     sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
     sudo dnf update -y
     sudo dnf install -y code
-}
-
-# Function to add RPM Terra repository
-add_rpm_terra_repository() {
-    echo "# -----------------------------------------------------------------------#"
-    echo "# Adding Terra repository                                               #"
-    echo "# -----------------------------------------------------------------------#"
-    dnf install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release
 }
 
 # Function to add RPM Fusion repository
@@ -125,9 +107,6 @@ remove_libreoffice
 pause_script 2
 
 install_flatpak_and_add_flathub
-pause_script 2
-
-install_google_chrome
 pause_script 2
 
 install_visual_studio_code
