@@ -35,6 +35,7 @@ install_flatpak_apps() {
         "org.remmina.Remmina"
         "org.octave.Octave"
         "com.heroicgameslauncher.hgl"
+        org.kicad.KiCad
     )
 
     for app in "${apps[@]}"; do
