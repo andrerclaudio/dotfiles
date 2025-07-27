@@ -34,10 +34,7 @@ install_flatpak_apps() {
         "org.gnome.clocks"
         "org.remmina.Remmina"
         "org.octave.Octave"
-        "app.zen_browser.zen"
-        "com.obsproject.Studio"
         "com.heroicgameslauncher.hgl"
-        "io.github.flattool.Warehouse"
     )
 
     for app in "${apps[@]}"; do
