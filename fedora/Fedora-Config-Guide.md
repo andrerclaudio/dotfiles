@@ -249,7 +249,6 @@
 26. Gruvbox Plus icon pack  
 
     ```shell
-    mkdir -p ~/.local/share/icons/Gruvbox-Plus-Dark
     cd Documents
     git clone https://github.com/SylEleuth/gruvbox-plus-icon-pack.git
     ln -s /home/algernon/Documents/gruvbox-plus-icon-pack/Gruvbox-Plus-Dark ~/.local/share/icons/Gruvbox-Plus-Dark
