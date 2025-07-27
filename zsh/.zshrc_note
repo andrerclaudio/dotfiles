@@ -43,7 +43,7 @@ alias fastfetch="fastfetch --logo-padding-top 3 --logo-padding-left 4"
 alias remote-connect="ssh asimov@macondo"
 alias my-ip="ip -c -h -s addr"
 alias e="eza -lbhHigaUm --git --group --group-directories-first --icons=auto --color-scale=all --colour=auto"
-alias update="sudo dnf upgrade --refresh && flatpak update"
+alias update="sudo dnf upgrade --refresh && flatpak update && cargo install tock eza pueue dysk"
 alias cd="z"
 alias cat="bat"
 
