@@ -30,6 +30,13 @@ zsh-syntax-highlighting
 
 source $ZSH/oh-my-zsh.sh
 
+# —————————————————————————
+# Run dysk once at terminal startup (ignore errors)
+if [[ -o interactive && $SHLVL -eq 1 ]]; then
+  dysk -c label+default || true
+fi
+# —————————————————————————
+
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#458588'
 
 export LC_ALL="en_US.UTF-8"
