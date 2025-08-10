@@ -269,3 +269,7 @@
     ```shell
     192.168.1.65 macondo personal.server
     ```  
+
+28. Install Nvidia drivers if needed
+
+    Go to [**Nvidia CUDA drivers**](https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=Fedora&target_version=42) and install the Fedora drivers.
