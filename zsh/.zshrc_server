@@ -35,9 +35,15 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#458588'
 export LC_ALL="en_US.UTF-8"
 export LANG="en_US.UTF-8"
 export LANGUAGE="en_US.UTF-8"
-export BATCAT_THEME="gruvbox-dark"
+export BAT_THEME="gruvbox-dark"
 export PATH=$PATH:$HOME/.local/bin
-export PATH=$PATH:$HOME/bin
+
+alias fastfetch="fastfetch --logo-padding-top 3 --logo-padding-left 4"
+alias my-ip="ip -c -h -s addr"
+alias e="eza -lbhHigaUm --git --group --group-directories-first --icons=auto --color-scale=all --colour=auto"
+alias update="sudo apt update && sudo apt upgrade && cargo install tock eza pueue dysk"
+alias cd="z"
+alias cat="batcat"
 
 function y() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
@@ -48,24 +54,11 @@ function y() {
 	rm -f -- "$tmp"
 }
 
-alias fastfetch="fastfetch --logo-padding-top 3 --logo-padding-left 4"
-alias remote-connect="ssh asimov@192.168.18.155"
-alias my-ip="ip -c -h -s addr"
-alias e="eza -lbhHigaUm --git --group --group-directories-first --icons=auto --color-scale=all --colour=auto"
-alias update="sudo dnf upgrade --refresh && flatpak update"
-alias cd="z"
-alias cat="batcat"
-alias wget="wget2"
-
 eval "$(zoxide init zsh)"
 
 . "$HOME/.atuin/bin/env"
 
 eval "$(atuin init zsh)"
-
-# ---
-# Server settings ----------------------------------------------------------------
-# ---
 
 # start tmux if we ssh into the box
 if [[ -n "$PS1" ]] && [[ -z "$TMUX" ]] && [[ -n "$SSH_CONNECTION" ]]; then

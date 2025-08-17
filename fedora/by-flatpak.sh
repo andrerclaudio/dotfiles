@@ -34,7 +34,6 @@ install_flatpak_apps() {
         "org.gnome.clocks"
         "org.remmina.Remmina"
         "org.octave.Octave"
-        "com.heroicgameslauncher.hgl"
         "org.kicad.KiCad"
     )
 

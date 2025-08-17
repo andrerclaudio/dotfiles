@@ -37,6 +37,7 @@ if [[ -o interactive && $SHLVL -eq 1 ]]; then
 fi
 # —————————————————————————
 
+
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#458588'
 
 export LC_ALL="en_US.UTF-8"
@@ -53,18 +54,15 @@ alias e="eza -lbhHigaUm --git --group --group-directories-first --icons=auto --c
 alias update="sudo dnf upgrade --refresh && flatpak update && cargo install tock eza pueue dysk"
 alias cd="z"
 alias cat="bat"
+alias conn-server="ssh asimov@macondo"
 
 alias fetch-st="rsync -avh --progress --delete \
-                asimov@macondo:/home/asimov/yocto/STM32MPU-Ecosystem-v6.0.1/Distribution-Package/build-openstlinuxweston-stm32mp13-disco/tmp-glibc/deploy/images/ \
+                asimov@macondo:/home/asimov/Yocto/STM32MPU-Ecosystem-v6.1.0/Distribution-Package/build-openstlinuxweston-stm32mp13-disco/tmp-glibc/deploy/images/ \
                 /home/algernon/Desktop/ST/images"
 
 alias fetch-nxp="rsync -avh --progress --delete \
-                asimov@macondo:/home/asimov/yocto/imx-6.6.52-2.2.0/build-imx8mn-rpm/tmp/deploy/images/ \
+                asimov@macondo:/home/asimov/Yocto/imx-6.6.52-2.2.1/build-imx8mnevk-rpm/tmp/deploy/images/ \
                 /home/algernon/Desktop/NXP/images"
-
-alias fetch-rasp="rsync -avh --progress --delete \
-                asimov@macondo:/home/asimov/yocto/rpi-build-rpm/tmp-glibc/deploy/images/ \
-                /home/algernon/Desktop/RASP/images"
 
 function y() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
@@ -76,3 +74,7 @@ function y() {
 }
 
 eval "$(zoxide init zsh)"
+
+. "$HOME/.atuin/bin/env"
+
+eval "$(atuin init zsh)"
