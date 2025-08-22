@@ -55,6 +55,7 @@ alias update="sudo dnf upgrade --refresh && flatpak update && cargo install tock
 alias cd="z"
 alias cat="bat"
 alias conn-server="ssh asimov@macondo"
+alias zoom="tree -shaCL 2 --du"
 
 alias fetch-st="rsync -avh --progress --delete \
                 asimov@macondo:/home/asimov/Yocto/STM32MPU-Ecosystem-v6.1.0/Distribution-Package/build-openstlinuxweston-stm32mp13-disco/tmp-glibc/deploy/images/ \

@@ -35,6 +35,7 @@ install_flatpak_apps() {
         "org.remmina.Remmina"
         "org.octave.Octave"
         "org.kicad.KiCad"
+        "com.ranfdev.DistroShelf"
     )
 
     for app in "${apps[@]}"; do
