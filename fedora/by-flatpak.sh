@@ -36,11 +36,13 @@ install_flatpak_apps() {
         "org.octave.Octave"
         "org.kicad.KiCad"
         "com.ranfdev.DistroShelf"
+        "io.github.flattool.Warehouse"
+        "org.blender.Blender"
     )
 
     for app in "${apps[@]}"; do
         echo "---> Installing $app"
-        flatpak install flathub "$app" -y
+        flatpak install --user flathub "$app" -y
     done
 }
 
