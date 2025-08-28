@@ -83,8 +83,6 @@ install_dnf_packages() {
         "fontawesome-fonts"
         "fzf"
         "bat"
-        "ripgrep"
-        "yazi"
         "libavcodec-freeworld"
         "pycharm-community"
         "python3-tkinter"
