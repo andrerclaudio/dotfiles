@@ -268,3 +268,17 @@
 
     ```shell
     100.96.1.34 macondo personal.server
+    ```
+
+28. Install Nvidia drivers if needed
+
+    Go to [**Nvidia CUDA drivers**](https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=Fedora&target_version=42) and install the Fedora drivers.
+
+29. Install Repo tool
+
+    ```shell
+    mkdir ~/bin
+    curl http://commondatastorage.googleapis.com/git-repo-downloads/repo  > ~/bin/repo
+    chmod a+x ~/bin/repo
+    PATH=${PATH}:~/bin
+    ```
