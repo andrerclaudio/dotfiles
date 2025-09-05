@@ -42,7 +42,7 @@ install_flatpak_apps() {
 
     for app in "${apps[@]}"; do
         echo "---> Installing $app"
-        flatpak install --user flathub "$app" -y
+        flatpak install flathub "$app" -y
     done
 }
 

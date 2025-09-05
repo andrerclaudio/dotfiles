@@ -277,6 +277,6 @@
 29. Install Repo tool
 
     ```shell
-    curl http://commondatastorage.googleapis.com/git-repo-downloads/repo  > ~/.local/bin
+    curl http://commondatastorage.googleapis.com/git-repo-downloads/repo  > ~/.local/bin/repo
     chmod a+x ~/.local/bin/repo
     ```
