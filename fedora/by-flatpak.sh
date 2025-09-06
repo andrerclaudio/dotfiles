@@ -38,6 +38,8 @@ install_flatpak_apps() {
         "com.ranfdev.DistroShelf"
         "io.github.flattool.Warehouse"
         "org.blender.Blender"
+        "com.heroicgameslauncher.hgl"
+        "org.gimp.GIMP"
     )
 
     for app in "${apps[@]}"; do
