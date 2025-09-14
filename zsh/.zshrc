@@ -48,7 +48,6 @@ export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH:$HOME/.spicetify
 
 alias fastfetch="fastfetch --logo-padding-top 3 --logo-padding-left 4"
-alias remote-connect="ssh asimov@macondo"
 alias my-ip="ip -c -h -s addr"
 alias e="eza -lbhHigaUm --git --group --group-directories-first --icons=auto --color-scale=all --colour=auto"
 alias update="sudo dnf upgrade --refresh && flatpak update && cargo install tock eza pueue dysk yazi-build ripgrep"
@@ -56,14 +55,6 @@ alias cd="z"
 alias cat="bat"
 alias conn-server="ssh asimov@macondo"
 alias zoom="tree -shaCL 2 --du"
-
-alias fetch-st="rsync -avh --progress --delete \
-                asimov@macondo:/home/asimov/Yocto/STM32MPU-Ecosystem-v6.1.0/Distribution-Package/build-openstlinuxweston-stm32mp13-disco/tmp-glibc/deploy/images/ \
-                /home/algernon/Desktop/ST/images"
-
-alias fetch-nxp="rsync -avh --progress --delete \
-                asimov@macondo:/home/asimov/Yocto/imx-6.6.52-2.2.1/build-imx8mnevk-rpm/tmp/deploy/images/ \
-                /home/algernon/Desktop/NXP/images"
 
 function y() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
