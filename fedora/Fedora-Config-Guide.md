@@ -274,6 +274,13 @@
 
     Go to [**Nvidia CUDA drivers**](https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=Fedora&target_version=42) and install the Fedora drivers.
 
+    or  
+
+    ```shell
+    sudo dnf install akmod-nvidia xorg-x11-drv-nvidia-cuda nvidia-settings nvidia-persistenced nvidia-modprobe
+    ```
+
+
 29. Install Repo tool
 
     ```shell
