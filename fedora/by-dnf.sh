@@ -12,7 +12,7 @@ add_apps_repo() {
     echo "# Add LazyGit repository                                                 #"
     echo "# -----------------------------------------------------------------------#"
     sudo dnf copr enable -y atim/lazygit
-    sudo dnf copr enable -y pgdev/ghostty
+    sudo dnf copr enable -y scottames/ghostty
 }
 
 # Function to install packages via DNF package manager
