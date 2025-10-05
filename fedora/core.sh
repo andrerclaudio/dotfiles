@@ -32,7 +32,7 @@ configure_package_management() {
 #\
 # New settings to improve the speed and efficiency of package management operations.\
 fastestmirror=True\
-max_parallel_downloads=11\
+max_parallel_downloads=19\
 defaultyes=True\
 keepcache=True' /etc/dnf/dnf.conf
 }

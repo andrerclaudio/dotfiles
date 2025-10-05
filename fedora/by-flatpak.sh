@@ -34,12 +34,9 @@ install_flatpak_apps() {
         "org.gnome.clocks"
         "org.remmina.Remmina"
         "org.octave.Octave"
-        "org.kicad.KiCad"
         "com.ranfdev.DistroShelf"
         "io.github.flattool.Warehouse"
-        "org.blender.Blender"
         "com.heroicgameslauncher.hgl"
-        "org.gimp.GIMP"
     )
 
     for app in "${apps[@]}"; do
