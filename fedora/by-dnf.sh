@@ -86,6 +86,7 @@ install_dnf_packages() {
         "pycharm-community"
         "python3-tkinter"
         "ghostty"
+        "grc"
     )
     sudo dnf install -y "${packages[@]}"
 }

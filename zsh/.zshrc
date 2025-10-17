@@ -65,6 +65,10 @@ function y() {
 	rm -f -- "$tmp"
 }
 
+if [[ -s /etc/grc.zsh ]]; then
+  source /etc/grc.zsh
+fi
+
 eval "$(zoxide init zsh)"
 
 . "$HOME/.atuin/bin/env"
