@@ -30,6 +30,7 @@ install_dnf_packages() {
         "btop"
         "tmux"
         "cmatrix"
+        "asciiquarium"
         "rpi-imager"
         "picocom"
         "net-tools"
