@@ -37,6 +37,7 @@ install_flatpak_apps() {
         "com.ranfdev.DistroShelf"
         "io.github.flattool.Warehouse"
         "com.heroicgameslauncher.hgl"
+        "org.gnome.Showtime"
     )
 
     for app in "${apps[@]}"; do
