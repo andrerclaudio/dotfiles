@@ -38,6 +38,7 @@ install_flatpak_apps() {
         "io.github.flattool.Warehouse"
         "com.heroicgameslauncher.hgl"
         "org.gnome.Showtime"
+        "org.gnome.Decibels"
     )
 
     for app in "${apps[@]}"; do

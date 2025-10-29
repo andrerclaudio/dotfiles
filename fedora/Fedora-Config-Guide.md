@@ -280,7 +280,6 @@
     sudo dnf install akmod-nvidia xorg-x11-drv-nvidia-cuda nvidia-settings nvidia-persistenced nvidia-modprobe
     ```
 
-
 29. Install Repo tool
 
     ```shell
