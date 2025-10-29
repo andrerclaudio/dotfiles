@@ -35,10 +35,6 @@ install_flatpak_apps() {
         "org.remmina.Remmina"
         "org.octave.Octave"
         "com.ranfdev.DistroShelf"
-        "io.github.flattool.Warehouse"
-        "com.heroicgameslauncher.hgl"
-        "org.gnome.Showtime"
-        "org.gnome.Decibels"
     )
 
     for app in "${apps[@]}"; do
