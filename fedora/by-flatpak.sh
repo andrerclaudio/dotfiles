@@ -35,6 +35,11 @@ install_flatpak_apps() {
         "org.remmina.Remmina"
         "org.octave.Octave"
         "com.ranfdev.DistroShelf"
+        "io.github.flattool.Warehouse"
+        "org.kicad.KiCad"
+        "de.haeckerfelix.Fragments"
+        "org.gnome.Showtime"
+        "org.gnome.Snapshot"
     )
 
     for app in "${apps[@]}"; do

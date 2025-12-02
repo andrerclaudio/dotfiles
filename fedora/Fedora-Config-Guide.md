@@ -249,9 +249,11 @@
 26. Gruvbox Plus icon pack  
 
     ```shell
+    cd
+    mkdir .icons
     cd Documents
     git clone https://github.com/SylEleuth/gruvbox-plus-icon-pack.git
-    ln -s /home/algernon/Documents/gruvbox-plus-icon-pack/Gruvbox-Plus-Dark ~/.local/share/icons/Gruvbox-Plus-Dark
+    ln -s /home/algernon/Documents/gruvbox-plus-icon-pack/Gruvbox-Plus-Dark ~/.icons/Gruvbox-Plus-Dark
     ```  
 
     Now, if you open preferences in Gnome Tweaks, you should be able to select the icon pack you just installed.  
