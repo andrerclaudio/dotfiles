@@ -50,7 +50,7 @@ export PATH=$PATH:$HOME/.spicetify
 alias fastfetch="fastfetch --logo-padding-top 3 --logo-padding-left 4"
 alias my-ip="ip -c -h -s addr"
 alias e="eza -lbhHigaUm --git --group --group-directories-first --icons=auto --color-scale=all --colour=auto"
-alias update="sudo dnf upgrade --refresh && flatpak update && cargo install tock eza pueue dysk yazi-build ripgrep"
+alias update="sudo dnf upgrade --refresh && flatpak update && rustup update && cargo install tock eza pueue dysk yazi-build ripgrep"
 alias cd="z"
 alias cat="bat"
 alias conn-server="ssh asimov@macondo"

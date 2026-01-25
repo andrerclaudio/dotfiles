@@ -88,6 +88,9 @@ install_dnf_packages() {
         "python3-tkinter"
         "ghostty"
         "grc"
+        "ffmpeg-free"
+        "0ad"
+        "luarocks"
     )
     sudo dnf install -y "${packages[@]}"
 }

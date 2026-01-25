@@ -40,6 +40,9 @@ install_flatpak_apps() {
         "de.haeckerfelix.Fragments"
         "org.gnome.Showtime"
         "org.gnome.Snapshot"
+        "org.blender.Blender"
+        "org.nickvision.tubeconverter"
+        "org.gimp.GIMP"
     )
 
     for app in "${apps[@]}"; do
