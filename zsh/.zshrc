@@ -53,7 +53,6 @@ alias e="eza -lbhHigaUm --git --group --group-directories-first --icons=auto --c
 alias update="sudo dnf upgrade --refresh && flatpak update && rustup update && cargo install tock eza pueue dysk yazi-build ripgrep"
 alias cd="z"
 alias cat="bat"
-alias conn-server="ssh asimov@macondo"
 alias zoom="tree -shaCL 2 --du"
 
 function y() {

@@ -54,7 +54,6 @@ install_dnf_packages() {
         "cbonsai"
         "codespell"
         "zstd"
-        "anaconda"
         "tree"
         "lazygit"
         "zig"
@@ -91,6 +90,8 @@ install_dnf_packages() {
         "ffmpeg-free"
         "0ad"
         "luarocks"
+        "mpv"
+        "podman-compose"
     )
     sudo dnf install -y "${packages[@]}"
 }

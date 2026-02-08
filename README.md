@@ -1,4 +1,4 @@
-### This repository contains my personal dotfiles. Feel free to explore and adapt them for your own use!
+# This repository contains my personal dotfiles. Feel free to explore and adapt them for your own use
 
 To use these dotfiles:
 

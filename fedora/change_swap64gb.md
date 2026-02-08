@@ -10,7 +10,7 @@ free -h
 sudo touch /swapfile
 sudo chattr +C /swapfile
 sudo chmod 600 /swapfile
-# allocate 128 GiB by writing zeros (this forces real allocation)
+# allocate 64 GiB by writing zeros (this forces real allocation)
 sudo dd if=/dev/zero of=/swapfile bs=1M count=$((64*1024)) status=progress conv=fdatasync
 # mark as swap and enable immediately
 sudo mkswap /swapfile
