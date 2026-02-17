@@ -50,7 +50,6 @@ export PATH=$PATH:$HOME/.spicetify
 alias fastfetch="fastfetch --logo-padding-top 3 --logo-padding-left 4"
 alias my-ip="ip -c -h -s addr"
 alias e="eza -lbhHigaUm --git --group --group-directories-first --icons=auto --color-scale=all --colour=auto"
-alias update="sudo dnf upgrade --refresh && flatpak update && rustup update && cargo install tock eza pueue dysk yazi-build ripgrep"
 alias cd="z"
 alias cat="bat"
 alias zoom="tree -shaCL 2 --du"
@@ -62,6 +61,31 @@ function y() {
 		builtin cd -- "$cwd"
 	fi
 	rm -f -- "$tmp"
+}
+
+function update() {
+    # 1. System Packages (DNF)
+    print -P "\n%F{green}%B==> Updating System Packages (DNF)...%b%f"
+    sudo dnf upgrade --refresh || return 1
+
+    # 2. Flatpak Applications
+    print -P "\n%F{green}%B==> Updating Flatpaks...%b%f"
+    flatpak update || return 1
+
+    # 3. Rust Toolchain
+    print -P "\n%F{green}%B==> Updating Rust Toolchain...%b%f"
+    rustup update || return 1
+
+    # 4. Atuin Shell History
+    print -P "\n%F{green}%B==> Updating Atuin...%b%f"
+    atuin update || return 1
+
+    # 5. Cargo Binaries (Smart Update)
+    # This replaces the manual 'cargo install' list for eza, dysk, etc. 
+    print -P "\n%F{green}%B==> Updating Cargo Binaries...%b%f"
+    cargo install-update -a
+
+    print -P "\n%F{green}%B==> All updates complete!%b%f"
 }
 
 if [[ -s /etc/grc.zsh ]]; then
