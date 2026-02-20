@@ -133,7 +133,7 @@
 
     ```shell
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-    cargo install tock eza pueue dysk yazi-build ripgrep weathr cargo-update
+    cargo install tock eza pueue dysk yazi-build ripgrep weathr cargo-update tetro-tui
     ```
 
 18. Install OpenVPN
