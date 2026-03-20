@@ -92,6 +92,8 @@ install_dnf_packages() {
         "luarocks"
         "mpv"
         "podman-compose"
+        "chafa"
+        "tio"
     )
     sudo dnf install -y "${packages[@]}"
 }
