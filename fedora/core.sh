@@ -6,6 +6,41 @@ pause_script() {
     sleep "$1"
 }
 
+remove_gnome_suite() {
+    echo "# -----------------------------------------------------------------------#"
+    echo "# Removing Gnome Defaults                                                #"
+    echo "# -----------------------------------------------------------------------#"
+
+    local apps=(
+        "decibels"
+        "gnome-boxes"
+        "gnome-calculator"
+        "gnome-calendar"
+        "snapshot"
+        "gnome-characters"
+        "gnome-clocks"
+        "gnome-contacts"
+        "baobab"
+        "simple-scan"
+        "papers"
+        "mediawriter"
+        "gnome-connections"
+        "firefox"
+        "gnome-font-viewer"
+        "loupe"
+        "gnome-logs"
+        "gnome-maps"
+        "gnome-text-editor"
+        "showtime"
+        "gnome-weather"
+    )
+
+    for app in "${apps[@]}"; do
+        echo "---> Removing $app"
+        sudo dnf remove "$app" -y
+    done
+}
+
 # Function to remove LibreOffice
 remove_libreoffice() {
     echo "# -----------------------------------------------------------------------#"
@@ -101,6 +136,9 @@ add_serial_permissions() {
 configure_package_management
 add_rpm_fusion_repository
 update_and_upgrade
+pause_script 2
+
+remove_gnome_suite
 pause_script 2
 
 remove_libreoffice

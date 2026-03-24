@@ -14,8 +14,6 @@ install_flatpak_apps() {
         "org.inkscape.Inkscape"
         "org.kde.kdenlive"
         "org.libreoffice.LibreOffice"
-        "com.jeffser.Alpaca"
-        "com.jeffser.Alpaca.Plugins.Ollama"
         "com.spotify.Client"
         "org.gnome.meld"
         "org.gnome.GHex"
@@ -43,6 +41,10 @@ install_flatpak_apps() {
         "org.blender.Blender"
         "org.nickvision.tubeconverter"
         "org.gimp.GIMP"
+        "org.gnome.Contacts"
+        "org.gnome.Weather"
+        "org.gnome.Maps"
+        "org.gnome.Connections"
     )
 
     for app in "${apps[@]}"; do
