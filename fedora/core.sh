@@ -8,37 +8,22 @@ pause_script() {
 
 remove_gnome_suite() {
     echo "# -----------------------------------------------------------------------#"
-    echo "# Removing Gnome Defaults                                                #"
+    echo "# Removing Gnome Defaults (Batch Mode)                                   #"
     echo "# -----------------------------------------------------------------------#"
 
     local apps=(
-        "decibels"
-        "gnome-boxes"
-        "gnome-calculator"
-        "gnome-calendar"
-        "snapshot"
-        "gnome-characters"
-        "gnome-clocks"
-        "gnome-contacts"
-        "baobab"
-        "simple-scan"
-        "papers"
-        "mediawriter"
-        "gnome-connections"
-        "firefox"
-        "gnome-font-viewer"
-        "loupe"
-        "gnome-logs"
-        "gnome-maps"
-        "gnome-text-editor"
-        "showtime"
-        "gnome-weather"
+        "decibels" "gnome-boxes" "gnome-calculator" "gnome-calendar"
+        "snapshot" "gnome-characters" "gnome-clocks" "gnome-contacts"
+        "baobab" "simple-scan" "papers" "mediawriter" "gnome-connections"
+        "firefox" "gnome-font-viewer" "loupe" "gnome-logs" "gnome-maps"
+        "gnome-text-editor" "showtime" "gnome-weather"
     )
 
-    for app in "${apps[@]}"; do
-        echo "---> Removing $app"
-        sudo dnf remove "$app" -y
-    done
+    echo "---> Removing selected packages and unused dependencies..."
+
+    sudo dnf remove "${apps[@]}" -y && sudo dnf autoremove -y
+
+    echo "---> Cleanup complete."
 }
 
 # Function to remove LibreOffice
