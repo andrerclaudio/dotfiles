@@ -136,16 +136,7 @@
     cargo install tock eza pueue dysk yazi-build ripgrep cargo-update
     ```
 
-18. Install OpenVPN
-
-    > Go to CloudConnexa [https://myaccount.openvpn.com/signin/cvpn/previous-credentials]  
-    > Follow the steps to add a new Host.
-
-    ```shell
-    sudo systemctl status openvpn3-session@CloudConnexa.service
-    ```
-
-19. Install Spicetify
+18. Install Spicetify
 
     ```shell
     curl -fsSL https://raw.githubusercontent.com/spicetify/cli/main/install.sh | sh
@@ -187,21 +178,19 @@
     spicetify apply
     ```
 
-20. Install Zoxide
+19. Install Zoxide
 
     ```shell
     curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
     ```
 
-21. Install Atuin
+20. Install Atuin
 
     ```shell
     curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
-    atuin login -u andrerclaudio
-    atuin sync
     ```
 
-22. Configure Eza
+21. Configure Eza
 
     ```shell
     mkdir -p ~/.config/eza
@@ -210,7 +199,7 @@
     ln -sf "$(pwd)/eza-themes/themes/gruvbox-dark.yml" ~/.config/eza/theme.yml
     ```
 
-23. Setting up `pueue` daemon
+22. Setting up `pueue` daemon
 
     - Download pueued.service from the GitHub Releases page.  
     - Place systemd.pueued.service in /usr/lib/systemd/user  
@@ -223,7 +212,7 @@
     systemctl --user status systemd.pueued
     ```
 
-24. Change DNS addresses
+23. Change DNS addresses
 
     > Go to Wifi settings and change DNS from automatic to manual and add.  
 
@@ -233,7 +222,7 @@
     `IPV6`:  
     2001:4860:4860::8888,2001:4860:4860::8844  
 
-25. Tune VsCode settings
+24. Tune VsCode settings
 
     ```shell
     sudo nano /etc/sysctl.conf
@@ -246,7 +235,7 @@
     sudo sysctl -p
     ```
 
-26. Gruvbox Plus icon pack  
+25. Gruvbox Plus icon pack  
 
     ```shell
     cd
@@ -260,19 +249,7 @@
 
     > Appearance (Icons): `Gruvbox-Plus-Dark`  
 
-27. Add the Host Macondo (Server)  
-
-    ```shell
-    sudo nano /etc/hosts
-    ```
-
-    And add the lines below:
-
-    ```shell
-    100.96.1.34 macondo personal.server
-    ```
-
-28. Install Nvidia drivers if needed
+26. Install Nvidia drivers if needed
 
     Go to [**Nvidia CUDA drivers**](https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=Fedora&target_version=42) and install the Fedora drivers.
 
@@ -282,7 +259,7 @@
     sudo dnf install akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs nvidia-settings nvidia-persistenced nvidia-modprobe
     ```
 
-29. Install Repo tool
+27. Install Repo tool
 
     ```shell
     curl http://commondatastorage.googleapis.com/git-repo-downloads/repo  > ~/.local/bin/repo
