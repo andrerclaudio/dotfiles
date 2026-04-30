@@ -7,47 +7,49 @@
     ```shell
     chmod +x by-dnf.sh
     chmod +x by-flatpak.sh
-    chmod +x by-snap.sh
     chmod +x core.sh
     ```
 
-2. Run core.sh:
+2. Run:
 
     ```shell
-    ./core.sh
+    ./core.sh    
     ```
 
-3. Run by-flatpak.sh:
-
-    ```shell
-    ./by-flatpak.sh
-    ```
-
-4. Run by-dnf.sh:
-
-    ```shell
-    ./by-dnf.sh
-    ```
-
-5. Restart the PC:
+    and then
 
     ```shell
     sudo reboot
     ```
 
-6. Install Oh My ZSH:
+3. Run the followings:
+
+    ```shell
+    ./by-flatpak.sh
+    ./by-dnf.sh
+    ```
+
+    and then
+
+    ```shell
+    sudo reboot
+    ```
+
+4. Install Oh My ZSH:
+
+    Open the Alacritty and run:
 
     ```shell
     sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
     ```
 
-7. Start the personal accounts:
+5. Start the personal accounts:
 
     - Open Google Chrome and log-in.
     - Go to GitHub and log-in.
     - Open VsCode and start Sync.
 
-8. Install Nerd Fonts:
+6. Install Nerd Fonts:
 
     ```shell
     cd Downloads
@@ -62,13 +64,13 @@
    Now, if you open preferences in Gnome Tweaks, you should be able to select the font you just installed.  
    > Fonts: `JetBrainsMonoNL Nerd Font Mono`  
 
-9. Fetch the dotfiles:
+7. Fetch the dotfiles:
 
     ```shell
     git clone https://github.com/andrerclaudio/dotfiles.git
     ```
 
-10. Install TPM (Tmux Plugin Manager):
+8. Install TPM (Tmux Plugin Manager):
 
     ```shell
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
@@ -76,7 +78,7 @@
 
     > `After moving the Tmux dotfile to its place inside ~/.config folder, press prefix + I to install the plugins.`
 
-11. Install ZSH pluggins:
+9. Install ZSH pluggins:
 
     ```shell
     git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
@@ -85,58 +87,24 @@
     git clone https://github.com/TamCore/autoupdate-oh-my-zsh-plugins.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/autoupdate
     ```
 
-12. Install MFGTools:
-
-    ```shell
-    git clone https://github.com/nxp-imx/mfgtools.git
-    cd mfgtools
-    git checkout tags/uuu_1.5.182 -b uuu_1.5.182
-    cmake -S . -B build
-    cmake --build build --target all
-    sudo cp ./build/uuu/uuu /bin
-    ```
-
-13. Install SetupSTM32CubeProgrammer:
-
-    - Download STM32Cube [https://www.st.com/en/development-tools/stm32cubeprog.html#get-software]
-    - Unzip and run ./SetupSTM32CubeProgrammer-2.16.0.linux
-    - Add to .zshrc file "export PATH=my_STM32CubeProgrammer_install_directory/bin:$PATH"
-
-    ```shell
-    cd <your STM32CubeProgrammer install directory>/Drivers/rules
-    sudo cp *.* /etc/udev/rules.d/
-    ```
-
-14. Restart the PC:
+10. Restart the PC:
 
     ```shell
     sudo reboot
     ```
 
-15. Install PWA appplications:
+11. Install PWA appplications.
 
-    - Tldr
-    - Google Keep
-    - Google Maps
-    - Google Photos
-    - WhatsApp
+12. Install Gnome Extensions.
 
-16. Install Gnome Extensions:
-
-    - Caffeine
-    - Dash to Dock
-    - Blur my Shell
-    - Logo Menu
-    - Clipboard Indicator
-
-17. Install Cargo Apps
+13. Install Cargo Apps.
 
     ```shell
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
     cargo install tock eza pueue dysk yazi-build ripgrep cargo-update
     ```
 
-18. Install Spicetify
+14. Install Spicetify
 
     ```shell
     curl -fsSL https://raw.githubusercontent.com/spicetify/cli/main/install.sh | sh
@@ -178,19 +146,19 @@
     spicetify apply
     ```
 
-19. Install Zoxide
+15. Install Zoxide
 
     ```shell
     curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
     ```
 
-20. Install Atuin
+16. Install Atuin
 
     ```shell
     curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
     ```
 
-21. Configure Eza
+17. Configure Eza
 
     ```shell
     mkdir -p ~/.config/eza
@@ -199,7 +167,7 @@
     ln -sf "$(pwd)/eza-themes/themes/gruvbox-dark.yml" ~/.config/eza/theme.yml
     ```
 
-22. Setting up `pueue` daemon
+18. Setting up `pueue` daemon
 
     - Download pueued.service from the GitHub Releases page.  
     - Place systemd.pueued.service in /usr/lib/systemd/user  
@@ -212,7 +180,7 @@
     systemctl --user status systemd.pueued
     ```
 
-23. Change DNS addresses
+19. Change DNS addresses
 
     > Go to Wifi settings and change DNS from automatic to manual and add.  
 
@@ -222,7 +190,7 @@
     `IPV6`:  
     2001:4860:4860::8888,2001:4860:4860::8844  
 
-24. Tune VsCode settings
+20. Tune VsCode settings
 
     ```shell
     sudo nano /etc/sysctl.conf
@@ -235,7 +203,7 @@
     sudo sysctl -p
     ```
 
-25. Gruvbox Plus icon pack  
+21. Gruvbox Plus icon pack  
 
     ```shell
     cd
@@ -249,7 +217,7 @@
 
     > Appearance (Icons): `Gruvbox-Plus-Dark`  
 
-26. Install Nvidia drivers if needed
+22. Install Nvidia drivers if needed
 
     Go to [**Nvidia CUDA drivers**](https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=Fedora&target_version=42) and install the Fedora drivers.
 
@@ -259,7 +227,7 @@
     sudo dnf install akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs nvidia-settings nvidia-persistenced nvidia-modprobe
     ```
 
-27. Install Repo tool
+23. Install Repo tool
 
     ```shell
     curl http://commondatastorage.googleapis.com/git-repo-downloads/repo  > ~/.local/bin/repo
