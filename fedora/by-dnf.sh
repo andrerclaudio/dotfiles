@@ -95,7 +95,7 @@ install_dnf_packages() {
         "chafa"
         "tio"
     )
-    sudo dnf install -y "${packages[@]}"
+    sudo dnf install -y --skip-unavailable "${packages[@]}"
 }
 
 # Main script execution
