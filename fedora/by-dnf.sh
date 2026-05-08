@@ -13,6 +13,7 @@ add_apps_repo() {
     echo "# -----------------------------------------------------------------------#"
     sudo dnf copr enable -y atim/lazygit
     sudo dnf copr enable -y scottames/ghostty
+    sudo dnf copr enable -y lihaohong/yazi
 }
 
 # Function to install packages via DNF package manager
@@ -94,6 +95,7 @@ install_dnf_packages() {
         "podman-compose"
         "chafa"
         "tio"
+        "yazi"
     )
     sudo dnf install -y --skip-unavailable "${packages[@]}"
 }
