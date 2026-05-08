@@ -29,7 +29,7 @@ source $ZSH/oh-my-zsh.sh
 # 3. HISTORY SETTINGS
 # ——————————————————————————————————————————————————————————————————————
 export HISTFILESIZE=10000000
-export HISTSIZE=999999
+export HISTSIZE=99999
 export HISTFILE=~/.zsh_history
 export HISTTIMEFORMAT="[%F %T] "
 PROMPT_COMMAND="zsh_history -a; $PROMPT_COMMAND"
@@ -64,8 +64,8 @@ function update() {
     print -P "\n%F{green}%B==> Updating Rust Toolchain...%b%f"
     rustup update || return 1
 
-    # print -P "\n%F{green}%B==> Updating Atuin...%b%f"
-    # atuin update || return 1
+    print -P "\n%F{green}%B==> Updating Atuin...%b%f"
+    atuin update || return 1
 
     print -P "\n%F{green}%B==> Updating Cargo Binaries...%b%f"
     cargo install-update -a
@@ -89,5 +89,5 @@ fi
 
 eval "$(zoxide init zsh)"
 
-# . "$HOME/.atuin/bin/env"
-# eval "$(atuin init zsh)"
+. "$HOME/.atuin/bin/env"
+eval "$(atuin init zsh)"
