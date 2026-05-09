@@ -156,6 +156,7 @@
 
     ```shell
     curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+    atuin login -u andrerc-outlook
     ```
 
 17. Configure Eza
