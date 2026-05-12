@@ -1,179 +1,123 @@
 # Fedora Initial Configuration Guide
 
-## This file is intended to guide you through the initial Fedora configuration
+## Phase 1: Automated Scripts & Shell Setup
 
-1. Make all files executable:
+1. Make all installation files executable:
 
     ```shell
-    chmod +x by-dnf.sh
-    chmod +x by-flatpak.sh
-    chmod +x core.sh
+    chmod +x core.sh apps.sh extra.sh
     ```
 
-2. Run:
+2. Run the Core script and restart:
 
     ```shell
     ./core.sh    
-    ```
-
-    and then
-
-    ```shell
     sudo reboot
     ```
 
-3. Run the followings:
+3. Run the Apps script and restart:
 
     ```shell
-    ./by-flatpak.sh
-    ./by-dnf.sh
-    ```
-
-    and then
-
-    ```shell
+    ./apps.sh
     sudo reboot
     ```
+
+    *Note: From now on, use the Alacritty terminal.*
 
 4. Install Oh My ZSH:
-
-    Open the Alacritty and run:
-
-    ```shell
-    sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
-    ```
-
-5. Start the personal accounts:
-
-    - Open Google Chrome and log-in.
-    - Go to GitHub and log-in.
-    - Open VsCode and start Sync.
-
-6. Install Nerd Fonts:
+    Open your terminal and run:
 
     ```shell
-    cd Downloads
-    mkdir JetBrainsMono
-    curl -OL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz
-    tar -xvf JetBrainsMono.tar.xz -C ./JetBrainsMono
-    cd
-    mkdir .fonts
-    mv Downloads/JetBrainsMono .fonts/
+    sh -c "$(curl -fsSL [https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh](https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh))"
     ```
 
-   Now, if you open preferences in Gnome Tweaks, you should be able to select the font you just installed.  
-   > Fonts: `JetBrainsMonoNL Nerd Font Mono`  
-
-7. Fetch the dotfiles:
-
-    ```shell
-    git clone https://github.com/andrerclaudio/dotfiles.git
-    ```
-
-8. Install TPM (Tmux Plugin Manager):
-
-    ```shell
-    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-    ```
-
-    > `After moving the Tmux dotfile to its place inside ~/.config folder, press prefix + I to install the plugins.`
-
-9. Install ZSH pluggins:
-
-    ```shell
-    git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-    git clone --depth 1 -- https://github.com/marlonrichert/zsh-autocomplete.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autocomplete
-    git clone https://github.com/TamCore/autoupdate-oh-my-zsh-plugins.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/autoupdate
-    ```
-
-10. Restart the PC:
+    *Note: When the installation finishes, it may drop you into a new ZSH prompt. Type `exit` to return to your normal prompt if needed, and then restart:*
 
     ```shell
     sudo reboot
     ```
 
-11. Install PWA appplications.
-
-12. Install Gnome Extensions.
-
-13. Install Cargo Apps.
+5. Fetch Dotfiles:
 
     ```shell
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-    cargo install tock eza pueue dysk ripgrep cargo-update
+    git clone [https://github.com/andrerclaudio/dotfiles.git](https://github.com/andrerclaudio/dotfiles.git) ~/Downloads
     ```
 
-14. Install Spicetify
+6. Install TPM (Tmux Plugin Manager):
 
     ```shell
-    curl -fsSL https://raw.githubusercontent.com/spicetify/cli/main/install.sh | sh
+    git clone [https://github.com/tmux-plugins/tpm](https://github.com/tmux-plugins/tpm) ~/.tmux/plugins/tpm
     ```
 
-    > `DO NOT` install the Marketplace when requested.
+7. **Initialize Tmux Plugins:**
+    After moving your Tmux dotfile from your cloned repository to its place inside the `~/.config` folder, enter a Tmux environment and press `prefix + I` to install the plugins.
+
+8. Run the Extra script (Plugins, Fonts, Cargo, etc.) and restart:
 
     ```shell
+    ./extra.sh
+    sudo reboot
+    ```
+
+## Phase 2: Manual Authentications & GUI Tweaks
+
+1. **Start your personal accounts:**
+    - Open **Google Chrome** and log in.
+    - Go to **GitHub** and log in.
+    - Open **VS Code** and start Sync.
+    - Run the following command to log into Atuin:
+
+      ```shell
+      atuin login -u andrerc-outlook
+      ```
+
+2. **Apply Gnome Tweaks:**
+    Open the Gnome Tweaks application and apply the following settings downloaded by the scripts:
+    - **Fonts:** `JetBrainsMonoNL Nerd Font Mono`  
+    - **Appearance (Icons):** `Gruvbox-Plus-Dark`
+
+3. **Change DNS addresses:**
+    Go to Wi-Fi settings, change DNS from automatic to manual, and add:
+    - **IPV4:** `8.8.8.8, 8.8.4.4`
+    - **IPV6:** `2001:4860:4860::8888, 2001:4860:4860::8844`
+
+## Phase 3: Specialized Software Setup & Tuning
+
+1. **Install Spicetify:**
+    *Note: Ensure you have opened the Spotify Flatpak at least once before running this to generate the required folders.*
+
+    ```shell
+    curl -fsSL [https://raw.githubusercontent.com/spicetify/cli/main/install.sh](https://raw.githubusercontent.com/spicetify/cli/main/install.sh) | sh
     spicetify
-    cd .config/spicetify/
-    nano config-xpui.ini
+    nano ~/.config/spicetify/config-xpui.ini
     ```
 
-    > Then add:
+    Add this line to the config: `prefs_path = /home/algernon/.var/app/com.spotify.Client/config/spotify/prefs`
 
-    ```nano
-    prefs_path             = /home/algernon/.var/app/com.spotify.Client/config/spotify/prefs
-    ```
-
-    > Then make:
+    Apply permissions and inject Spicetify:
 
     ```shell
     sudo chmod a+wr /var/lib/flatpak/app/com.spotify.Client/x86_64/stable/active/files/extra/share/spotify
     sudo chmod a+wr -R /var/lib/flatpak/app/com.spotify.Client/x86_64/stable/active/files/extra/share/spotify/Apps
     spicetify backup apply
-    spicetify apply
     ```
 
-    > To install the GruvBox extension, do as below:
+    Install the GruvBox extension:
 
     ```shell
-    cd
-    cd .config/spicetify/Themes
-    git clone https://github.com/Skaytacium/Gruvify
-    cd Gruvify
+    git clone [https://github.com/Skaytacium/Gruvify](https://github.com/Skaytacium/Gruvify) ~/.config/spicetify/Themes/Gruvify
+    cd ~/.config/spicetify/Themes/Gruvify
     sudo npm i -g sass
     sass user.sass user.css
     spicetify config current_theme Gruvify
     spicetify apply
     ```
 
-15. Install Zoxide
-
-    ```shell
-    curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
-    ```
-
-16. Install Atuin
-
-    ```shell
-    curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
-    atuin login -u andrerc-outlook
-    ```
-
-17. Configure Eza
-
-    ```shell
-    mkdir -p ~/.config/eza
-    cd ~/.config/eza
-    git clone https://github.com/eza-community/eza-themes.git
-    ln -sf "$(pwd)/eza-themes/themes/gruvbox-dark.yml" ~/.config/eza/theme.yml
-    ```
-
-18. Setting up `pueue` daemon
-
-    - Download pueued.service from the GitHub Releases page.  
-    - Place systemd.pueued.service in /usr/lib/systemd/user  
-    - Make sure the pueued binary is placed at /usr/bin/, which is where pueued.service expects it to be.  
-    - Then, run:  
+2. **Set up Pueue Daemon:**
+    - Download `pueued.service` from the GitHub Releases page.  
+    - Place `systemd.pueued.service` in `/usr/lib/systemd/user`.
+    - Make sure the `pueued` binary (installed via Cargo) is symlinked or copied to `/usr/bin/`.  
+    - Enable the service:
 
     ```shell
     systemctl --user enable --now systemd.pueued
@@ -181,56 +125,23 @@
     systemctl --user status systemd.pueued
     ```
 
-19. Change DNS addresses
+3. **Install Nvidia Drivers (If Needed):**
 
-    > Go to Wifi settings and change DNS from automatic to manual and add.  
+    ```shell
+    sudo dnf install -y akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs nvidia-settings nvidia-persistenced nvidia-modprobe
+    ```
 
-    `IPV4`:  
-    8.8.8.8,8.8.4.4
-
-    `IPV6`:  
-    2001:4860:4860::8888,2001:4860:4860::8844  
-
-20. Tune VsCode settings
+4. **Tune VS Code Settings (Inotify limits):**
 
     ```shell
     sudo nano /etc/sysctl.conf
     ```
 
-    Add `fs.inotify.max_user_watches=524288` at the end of the file and save it.  
-    Run the code below to reload the settings.
+    Add `fs.inotify.max_user_watches=524288` at the end of the file and save it. Run the code below to reload the settings:
 
     ```shell
     sudo sysctl -p
     ```
 
-21. Gruvbox Plus icon pack  
-
-    ```shell
-    cd
-    mkdir .icons
-    cd Documents
-    git clone https://github.com/SylEleuth/gruvbox-plus-icon-pack.git
-    ln -s /home/algernon/Documents/gruvbox-plus-icon-pack/Gruvbox-Plus-Dark ~/.icons/Gruvbox-Plus-Dark
-    ```  
-
-    Now, if you open preferences in Gnome Tweaks, you should be able to select the icon pack you just installed.  
-
-    > Appearance (Icons): `Gruvbox-Plus-Dark`  
-
-22. Install Nvidia drivers if needed
-
-    Go to [**Nvidia CUDA drivers**](https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=Fedora&target_version=42) and install the Fedora drivers.
-
-    or  
-
-    ```shell
-    sudo dnf install akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs nvidia-settings nvidia-persistenced nvidia-modprobe
-    ```
-
-23. Install Repo tool
-
-    ```shell
-    curl http://commondatastorage.googleapis.com/git-repo-downloads/repo  > ~/.local/bin/repo
-    chmod a+x ~/.local/bin/repo
-    ```
+5. Install your preferred **PWA applications**.
+6. Install your preferred **Gnome Extensions**.
