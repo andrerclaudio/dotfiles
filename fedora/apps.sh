@@ -147,6 +147,8 @@ install_dnf_packages() {
         "zlib-devel"
         "zstd"
         "zsh"
+        "dust"
+        "ncdu"
     )
     sudo dnf install -y --skip-unavailable "${packages[@]}"
 }
