@@ -149,6 +149,7 @@ install_dnf_packages() {
         "zsh"
         "dust"
         "ncdu"
+        "xxd"
     )
     sudo dnf install -y --skip-unavailable "${packages[@]}"
 }

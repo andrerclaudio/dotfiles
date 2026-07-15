@@ -7,7 +7,7 @@ Generates solid-color PNG images for every unique color in the Gruvbox DARK and 
 For each hex color defined in the palettes, the script:
 - Normalizes and deduplicates all hex codes across both palettes.
 - Converts each hex code into its RGB equivalent.
-- Creates a solid-color image of size SIZE_W × SIZE_H (default: 1440×3120).
+- Creates a solid-color image of size SIZE_W x SIZE_H (default: 1440 x 3120).
 - Saves each image as "<hex>_<width>-<height>.png" (e.g., "d65d0e_1440-3120.png").
 
 Useful for quickly generating wallpaper backgrounds, color swatches, or visual references
@@ -94,8 +94,8 @@ LIGHT: Dict[str, str] = {
 }
 
 # ------------------------------ Image Size ---------------------------------- #
-SIZE_W: int = 1440
-SIZE_H: int = 3120
+SIZE_W: int = 1920
+SIZE_H: int = 1080
 
 
 # ------------------------------ Helpers ------------------------------------- #
