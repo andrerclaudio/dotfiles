@@ -1,5 +1,13 @@
 # Fedora Initial Configuration Guide
 
+> **Run order matters.** `core.sh` → `apps.sh` → **Oh My Zsh** → `extra.sh`.
+> `apps.sh` installs the `-devel` packages that the Rust crates in `extra.sh`
+> compile against, and `extra.sh` writes into `~/.oh-my-zsh/custom`. Running
+> `extra.sh` early fails on both counts.
+>
+> Each script writes a log to `~/fedora-setup-<stage>.log` — check it for
+> packages DNF could not find.
+
 ## Phase 1: Automated Scripts & Shell Setup
 
 1. Make all installation files executable:
@@ -11,9 +19,12 @@
 2. Run the Core script and restart:
 
     ```shell
-    ./core.sh    
+    ./core.sh
     sudo reboot
     ```
+
+    *The reboot is required: the `tty` and `dialout` group memberships added by
+    the script only take effect after a full logout.*
 
 3. Run the Apps script and restart:
 
@@ -22,13 +33,13 @@
     sudo reboot
     ```
 
-    *Note: From now on, use the Alacritty terminal.*
+    *Note: From now on, use the Alacritty or Ghostty terminal.*
 
 4. Install Oh My ZSH:
     Open your terminal and run:
 
     ```shell
-    sh -c "$(curl -fsSL [https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh](https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh))"
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
     ```
 
     *Note: When the installation finishes, it may drop you into a new ZSH prompt. Type `exit` to return to your normal prompt if needed, and then restart:*
@@ -40,13 +51,16 @@
 5. Fetch Dotfiles:
 
     ```shell
-    git clone [https://github.com/andrerclaudio/dotfiles.git](https://github.com/andrerclaudio/dotfiles.git) ~/Downloads
+    git clone https://github.com/andrerclaudio/dotfiles.git ~/Downloads/dotfiles
     ```
+
+    *The clone target must be an empty or non-existent directory — cloning
+    straight into `~/Downloads` fails once anything else is in there.*
 
 6. Install TPM (Tmux Plugin Manager):
 
     ```shell
-    git clone [https://github.com/tmux-plugins/tpm](https://github.com/tmux-plugins/tpm) ~/.tmux/plugins/tpm
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
     ```
 
 7. **Initialize Tmux Plugins:**
@@ -73,8 +87,10 @@
 
 2. **Apply Gnome Tweaks:**
     Open the Gnome Tweaks application and apply the following settings downloaded by the scripts:
-    - **Fonts:** `JetBrainsMonoNL Nerd Font Mono`  
+    - **Fonts:** `JetBrainsMonoNL Nerd Font Mono`
     - **Appearance (Icons):** `Gruvbox-Plus-Dark`
+
+    *If the font doesn't appear in the list, run `fc-cache -f` and reopen Tweaks.*
 
 3. **Change DNS addresses:**
     Go to Wi-Fi settings, change DNS from automatic to manual, and add:
@@ -84,28 +100,33 @@
 ## Phase 3: Specialized Software Setup & Tuning
 
 1. **Install Spicetify:**
-    *Note: Ensure you have opened the Spotify Flatpak at least once before running this to generate the required folders.*
+    *Note: Spotify is installed as a Flatpak by `apps.sh`. Open it at least once before running this, so the required folders exist.*
 
     ```shell
-    curl -fsSL [https://raw.githubusercontent.com/spicetify/cli/main/install.sh](https://raw.githubusercontent.com/spicetify/cli/main/install.sh) | sh
+    curl -fsSL https://raw.githubusercontent.com/spicetify/cli/main/install.sh | sh
     spicetify
     nano ~/.config/spicetify/config-xpui.ini
     ```
 
-    Add this line to the config: `prefs_path = /home/algernon/.var/app/com.spotify.Client/config/spotify/prefs`
+    Add this line to the config (`$HOME` written out, since the file is not shell-expanded):
+
+    ```ini
+    prefs_path = /home/algernon/.var/app/com.spotify.Client/config/spotify/prefs
+    ```
 
     Apply permissions and inject Spicetify:
 
     ```shell
-    sudo chmod a+wr /var/lib/flatpak/app/com.spotify.Client/x86_64/stable/active/files/extra/share/spotify
-    sudo chmod a+wr -R /var/lib/flatpak/app/com.spotify.Client/x86_64/stable/active/files/extra/share/spotify/Apps
+    SPOTIFY_DIR=/var/lib/flatpak/app/com.spotify.Client/x86_64/stable/active/files/extra/share/spotify
+    sudo chmod a+wr "$SPOTIFY_DIR"
+    sudo chmod a+wr -R "$SPOTIFY_DIR/Apps"
     spicetify backup apply
     ```
 
-    Install the GruvBox extension:
+    Install the GruvBox extension (`npm` comes from `apps.sh`):
 
     ```shell
-    git clone [https://github.com/Skaytacium/Gruvify](https://github.com/Skaytacium/Gruvify) ~/.config/spicetify/Themes/Gruvify
+    git clone https://github.com/Skaytacium/Gruvify ~/.config/spicetify/Themes/Gruvify
     cd ~/.config/spicetify/Themes/Gruvify
     sudo npm i -g sass
     sass user.sass user.css
@@ -114,16 +135,23 @@
     ```
 
 2. **Set up Pueue Daemon:**
-    - Download `pueued.service` from the GitHub Releases page.  
-    - Place `systemd.pueued.service` in `/usr/lib/systemd/user`.
-    - Make sure the `pueued` binary (installed via Cargo) is symlinked or copied to `/usr/bin/`.  
-    - Enable the service:
+    - Download `pueued.service` from the Pueue GitHub Releases page.
+    - Place it in `~/.config/systemd/user/` (user units belong under `$HOME`;
+      `/usr/lib/systemd/user` is package-owned and gets overwritten on updates).
+    - The unit's `ExecStart` must point at the Cargo-installed binary, so either
+      edit it to `%h/.cargo/bin/pueued` or symlink it:
 
-    ```shell
-    systemctl --user enable --now systemd.pueued
-    sudo systemctl daemon-reload
-    systemctl --user status systemd.pueued
-    ```
+      ```shell
+      sudo ln -sf "$HOME/.cargo/bin/pueued" /usr/local/bin/pueued
+      ```
+
+    - Reload first, then enable (`daemon-reload` before `enable`, not after):
+
+      ```shell
+      systemctl --user daemon-reload
+      systemctl --user enable --now pueued
+      systemctl --user status pueued
+      ```
 
 3. **Install Nvidia Drivers (If Needed):**
 
@@ -131,16 +159,29 @@
     sudo dnf install -y akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs nvidia-settings nvidia-persistenced nvidia-modprobe
     ```
 
-4. **Tune VS Code Settings (Inotify limits):**
+    *Wait for the kernel module to finish building before rebooting — otherwise
+    you boot to a black screen. Check with:*
 
     ```shell
-    sudo nano /etc/sysctl.conf
+    modinfo -F version nvidia
     ```
 
-    Add `fs.inotify.max_user_watches=524288` at the end of the file and save it. Run the code below to reload the settings:
+    *If Secure Boot is enabled, the module must be signed or Secure Boot
+    disabled, or it will refuse to load.*
+
+4. **Tune VS Code Settings (Inotify limits):**
+    Use a drop-in file rather than editing `/etc/sysctl.conf` (deprecated, and
+    replaced on some upgrades):
 
     ```shell
-    sudo sysctl -p
+    echo "fs.inotify.max_user_watches=524288" | sudo tee /etc/sysctl.d/99-inotify.conf
+    sudo sysctl --system
+    ```
+
+    Verify:
+
+    ```shell
+    sysctl fs.inotify.max_user_watches
     ```
 
 5. Install your preferred **PWA applications**.
