@@ -150,6 +150,7 @@ install_dnf_packages() {
         "dust"
         "ncdu"
         "xxd"
+        "alsa-lib-devel"
     )
     sudo dnf install -y --skip-unavailable "${packages[@]}"
 }

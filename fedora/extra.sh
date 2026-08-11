@@ -27,7 +27,7 @@ rm JetBrainsMono.tar.xz
 echo "---> Installing Rust and Cargo utilities..."
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 source "$HOME/.cargo/env"
-cargo install tock eza pueue dysk ripgrep cargo-update
+cargo install --locked tock eza pueue dysk ripgrep spotatui cargo-update
 
 # 4. Install Zoxide & Atuin
 echo "---> Installing Zoxide and Atuin..."
