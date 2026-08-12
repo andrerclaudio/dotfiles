@@ -40,7 +40,7 @@ export HISTCONTROL=ignoredups
 # ——————————————————————————————————————————————————————————————————————
 alias fastfetch="fastfetch --logo-padding-top 3 --logo-padding-left 4"
 alias my-ip="ip -c -h -s addr"
-alias e="eza -lbhHigaUm --git --group --group-directories-first --icons=auto --color-scale=all --colour=auto"
+alias e="eza -lbhHigaUm --git --group --group-directories-first --icons=auto --color-scale=all --colour=auto --loc --header"
 alias cd="z"
 alias cat="bat"
 alias zoom="tree -shaCL 2 --du"
