@@ -80,6 +80,7 @@ install_dnf_packages() {
         "doxygen"
         "dust"
         "eza"
+        "expect"
         "fastfetch"
         "fd-find"
         "fedora-packager"
@@ -202,7 +203,7 @@ install_flatpak_apps() {
 
     # Batch install strictly for the current user
     echo "---> Installing Flathub applications..."
-    flatpak install --user flathub "${apps[@]}" -y
+    unbuffer flatpak install --user flathub "${apps[@]}" -y
 }
 
 # Main script execution
