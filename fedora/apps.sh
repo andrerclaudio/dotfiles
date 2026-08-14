@@ -189,6 +189,10 @@ install_flatpak_apps() {
         "org.octave.Octave"
         "org.remmina.Remmina"
         "org.videolan.VLC"
+        "md.obsidian.Obsidian"
+        "com.obsproject.Studio"
+        "org.blender.Blender"
+        "com.heroicgameslauncher.hgl"
     )
 
     # The flathub remote must exist in the --user installation (core.sh adds it
