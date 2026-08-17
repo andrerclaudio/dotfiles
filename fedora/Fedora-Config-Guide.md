@@ -135,14 +135,23 @@
     ```
 
 2. **Set up Pueue Daemon:**
-    - Download `pueued.service` from the Pueue GitHub Releases page.
-    - Place it in `~/.config/systemd/user/` (user units belong under `$HOME`;
-      `/usr/lib/systemd/user` is package-owned and gets overwritten on updates).
-    - The unit's `ExecStart` must point at the Cargo-installed binary, so either
-      edit it to `%h/.cargo/bin/pueued` or symlink it:
+    - The unit file ships in the dotfiles repo as `systemd.pueued.service`.
+      Copy it into `~/.config/systemd/user/` **and rename it:
 
       ```shell
-      sudo ln -sf "$HOME/.cargo/bin/pueued" /usr/local/bin/pueued
+      mkdir -p ~/.config/systemd/user
+      cp ~/Downloads/dotfiles/systemd.pueued.service ~/.config/systemd/user/pueued.service
+      ```
+
+      *User units belong under `$HOME`; `/usr/lib/systemd/user` is
+      package-owned and gets overwritten on updates.*
+
+    - Point `ExecStart` at the Cargo-installed binary. The shipped unit calls
+      `/usr/bin/pueued`, which does not exist on this system:
+
+      ```shell
+      sed -i 's|^ExecStart=.*|ExecStart=%h/.cargo/bin/pueued -vv|' ~/.config/systemd/user/pueued.service
+      grep ExecStart ~/.config/systemd/user/pueued.service
       ```
 
     - Reload first, then enable (`daemon-reload` before `enable`, not after):

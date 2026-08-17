@@ -81,7 +81,7 @@ if [[ -f "$HOME/.cargo/env" ]]; then
     # instead of re-resolving to the newest semver-compatible versions.
     # eza / ripgrep / zoxide were dropped: apps.sh installs them as RPMs, which
     # saves several minutes of compiling for an identical result.
-    cargo install --locked tock pueue dysk spotatui cargo-update
+    cargo install --locked tock pueue dysk cargo-update
 else
     echo "!!! rustup failed, skipping cargo installs."
 fi
@@ -117,6 +117,19 @@ if curl -fsSL -o ~/.local/bin/repo \
 else
     echo "!!! Repo tool download failed, skipping."
     rm -f ~/.local/bin/repo
+fi
+
+# 8. Install Zed Editor
+echo "---> Installing Zed..."
+# Official installer from https://zed.dev/download. It drops a prebuilt binary
+# in ~/.local/bin/zed plus the app itself in ~/.local/share/zed.app, so no root
+# is needed. -f matters here: without it an HTTP error page gets piped into sh.
+if [[ -x "$HOME/.local/bin/zed" ]]; then
+    echo "     already present, skipping (update from inside Zed)"
+elif curl -fsSL https://zed.dev/install.sh | sh; then
+    echo "     installed to ~/.local/bin/zed"
+else
+    echo "!!! Zed installation failed, skipping."
 fi
 
 echo "# -----------------------------------------------------------------------#"

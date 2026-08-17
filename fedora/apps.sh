@@ -79,12 +79,13 @@ install_dnf_packages() {
         "distrobox"
         "doxygen"
         "dust"
-        "eza"
         "expect"
+        "eza"
         "fastfetch"
         "fd-find"
         "fedora-packager"
         "ffmpeg-free"
+        "flac-devel"
         "fontawesome-fonts"
         "fzf"
         "gcc-c++"
@@ -106,6 +107,7 @@ install_dnf_packages() {
         "libadwaita-devel"
         "libavcodec-freeworld"
         "libusb1-devel"
+        "libvorbis-devel"
         "libzstd-devel"
         "luarocks"
         "mpv"
@@ -161,11 +163,16 @@ install_flatpak_apps() {
 
     # Alphabetized list for easier maintenance
     local apps=(
+        "app.zen_browser.zen"
+        "com.heroicgameslauncher.hgl"
         "com.mattjakeman.ExtensionManager"
+        "com.obsproject.Studio"
         "com.ranfdev.DistroShelf"
         "com.spotify.Client"
         "de.haeckerfelix.Fragments"
         "io.github.flattool.Warehouse"
+        "md.obsidian.Obsidian"
+        "org.blender.Blender"
         "org.fedoraproject.MediaWriter"
         "org.filezillaproject.Filezilla"
         "org.gimp.GIMP"
@@ -190,10 +197,6 @@ install_flatpak_apps() {
         "org.octave.Octave"
         "org.remmina.Remmina"
         "org.videolan.VLC"
-        "md.obsidian.Obsidian"
-        "com.obsproject.Studio"
-        "org.blender.Blender"
-        "com.heroicgameslauncher.hgl"
     )
 
     # The flathub remote must exist in the --user installation (core.sh adds it
