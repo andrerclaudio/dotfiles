@@ -1,9 +1,8 @@
 # Fedora Initial Configuration Guide
 
+> **Target: Fedora 44 and later** (dnf5, GNOME 50+, Wayland-only session).
+>
 > **Run order matters.** `core.sh` → `apps.sh` → **Oh My Zsh** → `extra.sh`.
-> `apps.sh` installs the `-devel` packages that the Rust crates in `extra.sh`
-> compile against, and `extra.sh` writes into `~/.oh-my-zsh/custom`. Running
-> `extra.sh` early fails on both counts.
 >
 > Each script writes a log to `~/fedora-setup-<stage>.log` — check it for
 > packages DNF could not find.
@@ -23,8 +22,14 @@
     sudo reboot
     ```
 
-    *The reboot is required: the `tty` and `dialout` group memberships added by
-    the script only take effect after a full logout.*
+    *The reboot is required twice over: the `tty` and `dialout` group
+    memberships only take effect after a full logout, and `snapd`'s paths
+    (`/snap/bin` on `PATH`) do too — which is why the snap apps are installed by
+    `apps.sh` rather than here.*
+
+    *If the script stops with `DO NOT REBOOT` and a list of missing desktop
+    packages, reinstall them first — rebooting without `gdm` or `gnome-shell`
+    leaves you with no graphical session.*
 
 3. Run the Apps script and restart:
 
@@ -32,6 +37,10 @@
     ./apps.sh
     sudo reboot
     ```
+
+    *This installs from three sources: DNF (including the COPRs and Chrome),
+    Flathub (`--user`), and Snap — VS Code as a classic snap, Spotify as a strict
+    one.*
 
     *Note: From now on, use the Alacritty or Ghostty terminal.*
 
@@ -64,9 +73,10 @@
     ```
 
 7. **Initialize Tmux Plugins:**
-    After moving your Tmux dotfile from your cloned repository to its place inside the `~/.config` folder, enter a Tmux environment and press `prefix + I` to install the plugins.
+    With `tmux.conf` in place (step 6), enter a Tmux session and press
+    `prefix + I` to install the plugins.
 
-8. Run the Extra script (Plugins, Fonts, Cargo, etc.) and restart:
+8. Run the Extra script (Plugins, Fonts, Cargo, Zed) and restart:
 
     ```shell
     ./extra.sh
@@ -92,51 +102,22 @@
 
     *If the font doesn't appear in the list, run `fc-cache -f` and reopen Tweaks.*
 
-3. **Change DNS addresses:**
+3. **Enable Pop Shell tiling:**
+    `apps.sh` installs `gnome-shell-extension-pop-shell`. Turn it on in the
+    Extension Manager.
+
+4. **Change DNS addresses:**
     Go to Wi-Fi settings, change DNS from automatic to manual, and add:
     - **IPV4:** `8.8.8.8, 8.8.4.4`
     - **IPV6:** `2001:4860:4860::8888, 2001:4860:4860::8844`
 
 ## Phase 3: Specialized Software Setup & Tuning
 
-1. **Install Spicetify:**
-    *Note: Spotify is installed as a Flatpak by `apps.sh`. Open it at least once before running this, so the required folders exist.*
-
-    ```shell
-    curl -fsSL https://raw.githubusercontent.com/spicetify/cli/main/install.sh | sh
-    spicetify
-    nano ~/.config/spicetify/config-xpui.ini
-    ```
-
-    Add this line to the config (`$HOME` written out, since the file is not shell-expanded):
-
-    ```ini
-    prefs_path = /home/algernon/.var/app/com.spotify.Client/config/spotify/prefs
-    ```
-
-    Apply permissions and inject Spicetify:
-
-    ```shell
-    SPOTIFY_DIR=/var/lib/flatpak/app/com.spotify.Client/x86_64/stable/active/files/extra/share/spotify
-    sudo chmod a+wr "$SPOTIFY_DIR"
-    sudo chmod a+wr -R "$SPOTIFY_DIR/Apps"
-    spicetify backup apply
-    ```
-
-    Install the GruvBox extension (`npm` comes from `apps.sh`):
-
-    ```shell
-    git clone https://github.com/Skaytacium/Gruvify ~/.config/spicetify/Themes/Gruvify
-    cd ~/.config/spicetify/Themes/Gruvify
-    sudo npm i -g sass
-    sass user.sass user.css
-    spicetify config current_theme Gruvify
-    spicetify apply
-    ```
-
-2. **Set up Pueue Daemon:**
-    - The unit file ships in the dotfiles repo as `systemd.pueued.service`.
-      Copy it into `~/.config/systemd/user/` **and rename it:
+1. **Set up Pueue Daemon:**
+    - The unit file ships in the dotfiles repo as `systemd.pueued.service`,
+      already pointing at `%h/.cargo/bin/pueued` (the Cargo-installed binary —
+      there is no `/usr/bin/pueued` on this system). Copy it into
+      `~/.config/systemd/user/` **and rename it**:
 
       ```shell
       mkdir -p ~/.config/systemd/user
@@ -146,14 +127,6 @@
       *User units belong under `$HOME`; `/usr/lib/systemd/user` is
       package-owned and gets overwritten on updates.*
 
-    - Point `ExecStart` at the Cargo-installed binary. The shipped unit calls
-      `/usr/bin/pueued`, which does not exist on this system:
-
-      ```shell
-      sed -i 's|^ExecStart=.*|ExecStart=%h/.cargo/bin/pueued -vv|' ~/.config/systemd/user/pueued.service
-      grep ExecStart ~/.config/systemd/user/pueued.service
-      ```
-
     - Reload first, then enable (`daemon-reload` before `enable`, not after):
 
       ```shell
@@ -162,7 +135,16 @@
       systemctl --user status pueued
       ```
 
-3. **Install Nvidia Drivers (If Needed):**
+      *A `status=203/EXEC` failure means `cargo install pueue` did not finish —
+      check `~/fedora-setup-extra.log`.*
+
+    - Optional: keep the daemon running when you are not logged in:
+
+      ```shell
+      loginctl enable-linger "$USER"
+      ```
+
+2. **Install Nvidia Drivers (If Needed):**
 
     ```shell
     sudo dnf install -y akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs nvidia-settings nvidia-persistenced nvidia-modprobe
@@ -178,7 +160,7 @@
     *If Secure Boot is enabled, the module must be signed or Secure Boot
     disabled, or it will refuse to load.*
 
-4. **Tune VS Code Settings (Inotify limits):**
+3. **Tune VS Code Settings (Inotify limits):**
     Use a drop-in file rather than editing `/etc/sysctl.conf` (deprecated, and
     replaced on some upgrades):
 
@@ -193,5 +175,5 @@
     sysctl fs.inotify.max_user_watches
     ```
 
-5. Install your preferred **PWA applications**.
-6. Install your preferred **Gnome Extensions**.
+4. Install your preferred **PWA applications**.
+5. Install your preferred **Gnome Extensions**.

@@ -3,45 +3,52 @@
 # Fedora post-install, stage 1 of 3: core system configuration.
 #
 # RUN ORDER:  core.sh  ->  apps.sh  ->  extra.sh
-# extra.sh compiles Rust crates against system libraries that apps.sh installs,
-# so running it early will fail. See Fedora-Config-Guide.md.
+# extra.sh compiles Rust crates against a toolchain and libraries that apps.sh
+# installs, so running it early will fail.
+#
+#
 
 # -u catches unset variables (typos, empty paths). No -e on purpose: a single
 # failed package should not abort the whole run.
 set -uo pipefail
 
+GIT_USER_NAME="Andre Ribeiro"
+GIT_USER_EMAIL="andre.ribeiro.srs@gmail.com"
+
 LOG_FILE="$HOME/fedora-setup-core.log"
+
+((EUID)) || { echo "Run this as your normal user, not with sudo."; exit 1; }
+
 exec > >(tee -a "$LOG_FILE") 2>&1
 echo "Logging this run to $LOG_FILE"
 
-# Pre-authenticate sudo, then refresh the timestamp every 50s so long dnf
-# transactions don't stall on a password prompt halfway through.
-sudo -v
-while true; do sudo -n true; sleep 50; kill -0 "$$" 2>/dev/null || exit; done &
+# Pre-authenticate sudo and keep the timestamp alive for the whole run. Output to
+# /dev/null so the job cannot hold the log pipe open after the script exits.
+sudo -v || exit 1
+{ while true; do sudo -n true; sleep 50; kill -0 "$$" 2>/dev/null || exit; done; } >/dev/null 2>&1 &
 SUDO_KEEPALIVE_PID=$!
 trap 'kill "$SUDO_KEEPALIVE_PID" 2>/dev/null' EXIT
 
-# Print a section header (same output as before, just less repetition)
+# Print a section header
 banner() {
     echo "# -----------------------------------------------------------------------#"
     printf '# %-71s#\n' "$1"
     echo "# -----------------------------------------------------------------------#"
 }
 
-# Function to pause the script for a given number of seconds
-pause_script() {
-    echo "Pausing for $1 seconds..."
-    sleep "$1"
+# config-manager and copr are not built into dnf5; they come from dnf5-plugins.
+# Without it every setopt and copr call below is a silent no-op.
+ensure_dnf_plugins() {
+    banner "Ensuring dnf5-plugins (provides config-manager, copr)"
+    sudo dnf install -y dnf5-plugins
 }
 
 # Function to add new settings to improve package management efficiency
 configure_package_management() {
     banner "Add new settings to improve package management efficiency"
 
-    # 'config-manager setopt' instead of appending with sed: it is idempotent,
-    # so re-running the script won't stack duplicate blocks in dnf.conf.
-    # NOTE: defaultyes=True makes a bare Enter mean "yes" on every dnf prompt.
-    #       Convenient, but it removes the safety net on 'dnf remove'.
+    # 'setopt' is idempotent, so re-running this script leaves dnf.conf with one
+    # copy of each setting.
     sudo dnf config-manager setopt \
         fastestmirror=True \
         max_parallel_downloads=19 \
@@ -59,7 +66,7 @@ update_and_upgrade() {
 remove_unwanted_defaults() {
     banner "Removing Unwanted Defaults (GNOME Apps & LibreOffice)"
 
-    # Combined and alphabetized list, including libreoffice*
+    # Alphabetized; libreoffice* matches the whole suite
     local apps=(
         "baobab"
         "decibels"
@@ -85,23 +92,34 @@ remove_unwanted_defaults() {
         "snapshot"
     )
 
-    echo "---> Removing selected packages and unused dependencies..."
-    sudo dnf remove -y "${apps[@]}"
-    sudo dnf autoremove -y
+    # dnf5 aborts the whole transaction when any argument matches nothing
+    # installed, so only pass it what is actually here - not every name above
+    # ships on every spin (mediawriter is not a Workstation default). 'rpm -qa'
+    # rather than 'rpm -q' because it expands globs such as libreoffice*.
+    local pkg installed=()
+    for pkg in "${apps[@]}"; do
+        [[ -n "$(rpm -qa "$pkg" 2>/dev/null)" ]] && installed+=("$pkg")
+    done
 
-    # Bulk removal + autoremove can drag out more than intended. Cheap sanity
-    # check so a broken desktop is caught here rather than after the reboot.
-    local critical=("gnome-shell" "gdm" "gnome-session" "nautilus")
-    local pkg missing=()
+    echo "---> Removing selected packages and unused dependencies..."
+    if ((${#installed[@]})); then
+        sudo dnf remove -y "${installed[@]}"
+        sudo dnf autoremove -y
+    fi
+
+    # Bulk removal plus autoremove can drag out more than intended, and the last
+    # line of this script tells you to reboot. Rebooting without gdm or
+    # gnome-shell means no graphical session at all, so this one is a hard stop.
+    local critical=("gnome-shell" "gdm" "gnome-session" "nautilus") missing=()
     for pkg in "${critical[@]}"; do
         rpm -q "$pkg" >/dev/null 2>&1 || missing+=("$pkg")
     done
     if ((${#missing[@]})); then
-        echo "!!! WARNING: these desktop packages are gone: ${missing[*]}"
-        echo "!!! Reinstall before rebooting:  sudo dnf install ${missing[*]}"
-    else
-        echo "---> Desktop packages intact."
+        echo "!!! DO NOT REBOOT. These desktop packages are gone: ${missing[*]}"
+        echo "!!! Reinstall them first:  sudo dnf install ${missing[*]}"
+        exit 1
     fi
+
     echo "---> Cleanup complete."
 }
 
@@ -116,19 +134,22 @@ install_flatpak_and_add_flathub() {
         https://dl.flathub.org/repo/flathub.flatpakrepo
 }
 
-# Function to install Visual Studio Code
-install_visual_studio_code() {
-    banner "Install Visual Studio Code"
-    sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-    sudo tee /etc/yum.repos.d/vscode.repo >/dev/null <<'EOF'
-[code]
-name=Visual Studio Code
-baseurl=https://packages.microsoft.com/yumrepos/vscode
-enabled=1
-gpgcheck=1
-gpgkey=https://packages.microsoft.com/keys/microsoft.asc
-EOF
-    sudo dnf install -y code
+# Function to install snapd with classic snap support
+install_snapd() {
+    banner "Install snapd (with classic snap support)"
+    sudo dnf install -y snapd
+
+    # snapd.socket is what actually answers 'snap' commands.
+    sudo systemctl enable --now snapd.socket
+
+    # Classic snaps (VS Code among them) expect the store at /snap, while Fedora
+    # keeps it under /var/lib/snapd/snap. Without this symlink
+    # 'snap install --classic' refuses to run. -f/-n keeps a re-run a no-op.
+    sudo ln -sfn /var/lib/snapd/snap /snap
+
+    # /snap/bin only joins PATH after a full logout, so the snaps themselves are
+    # installed by apps.sh, on the other side of the reboot below.
+    echo "---> snapd installed. Snap apps are installed by apps.sh after the reboot."
 }
 
 # Function to add RPM Fusion repository
@@ -142,7 +163,6 @@ add_rpm_fusion_repository() {
     sudo dnf install -y \
         "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${fedora_ver}.noarch.rpm"
 
-    # DNF5 dropped '--set-enabled'; config-manager now uses subcommands.
     sudo dnf config-manager setopt fedora-cisco-openh264.enabled=1
     sudo dnf group install -y core
 }
@@ -150,8 +170,8 @@ add_rpm_fusion_repository() {
 # Function to configure GIT credentials
 configure_git_credentials() {
     banner "GIT Credentials"
-    git config --global user.name "Andre Ribeiro"
-    git config --global user.email "andre.ribeiro.srs@gmail.com"
+    git config --global user.name "$GIT_USER_NAME"
+    git config --global user.email "$GIT_USER_EMAIL"
     git config --global init.defaultBranch main
     echo "Git global variables configured successfully."
 }
@@ -159,45 +179,30 @@ configure_git_credentials() {
 # Function to add serial permissions
 add_serial_permissions() {
     banner "Adding serial permissions (tty, dialout)"
-    local USER_NAME
-    USER_NAME=$(id -u -n)
+    local user_name group
+    user_name=$(id -u -n)
 
-    if ! id -nG "$USER_NAME" | grep -qw "tty"; then
-        sudo usermod -a -G tty "$USER_NAME"
-        echo "TTY group permission granted!"
-    else
-        echo "User already has 'tty' group permission."
-    fi
-
-    if ! id -nG "$USER_NAME" | grep -qw "dialout"; then
-        sudo usermod -a -G dialout "$USER_NAME"
-        echo "Dialout group permission granted!"
-    else
-        echo "User already has 'dialout' group permission."
-    fi
+    for group in tty dialout; do
+        if id -nG "$user_name" | grep -qw "$group"; then
+            echo "User already has '$group' group permission."
+        else
+            sudo usermod -a -G "$group" "$user_name"
+            echo "${group^} group permission granted!"
+        fi
+    done
 
     echo "NOTE: group changes only apply after a full logout or reboot."
 }
 
 # Main script execution
+ensure_dnf_plugins
 configure_package_management
 add_rpm_fusion_repository
 update_and_upgrade
-pause_script 2
-
 remove_unwanted_defaults
-pause_script 2
-
 install_flatpak_and_add_flathub
-pause_script 2
-
-install_visual_studio_code
-pause_script 2
-
+install_snapd
 configure_git_credentials
-pause_script 2
-
 add_serial_permissions
-pause_script 2
 
 banner "Core installs done. Reboot, then run ./apps.sh"

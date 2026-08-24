@@ -1,0 +1,20 @@
+# Keep LF endings in the working tree on every platform.
+#
+# These files are executed by Fedora. A CRLF "#!/bin/bash" line makes the
+# kernel look for an interpreter literally named "/bin/bash\r", which fails
+# with "bad interpreter: No such file or directory" - which is exactly what a
+# Windows checkout under core.autocrlf=true produces without these rules.
+
+* text=auto eol=lf
+
+*.sh        text eol=lf
+*.conf      text eol=lf
+*.toml      text eol=lf
+*.jsonc     text eol=lf
+*.service   text eol=lf
+*.md        text eol=lf
+.zshrc      text eol=lf
+.zshrc_*    text eol=lf
+config      text eol=lf
+
+*.tmTheme   text eol=lf
