@@ -10,13 +10,8 @@ export BAT_THEME="gruvbox-dark"
 # 'typeset -U path' keeps $PATH duplicate-free, so re-sourcing this file (or
 # nesting shells) does not grow it. $HOME goes first, so a tool installed there
 # wins over an older copy in /usr/bin.
-#
-# /snap/bin has to be listed explicitly: zsh does not read /etc/profile.d, which
-# is the only place snapd adds it. Without it, snap apps (code, spotify) are not
-# runnable from the shell even though their desktop launchers work. Last in the
-# list, matching what snapd's own profile script does.
 typeset -U path
-path=("$HOME/.local/bin" $path /snap/bin)
+path=("$HOME/.local/bin" $path)
 
 # zsh-autocomplete turns on zsh's recent-directories list, which writes to
 # $XDG_DATA_HOME/zsh. Without the directory, every 'cd' prints
@@ -75,9 +70,7 @@ setopt HIST_VERIFY              # expand !! onto the line instead of running it
 # ——————————————————————————————————————————————————————————————————————
 alias fastfetch="fastfetch --logo-padding-top 3 --logo-padding-left 4"
 alias my-ip="ip -c -h -s addr"
-# Every flag here is a real eza option - it exits with "Unknown argument" and
-# prints nothing at all if one is not.
-alias e="eza -lbhHigaUm --git --group-directories-first --icons=auto --color-scale=all --colour=auto"
+alias e="eza -lbhHigaUm --git --group-directories-first --icons=auto --color-scale=all --colour=auto --loc"
 alias zoom="tree -shaCL 2 --du"
 
 # Guarded, so a missing bat does not leave you without a working cat.
@@ -119,11 +112,7 @@ function update() {
     fi
 
     print -P "\n%F{green}%B==> Updating Atuin...%b%f"
-    if [[ -x "$HOME/.atuin/bin/atuin-update" ]]; then
-        "$HOME/.atuin/bin/atuin-update"
-    else
-        print -P "%F{yellow}   skipped: re-run https://setup.atuin.sh to update%f"
-    fi
+    atuin update
 
     print -P "\n%F{green}%B==> Updating Cargo Binaries...%b%f"
     if (( $+commands[cargo-install-update] )); then

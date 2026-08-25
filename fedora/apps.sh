@@ -34,7 +34,7 @@ banner() {
 
 # Function to add 3rd-party repositories
 add_apps_repo() {
-    banner "Add 3rd-Party Repositories (LazyGit, Ghostty, Yazi, Chrome)"
+    banner "Add 3rd-Party Repositories (LazyGit, Ghostty, Yazi, Chrome, VS Code)"
 
     # None of lazygit, ghostty or yazi is in the official Fedora repos, so these
     # three COPRs are what provides them.
@@ -44,6 +44,34 @@ add_apps_repo() {
 
     sudo dnf install -y fedora-workstation-repositories
     sudo dnf config-manager setopt google-chrome.enabled=1
+
+    # VS Code lives in Microsoft's own RPM repo, set up as their docs prescribe:
+    # https://code.visualstudio.com/docs/setup/linux
+    #
+    # The key is imported up front and the repo file is only written if that
+    # worked. dnf would otherwise pull the key itself from the gpgkey= line on
+    # first use and auto-accept it under -y; importing it here means the key is
+    # already trusted in the RPM keyring before any package is fetched.
+    echo "---> Adding the Microsoft VS Code repository..."
+    if sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc; then
+        sudo tee /etc/yum.repos.d/vscode.repo >/dev/null <<'EOF'
+[code]
+name=Visual Studio Code
+baseurl=https://packages.microsoft.com/yumrepos/vscode
+enabled=1
+autorefresh=1
+type=rpm-md
+gpgcheck=1
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+EOF
+    else
+        # Only a failed key *fetch* reaches this branch - importing a key that is
+        # already trusted exits 0 - so any vscode.repo on disk was written by a
+        # run that did have the key, and is still valid. Leave it alone: deleting
+        # it would drop VS Code out of 'dnf upgrade' over a network blip.
+        echo "!!! Could not fetch the Microsoft signing key; leaving the VS Code repo as-is."
+        echo "    'code' will be reported as unavailable below if this is a first run."
+    fi
 
     # Refresh cache to ensure new repos are immediately available
     sudo dnf makecache
@@ -75,6 +103,7 @@ install_dnf_packages() {
         "chafa"
         "cmake"
         "cmatrix"
+        "code"                     # VS Code, from the Microsoft repo added above
         "codespell"
         "dbus-devel"
         "distrobox"
@@ -207,7 +236,7 @@ install_flatpak_apps() {
 
     # One batch first because it is much faster. flatpak refuses the entire batch
     # if a single ID is wrong or renamed, so fall back to one at a time rather
-    # than losing all 34 apps to one bad entry.
+    # than losing every app to one bad entry.
     echo "---> Installing Flathub applications..."
     flatpak install -y --noninteractive --user flathub "${apps[@]}" || {
         echo "!!! Batch install failed; retrying one at a time."
@@ -218,28 +247,9 @@ install_flatpak_apps() {
     }
 }
 
-# Function to install apps via Snap
-install_snap_apps() {
-    banner "Install packages via Snap"
-
-    # 'classic' snaps get unconfined filesystem access, which VS Code needs for
-    # extensions and toolchains outside its sandbox. Spotify is a strict snap.
-    local classic_snaps=("code")
-    local strict_snaps=("spotify")
-
-    local snap_name
-    for snap_name in "${classic_snaps[@]}"; do
-        sudo snap install "$snap_name" --classic || echo "!!! failed: $snap_name (classic)"
-    done
-    for snap_name in "${strict_snaps[@]}"; do
-        sudo snap install "$snap_name" || echo "!!! failed: $snap_name"
-    done
-}
-
 # Main script execution
 add_apps_repo
 install_dnf_packages
 install_flatpak_apps
-install_snap_apps
 
 banner "Application installation complete. Reboot, then continue the guide."

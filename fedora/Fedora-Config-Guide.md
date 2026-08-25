@@ -22,10 +22,8 @@
     sudo reboot
     ```
 
-    *The reboot is required twice over: the `tty` and `dialout` group
-    memberships only take effect after a full logout, and `snapd`'s paths
-    (`/snap/bin` on `PATH`) do too — which is why the snap apps are installed by
-    `apps.sh` rather than here.*
+    *The reboot is not optional: the `tty` and `dialout` group memberships this
+    script grants only take effect after a full logout.*
 
     *If the script stops with `DO NOT REBOOT` and a list of missing desktop
     packages, reinstall them first — rebooting without `gdm` or `gnome-shell`
@@ -38,9 +36,8 @@
     sudo reboot
     ```
 
-    *This installs from three sources: DNF (including the COPRs and Chrome),
-    Flathub (`--user`), and Snap — VS Code as a classic snap, Spotify as a strict
-    one.*
+    *This installs from two sources: DNF (including the COPRs, Chrome, and
+    VS Code from Microsoft's own RPM repo) and Flathub (`--user`).*
 
     *Note: From now on, use the Alacritty or Ghostty terminal.*
 
@@ -57,7 +54,14 @@
     sudo reboot
     ```
 
-5. Fetch Dotfiles:
+5. **Start your personal accounts:**
+    - Open **Google Chrome** and log in.
+    - Go to **GitHub** and log in.
+    - Open **VS Code** and start Sync.
+
+    *`extra.sh` (step 9) is what installs Atuin, so its login is in Phase 2.*
+
+6. Fetch Dotfiles:
 
     ```shell
     git clone https://github.com/andrerclaudio/dotfiles.git ~/Downloads/dotfiles
@@ -66,17 +70,30 @@
     *The clone target must be an empty or non-existent directory — cloning
     straight into `~/Downloads` fails once anything else is in there.*
 
-6. Install TPM (Tmux Plugin Manager):
+7. Install TPM (Tmux Plugin Manager):
 
     ```shell
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
     ```
 
-7. **Initialize Tmux Plugins:**
-    With `tmux.conf` in place (step 6), enter a Tmux session and press
-    `prefix + I` to install the plugins.
+8. **Initialize Tmux Plugins:**
+    `tmux.conf` ships in the dotfiles repo (step 6); nothing copies it into
+    place, so do that first — tmux reads `~/.config/tmux/tmux.conf`, not the
+    clone:
 
-8. Run the Extra script (Plugins, Fonts, Cargo, Zed) and restart:
+    ```shell
+    mkdir -p ~/.config/tmux
+    cp ~/Downloads/dotfiles/tmux/tmux.conf ~/.config/tmux/tmux.conf
+    ```
+
+    Then enter a Tmux session and press `prefix + I` (default prefix: `Ctrl+b`)
+    to install the plugins.
+
+    *The last line of `tmux.conf` runs TPM from `~/.tmux/plugins/tpm`, which is
+    exactly where step 7 clones it — if that clone was skipped, `prefix + I`
+    does nothing at all.*
+
+9. Run the Extra script (Plugins, Fonts, Cargo, Zed) and restart:
 
     ```shell
     ./extra.sh
@@ -85,15 +102,15 @@
 
 ## Phase 2: Manual Authentications & GUI Tweaks
 
-1. **Start your personal accounts:**
-    - Open **Google Chrome** and log in.
-    - Go to **GitHub** and log in.
-    - Open **VS Code** and start Sync.
-    - Run the following command to log into Atuin:
+1. **Log into Atuin:**
 
-      ```shell
-      atuin login -u andrerc-outlook
-      ```
+    ```shell
+    atuin login -u andrerc-outlook
+    ```
+
+    *`extra.sh` installs Atuin, so this only works once Phase 1 step 9 has run.
+    If the command is not found, open a new shell first — the installer adds
+    `~/.atuin/bin` to `PATH` via `.zshrc`.*
 
 2. **Apply Gnome Tweaks:**
     Open the Gnome Tweaks application and apply the following settings downloaded by the scripts:
@@ -102,11 +119,7 @@
 
     *If the font doesn't appear in the list, run `fc-cache -f` and reopen Tweaks.*
 
-3. **Enable Pop Shell tiling:**
-    `apps.sh` installs `gnome-shell-extension-pop-shell`. Turn it on in the
-    Extension Manager.
-
-4. **Change DNS addresses:**
+3. **Change DNS addresses:**
     Go to Wi-Fi settings, change DNS from automatic to manual, and add:
     - **IPV4:** `8.8.8.8, 8.8.4.4`
     - **IPV6:** `2001:4860:4860::8888, 2001:4860:4860::8844`

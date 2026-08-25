@@ -161,4 +161,4 @@ fi
 echo "# -----------------------------------------------------------------------#"
 echo "# Extra scripts installed successfully!                                  #"
 echo "# -----------------------------------------------------------------------#"
-echo "Next: reboot, then continue with Phase 2 of Fedora-Config-Guide.md"
+echo "Reboot it now."

@@ -134,24 +134,6 @@ install_flatpak_and_add_flathub() {
         https://dl.flathub.org/repo/flathub.flatpakrepo
 }
 
-# Function to install snapd with classic snap support
-install_snapd() {
-    banner "Install snapd (with classic snap support)"
-    sudo dnf install -y snapd
-
-    # snapd.socket is what actually answers 'snap' commands.
-    sudo systemctl enable --now snapd.socket
-
-    # Classic snaps (VS Code among them) expect the store at /snap, while Fedora
-    # keeps it under /var/lib/snapd/snap. Without this symlink
-    # 'snap install --classic' refuses to run. -f/-n keeps a re-run a no-op.
-    sudo ln -sfn /var/lib/snapd/snap /snap
-
-    # /snap/bin only joins PATH after a full logout, so the snaps themselves are
-    # installed by apps.sh, on the other side of the reboot below.
-    echo "---> snapd installed. Snap apps are installed by apps.sh after the reboot."
-}
-
 # Function to add RPM Fusion repository
 add_rpm_fusion_repository() {
     banner "Adding RPM Fusion repository"
@@ -201,7 +183,6 @@ add_rpm_fusion_repository
 update_and_upgrade
 remove_unwanted_defaults
 install_flatpak_and_add_flathub
-install_snapd
 configure_git_credentials
 add_serial_permissions
 
