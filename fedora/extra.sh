@@ -3,7 +3,7 @@
 # RUN ORDER:  core.sh  ->  apps.sh  ->  extra.sh
 # Requires apps.sh to have run first (the cargo builds need a C compiler from
 # development-tools plus openssl-devel and pkgconf-pkg-config) and Oh My Zsh to
-# be installed already. Nothing here needs root.
+# be installed already.
 #
 #
 
@@ -156,6 +156,17 @@ if [[ -x "$HOME/.local/bin/zed" ]]; then
     echo "     already present, skipping (update from inside Zed)"
 else
     curl -fsSL https://zed.dev/install.sh | sh
+fi
+
+# 9. Install Ollama
+echo "---> Installing Ollama..."
+# Official installer from https://github.com/ollama/ollama (https://ollama.com/install.sh).
+# Installs the ollama binary and configures the systemd service (may prompt for sudo).
+# -f matters here: without it an HTTP error page gets piped into sh.
+if command -v ollama >/dev/null 2>&1; then
+    echo "     already present, skipping (run 'curl -fsSL https://ollama.com/install.sh | sh' to update)"
+else
+    curl -fsSL https://ollama.com/install.sh | sh
 fi
 
 echo "# -----------------------------------------------------------------------#"
