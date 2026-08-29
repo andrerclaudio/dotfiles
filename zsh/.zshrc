@@ -112,13 +112,31 @@ function update() {
     fi
 
     print -P "\n%F{green}%B==> Updating Atuin...%b%f"
-    atuin update
+    if (( $+commands[atuin] )); then
+        atuin update
+    else
+        print -P "%F{yellow}   skipped: atuin not installed%f"
+    fi
 
     print -P "\n%F{green}%B==> Updating Cargo Binaries...%b%f"
     if (( $+commands[cargo-install-update] )); then
         cargo install-update -a
     else
         print -P "%F{yellow}   skipped: cargo install cargo-update%f"
+    fi
+
+    print -P "\n%F{green}%B==> Updating Herdr...%b%f"
+    if (( $+commands[herdr] )); then
+        herdr update
+    else
+        print -P "%F{yellow}   skipped: herdr not installed%f"
+    fi
+
+    print -P "\n%F{green}%B==> Updating Antigravity CLI...%b%f"
+    if (( $+commands[agy] )); then
+        agy update
+    else
+        print -P "%F{yellow}   skipped: agy not installed%f"
     fi
 
     print -P "\n%F{green}%B==> All updates complete!%b%f"

@@ -93,7 +93,7 @@
     exactly where step 7 clones it — if that clone was skipped, `prefix + I`
     does nothing at all.*
 
-9. Run the Extra script (Plugins, Fonts, Cargo, Zed, Ollama) and restart:
+9. Run the Extra script (Plugins, Fonts, Cargo, Zed, Ollama, Herdr, Antigravity CLI) and restart:
 
     ```shell
     ./extra.sh

@@ -169,6 +169,22 @@ else
     curl -fsSL https://ollama.com/install.sh | sh
 fi
 
+# 10. Install Herdr
+echo "---> Installing Herdr..."
+if command -v herdr >/dev/null 2>&1; then
+    echo "     already present, skipping (run 'curl -fsSL https://herdr.dev/install.sh | sh' to update)"
+else
+    curl -fsSL https://herdr.dev/install.sh | sh
+fi
+
+# 11. Install Antigravity CLI
+echo "---> Installing Antigravity CLI..."
+if command -v agy >/dev/null 2>&1; then
+    echo "     already present, skipping (run 'curl -fsSL https://antigravity.google/cli/install.sh | bash' to update)"
+else
+    curl -fsSL https://antigravity.google/cli/install.sh | bash
+fi
+
 echo "# -----------------------------------------------------------------------#"
 echo "# Extra scripts installed successfully!                                  #"
 echo "# -----------------------------------------------------------------------#"
