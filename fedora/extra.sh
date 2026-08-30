@@ -185,6 +185,43 @@ else
     curl -fsSL https://antigravity.google/cli/install.sh | bash
 fi
 
+# 12. Deploy dotfiles (lnko)
+echo "---> Deploying dotfiles..."
+# This script lives at <clone>/fedora/extra.sh, so its own path finds the
+# clone regardless of where it was checked out (e.g. ~/Downloads/dotfiles).
+# Copying packages/ into ~/.dotfiles - rather than linking straight from the
+# clone - means the clone can be deleted afterwards without breaking anything.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(dirname "$SCRIPT_DIR")"
+DOTFILES_DIR="$HOME/.dotfiles"
+
+if [[ -d "$REPO_ROOT/packages" ]]; then
+    mkdir -p "$DOTFILES_DIR"
+    cp -r "$REPO_ROOT/packages/." "$DOTFILES_DIR/"
+
+    # Package list comes from the directory itself, so dropping a new package
+    # folder into packages/ is enough - no need to touch this script.
+    PACKAGES=()
+    for pkg_dir in "$DOTFILES_DIR"/*/; do
+        PACKAGES+=("$(basename "$pkg_dir")")
+    done
+
+    if ! command -v lnko >/dev/null 2>&1; then
+        curl -fsSL https://raw.githubusercontent.com/Owloops/lnko/main/install.sh | bash
+    fi
+
+    if command -v lnko >/dev/null 2>&1; then
+        # -b backs conflicting files up to ~/.dotfiles/.lnko-backup/ instead of
+        # overwriting them, so a re-run can't silently eat local edits.
+        lnko link -d "$DOTFILES_DIR" -t "$HOME" -b "${PACKAGES[@]}"
+    else
+        echo "!!! lnko install failed, skipping dotfiles link."
+        echo "    Run by hand once lnko is installed: lnko link -d $DOTFILES_DIR -t \$HOME ${PACKAGES[*]}"
+    fi
+else
+    echo "!!! SKIPPED: no packages/ directory found next to this script."
+fi
+
 echo "# -----------------------------------------------------------------------#"
 echo "# Extra scripts installed successfully!                                  #"
 echo "# -----------------------------------------------------------------------#"

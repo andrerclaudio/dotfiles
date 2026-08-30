@@ -59,41 +59,7 @@
     - Go to **GitHub** and log in.
     - Open **VS Code** and start Sync.
 
-    *`extra.sh` (step 9) is what installs Atuin, so its login is in Phase 2.*
-
-6. Fetch Dotfiles:
-
-    ```shell
-    git clone https://github.com/andrerclaudio/dotfiles.git ~/Downloads/dotfiles
-    ```
-
-    *The clone target must be an empty or non-existent directory — cloning
-    straight into `~/Downloads` fails once anything else is in there.*
-
-7. Install TPM (Tmux Plugin Manager):
-
-    ```shell
-    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-    ```
-
-8. **Initialize Tmux Plugins:**
-    `tmux.conf` ships in the dotfiles repo (step 6); nothing copies it into
-    place, so do that first — tmux reads `~/.config/tmux/tmux.conf`, not the
-    clone:
-
-    ```shell
-    mkdir -p ~/.config/tmux
-    cp ~/Downloads/dotfiles/tmux/tmux.conf ~/.config/tmux/tmux.conf
-    ```
-
-    Then enter a Tmux session and press `prefix + I` (default prefix: `Ctrl+b`)
-    to install the plugins.
-
-    *The last line of `tmux.conf` runs TPM from `~/.tmux/plugins/tpm`, which is
-    exactly where step 7 clones it — if that clone was skipped, `prefix + I`
-    does nothing at all.*
-
-9. Run the Extra script (Plugins, Fonts, Cargo, Zed, Ollama, Herdr, Antigravity CLI) and restart:
+6. Run the Extra script (Plugins, Fonts, Cargo, Zed, Ollama, Herdr, Antigravity CLI) and restart:
 
     ```shell
     ./extra.sh
@@ -107,10 +73,6 @@
     ```shell
     atuin login -u andrerc-outlook
     ```
-
-    *`extra.sh` installs Atuin, so this only works once Phase 1 step 9 has run.
-    If the command is not found, open a new shell first — the installer adds
-    `~/.atuin/bin` to `PATH` via `.zshrc`.*
 
 2. **Apply Gnome Tweaks:**
     Open the Gnome Tweaks application and apply the following settings downloaded by the scripts:
@@ -190,3 +152,26 @@
 
 4. Install your preferred **PWA applications**.
 5. Install your preferred **Gnome Extensions**.
+
+6. Install TPM (Tmux Plugin Manager):
+
+    ```shell
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+    ```
+
+7. **Initialize Tmux Plugins:**
+    `tmux.conf` ships in the dotfiles repo (step 6); nothing copies it into
+    place, so do that first — tmux reads `~/.config/tmux/tmux.conf`, not the
+    clone:
+
+    ```shell
+    mkdir -p ~/.config/tmux
+    cp ~/Downloads/dotfiles/tmux/tmux.conf ~/.config/tmux/tmux.conf
+    ```
+
+    Then enter a Tmux session and press `prefix + I` (default prefix: `Ctrl+b`)
+    to install the plugins.
+
+    *The last line of `tmux.conf` runs TPM from `~/.tmux/plugins/tpm`, which is
+    exactly where step 7 clones it — if that clone was skipped, `prefix + I`
+    does nothing at all.*
