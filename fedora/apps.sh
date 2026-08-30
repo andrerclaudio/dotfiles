@@ -1,43 +1,37 @@
 #!/bin/bash
 #
+# Fedora post-install, stage 2 of 3: applications.
+#
 # RUN ORDER:  core.sh  ->  apps.sh  ->  extra.sh
-# Must run before extra.sh: the C toolchain (development-tools) and the -devel
-# packages here are what the Rust crates in extra.sh compile against.
-#
-#
 
-# -u catches unset variables (typos, empty paths). No -e on purpose: a single
-# failed package should not abort the whole run.
+# -u catches unset variables. No -e: one failed package should not abort the run.
 set -uo pipefail
 
 LOG_FILE="$HOME/fedora-setup-apps.log"
 
-# Under sudo, every --user flatpak below would go into root's installation.
+# Under sudo, every --user flatpak below would land in root's installation.
 ((EUID)) || { echo "Run this as your normal user, not with sudo."; exit 1; }
 
 exec > >(tee -a "$LOG_FILE") 2>&1
 echo "Logging this run to $LOG_FILE"
 
-# Pre-authenticate sudo and keep the timestamp alive for the whole run. Output to
-# /dev/null so the job cannot hold the log pipe open after the script exits.
+# Keep the sudo timestamp alive for the whole run. Output to /dev/null so the
+# job cannot hold the log pipe open after the script exits.
 sudo -v || exit 1
 { while true; do sudo -n true; sleep 50; kill -0 "$$" 2>/dev/null || exit; done; } >/dev/null 2>&1 &
 SUDO_KEEPALIVE_PID=$!
 trap 'kill "$SUDO_KEEPALIVE_PID" 2>/dev/null' EXIT
 
-# Print a section header
 banner() {
     echo "# -----------------------------------------------------------------------#"
     printf '# %-71s#\n' "$1"
     echo "# -----------------------------------------------------------------------#"
 }
 
-# Function to add 3rd-party repositories
 add_apps_repo() {
     banner "Add 3rd-Party Repositories (LazyGit, Ghostty, Yazi, Chrome, VS Code)"
 
-    # None of lazygit, ghostty or yazi is in the official Fedora repos, so these
-    # three COPRs are what provides them.
+    # lazygit, ghostty and yazi are not in the official Fedora repos.
     sudo dnf copr enable -y dejan/lazygit
     sudo dnf copr enable -y scottames/ghostty
     sudo dnf copr enable -y lihaohong/yazi
@@ -45,13 +39,10 @@ add_apps_repo() {
     sudo dnf install -y fedora-workstation-repositories
     sudo dnf config-manager setopt google-chrome.enabled=1
 
-    # VS Code lives in Microsoft's own RPM repo, set up as their docs prescribe:
     # https://code.visualstudio.com/docs/setup/linux
     #
-    # The key is imported up front and the repo file is only written if that
-    # worked. dnf would otherwise pull the key itself from the gpgkey= line on
-    # first use and auto-accept it under -y; importing it here means the key is
-    # already trusted in the RPM keyring before any package is fetched.
+    # Import the key first, write the repo only if that worked: under -y dnf
+    # would otherwise fetch the key from gpgkey= and auto-accept it.
     echo "---> Adding the Microsoft VS Code repository..."
     if sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc; then
         sudo tee /etc/yum.repos.d/vscode.repo >/dev/null <<'EOF'
@@ -65,28 +56,22 @@ gpgcheck=1
 gpgkey=https://packages.microsoft.com/keys/microsoft.asc
 EOF
     else
-        # Only a failed key *fetch* reaches this branch - importing a key that is
-        # already trusted exits 0 - so any vscode.repo on disk was written by a
-        # run that did have the key, and is still valid. Leave it alone: deleting
-        # it would drop VS Code out of 'dnf upgrade' over a network blip.
+        # Any vscode.repo on disk was written by a run that had the key, so it
+        # is still valid. Deleting it would drop VS Code out of 'dnf upgrade'.
         echo "!!! Could not fetch the Microsoft signing key; leaving the VS Code repo as-is."
         echo "    'code' will be reported as unavailable below if this is a first run."
     fi
 
-    # Refresh cache to ensure new repos are immediately available
     sudo dnf makecache
 }
 
-# Function to install apps via DNF package manager
 install_dnf_packages() {
     banner "Install packages via DNF package manager"
 
-    # Groups are installed separately so a bad group name is reported clearly
+    # Separate call so a bad group name is reported clearly.
     sudo dnf group install -y development-tools
 
-    # Alphabetized list for easier maintenance.
-    # Plain names, no .x86_64 suffixes: they add noise and pin the list to one
-    # architecture for no benefit.
+    # Alphabetized. Plain names, no .x86_64 suffixes.
     local packages=(
         "0ad"
         "alacritty"
@@ -179,13 +164,12 @@ install_dnf_packages() {
     dnf_log=$(mktemp -t dnf-install.XXXXXX)
 
     # --skip-unavailable tolerates names no repo carries; --skip-broken tolerates
-    # a package that exists but cannot be solved. Without the second one, a
-    # single unsatisfiable dependency aborts the whole transaction.
+    # a package that cannot be solved. Either one alone still aborts on the other.
     sudo dnf install -y --skip-unavailable --skip-broken "${packages[@]}" 2>&1 | tee "$dnf_log" \
         || echo "!!! dnf install failed - NOTHING may have been installed. See $LOG_FILE."
 
-    # Both skip flags are silent about what they drop. Print it, so a package
-    # that gets renamed or retired upstream does not go unnoticed for months.
+    # Both skip flags are silent about what they drop, so print it - a renamed
+    # or retired package would otherwise go unnoticed for months.
     echo
     echo "---> Packages DNF could not find or resolve (check these by hand):"
     grep -iE "no match for argument|skipping unavailable|not available|broken dependencies" "$dnf_log" \
@@ -193,11 +177,10 @@ install_dnf_packages() {
     rm -f "$dnf_log"
 }
 
-# Function to install a list of Flatpak apps
 install_flatpak_apps() {
     banner "Install packages via Flatpak"
 
-    # Alphabetized list for easier maintenance
+    # Alphabetized.
     local apps=(
         "app.zen_browser.zen"
         "com.heroicgameslauncher.hgl"
@@ -234,9 +217,8 @@ install_flatpak_apps() {
         "org.videolan.VLC"
     )
 
-    # One batch first because it is much faster. flatpak refuses the entire batch
-    # if a single ID is wrong or renamed, so fall back to one at a time rather
-    # than losing every app to one bad entry.
+    # A batch is much faster, but flatpak refuses all of it over one bad ID -
+    # hence the one-at-a-time fallback.
     echo "---> Installing Flathub applications..."
     flatpak install -y --noninteractive --user flathub "${apps[@]}" || {
         echo "!!! Batch install failed; retrying one at a time."
@@ -247,7 +229,6 @@ install_flatpak_apps() {
     }
 }
 
-# Main script execution
 add_apps_repo
 install_dnf_packages
 install_flatpak_apps

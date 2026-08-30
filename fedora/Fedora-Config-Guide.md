@@ -25,10 +25,6 @@
     *The reboot is not optional: the `tty` and `dialout` group memberships this
     script grants only take effect after a full logout.*
 
-    *If the script stops with `DO NOT REBOOT` and a list of missing desktop
-    packages, reinstall them first — rebooting without `gdm` or `gnome-shell`
-    leaves you with no graphical session.*
-
 3. Run the Apps script and restart:
 
     ```shell
@@ -59,12 +55,38 @@
     - Go to **GitHub** and log in.
     - Open **VS Code** and start Sync.
 
-6. Run the Extra script (Plugins, Fonts, Cargo, Zed, Ollama, Herdr, Antigravity CLI) and restart:
+6. Run the Extra script (Plugins, Fonts, Cargo, Zed, Ollama, Herdr, Antigravity
+   CLI, configs, TPM) and restart:
 
     ```shell
     ./extra.sh
     sudo reboot
     ```
+
+    *Run it from inside the clone. `config/` mirrors `~/.config`, so the whole
+    tree — tmux and the `pueued` unit included — is copied there in one go. The
+    files are plain copies, not symlinks: edit one in `~/.config` and the change
+    stays out of the repository.*
+
+    *This also clones TPM into `~/.tmux/plugins/tpm`, the path the last line of
+    `tmux.conf` runs. Phase 3 turns that into working plugins.*
+
+7. **Install the ZSH config:**
+    Overwrite the `~/.zshrc` the Oh My Zsh installer wrote:
+
+    ```shell
+    cp config/zsh/.zshrc ~/.zshrc
+    exec zsh
+    ```
+
+    *Zsh reads `~/.zshrc`, not `~/.config/zsh/.zshrc` — so this copy is what puts
+    it where the shell will find it.*
+
+    *This one step is deliberately by hand, and deliberately last. No script
+    writes to `~/.zshrc`, so nothing can quietly overwrite a shell config you
+    have already customised — and the installers in `extra.sh` that append to
+    `~/.zshrc` (Atuin among them) have all had their turn on the Oh My Zsh copy
+    by the time you replace it.*
 
 ## Phase 2: Manual Authentications & GUI Tweaks
 
@@ -88,36 +110,26 @@
 
 ## Phase 3: Specialized Software Setup & Tuning
 
-1. **Set up Pueue Daemon:**
-    - The unit file ships in the dotfiles repo as `systemd.pueued.service`,
-      already pointing at `%h/.cargo/bin/pueued` (the Cargo-installed binary —
-      there is no `/usr/bin/pueued` on this system). Copy it into
-      `~/.config/systemd/user/` **and rename it**:
+1. **Start the Pueue Daemon:**
+    The unit is already at `~/.config/systemd/user/pueued.service`, pointing at
+    `%h/.cargo/bin/pueued` (the Cargo-installed binary — there is no
+    `/usr/bin/pueued` on this system). Reload first, then enable
+    (`daemon-reload` before `enable`, not after):
 
-      ```shell
-      mkdir -p ~/.config/systemd/user
-      cp ~/Downloads/dotfiles/systemd.pueued.service ~/.config/systemd/user/pueued.service
-      ```
+    ```shell
+    systemctl --user daemon-reload
+    systemctl --user enable --now pueued
+    systemctl --user status pueued
+    ```
 
-      *User units belong under `$HOME`; `/usr/lib/systemd/user` is
-      package-owned and gets overwritten on updates.*
+    *A `status=203/EXEC` failure means `cargo install pueue` did not finish —
+    check `~/fedora-setup-extra.log`.*
 
-    - Reload first, then enable (`daemon-reload` before `enable`, not after):
+    Optional — keep the daemon running when you are not logged in:
 
-      ```shell
-      systemctl --user daemon-reload
-      systemctl --user enable --now pueued
-      systemctl --user status pueued
-      ```
-
-      *A `status=203/EXEC` failure means `cargo install pueue` did not finish —
-      check `~/fedora-setup-extra.log`.*
-
-    - Optional: keep the daemon running when you are not logged in:
-
-      ```shell
-      loginctl enable-linger "$USER"
-      ```
+    ```shell
+    loginctl enable-linger "$USER"
+    ```
 
 2. **Install Nvidia Drivers (If Needed):**
 
@@ -153,25 +165,14 @@
 4. Install your preferred **PWA applications**.
 5. Install your preferred **Gnome Extensions**.
 
-6. Install TPM (Tmux Plugin Manager):
+6. **Initialize Tmux Plugins:**
+    Open a Tmux session and press `prefix + I` (default prefix: `Ctrl+b`) to
+    install the plugins listed in `tmux.conf`.
+
+    *`prefix + I` does nothing at all unless both halves are in place:
+    `~/.config/tmux/tmux.conf`, and the TPM clone at `~/.tmux/plugins/tpm` that
+    the last line of that file runs. Check both with:*
 
     ```shell
-    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+    ls -l ~/.config/tmux/tmux.conf ~/.tmux/plugins/tpm/tpm
     ```
-
-7. **Initialize Tmux Plugins:**
-    `tmux.conf` ships in the dotfiles repo (step 6); nothing copies it into
-    place, so do that first — tmux reads `~/.config/tmux/tmux.conf`, not the
-    clone:
-
-    ```shell
-    mkdir -p ~/.config/tmux
-    cp ~/Downloads/dotfiles/tmux/tmux.conf ~/.config/tmux/tmux.conf
-    ```
-
-    Then enter a Tmux session and press `prefix + I` (default prefix: `Ctrl+b`)
-    to install the plugins.
-
-    *The last line of `tmux.conf` runs TPM from `~/.tmux/plugins/tpm`, which is
-    exactly where step 7 clones it — if that clone was skipped, `prefix + I`
-    does nothing at all.*
