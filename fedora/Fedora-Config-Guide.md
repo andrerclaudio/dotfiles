@@ -63,30 +63,12 @@
     sudo reboot
     ```
 
-    *Run it from inside the clone. `config/` mirrors `~/.config`, so the whole
-    tree — tmux and the `pueued` unit included — is copied there in one go. The
-    files are plain copies, not symlinks: edit one in `~/.config` and the change
-    stays out of the repository.*
-
-    *This also clones TPM into `~/.tmux/plugins/tpm`, the path the last line of
-    `tmux.conf` runs. Phase 3 turns that into working plugins.*
-
 7. **Install the ZSH config:**
     Overwrite the `~/.zshrc` the Oh My Zsh installer wrote:
 
     ```shell
     cp config/zsh/.zshrc ~/.zshrc
-    exec zsh
     ```
-
-    *Zsh reads `~/.zshrc`, not `~/.config/zsh/.zshrc` — so this copy is what puts
-    it where the shell will find it.*
-
-    *This one step is deliberately by hand, and deliberately last. No script
-    writes to `~/.zshrc`, so nothing can quietly overwrite a shell config you
-    have already customised — and the installers in `extra.sh` that append to
-    `~/.zshrc` (Atuin among them) have all had their turn on the Oh My Zsh copy
-    by the time you replace it.*
 
 ## Phase 2: Manual Authentications & GUI Tweaks
 
@@ -120,15 +102,6 @@
     systemctl --user daemon-reload
     systemctl --user enable --now pueued
     systemctl --user status pueued
-    ```
-
-    *A `status=203/EXEC` failure means `cargo install pueue` did not finish —
-    check `~/fedora-setup-extra.log`.*
-
-    Optional — keep the daemon running when you are not logged in:
-
-    ```shell
-    loginctl enable-linger "$USER"
     ```
 
 2. **Install Nvidia Drivers (If Needed):**
@@ -171,8 +144,4 @@
 
     *`prefix + I` does nothing at all unless both halves are in place:
     `~/.config/tmux/tmux.conf`, and the TPM clone at `~/.tmux/plugins/tpm` that
-    the last line of that file runs. Check both with:*
-
-    ```shell
-    ls -l ~/.config/tmux/tmux.conf ~/.tmux/plugins/tpm/tpm
-    ```
+    the last line of that file runs.

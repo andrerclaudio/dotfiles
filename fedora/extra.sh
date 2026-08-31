@@ -30,14 +30,10 @@ ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 
 if [[ -d "$HOME/.oh-my-zsh" ]]; then
     mkdir -p "${ZSH_CUSTOM}/plugins"
-    clone https://github.com/zsh-users/zsh-autosuggestions.git \
-        "${ZSH_CUSTOM}/plugins/zsh-autosuggestions"
-    clone https://github.com/zsh-users/zsh-syntax-highlighting.git \
-        "${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting"
-    clone https://github.com/marlonrichert/zsh-autocomplete.git \
-        "${ZSH_CUSTOM}/plugins/zsh-autocomplete"
-    clone https://github.com/TamCore/autoupdate-oh-my-zsh-plugins.git \
-        "${ZSH_CUSTOM}/plugins/autoupdate"
+    clone https://github.com/zsh-users/zsh-autosuggestions.git "${ZSH_CUSTOM}/plugins/zsh-autosuggestions"
+    clone https://github.com/zsh-users/zsh-syntax-highlighting.git "${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting"
+    clone https://github.com/marlonrichert/zsh-autocomplete.git "${ZSH_CUSTOM}/plugins/zsh-autocomplete"
+    clone https://github.com/TamCore/autoupdate-oh-my-zsh-plugins.git "${ZSH_CUSTOM}/plugins/autoupdate"
 else
     echo "!!! SKIPPED: Oh My Zsh is not installed at ~/.oh-my-zsh."
 fi
@@ -128,9 +124,7 @@ curl -fsSL https://antigravity.google/cli/install.sh | bash
 
 # 12. Configs
 echo "---> Copying configs into ~/.config..."
-# config/ mirrors ~/.config, so the whole tree lands in one copy - tmux and the
-# pueued unit included. This script sits at <clone>/fedora/, so its own path
-# locates the clone. ~/.zshrc is not touched here; the guide copies it by hand.
+# ~/.zshrc is not touched here; the guide copies it by hand.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 
@@ -144,7 +138,7 @@ fi
 # 13. TPM (Tmux Plugin Manager)
 echo "---> Installing the Tmux Plugin Manager..."
 # ~/.tmux/plugins/tpm is the path the last line of tmux.conf runs. The plugins
-# go in with 'prefix + I' - Phase 3 of the guide.
+# go in with 'prefix + I'.
 clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
 
 echo "# -----------------------------------------------------------------------#"
