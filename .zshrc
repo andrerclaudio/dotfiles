@@ -148,6 +148,13 @@ function update() {
         print -P "${skip} claude not installed"
     fi
 
+    print -P "${hdr}🎵 cliamp${end}"
+    if (( $+commands[cliamp] )); then
+        cliamp upgrade
+    else
+        print -P "${skip} cliamp not installed"
+    fi
+
     print -P "\n%F{green}%B✨ All updates complete!%b%f\n"
 }
 

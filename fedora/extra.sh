@@ -162,7 +162,17 @@ else
     curl -fsSL https://claude.ai/install.sh | bash
 fi
 
-# 13. Configs
+# 13. cliamp
+echo "---> Installing cliamp..."
+# Lands in ~/.local/bin/cliamp (the PATH set above is what makes the installer
+# pick it over /usr/local/bin), so no root is needed.
+if have cliamp; then
+    echo "     cliamp already installed, skipping."
+else
+    curl -fsSL https://cliamp.stream/install.sh | sh
+fi
+
+# 14. Configs
 echo "---> Copying configs into ~/.config..."
 # config/ mirrors ~/.config exactly, so this copy needs no exceptions: the one
 # file that belongs in $HOME (.zshrc) lives at the repo root, not here.
@@ -173,7 +183,7 @@ else
     echo "!!! SKIPPED: no config/ directory found next to this script."
 fi
 
-# 14. Home dotfiles
+# 15. Home dotfiles
 echo "---> Installing ~/.zshrc..."
 # Replaces the .zshrc the Oh My Zsh installer wrote, keeping the old one as
 # ~/.zshrc.bak when it differed. Done here rather than as a manual step in the
@@ -189,7 +199,7 @@ else
     echo "!!! SKIPPED: no .zshrc found at the repo root."
 fi
 
-# 15. TPM (Tmux Plugin Manager)
+# 16. TPM (Tmux Plugin Manager)
 echo "---> Installing the Tmux Plugin Manager..."
 # ~/.tmux/plugins/tpm is the path the last line of tmux.conf runs. The plugins
 # go in with 'prefix + I'.

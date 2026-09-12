@@ -54,7 +54,7 @@
     - Open **VS Code** and start Sync.
 
 5. Run the Extra script (Plugins, Fonts, Cargo, Zed, Ollama, Herdr, Antigravity
-   CLI, configs, `~/.zshrc`, TPM) and restart:
+   CLI, Claude Code CLI, cliamp, configs, `~/.zshrc`, TPM) and restart:
 
     ```shell
     ./extra.sh
