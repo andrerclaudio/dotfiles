@@ -7,8 +7,10 @@
 # -u catches unset variables. No -e: one failed package should not abort the run.
 set -uo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # shellcheck source=lib.sh
-source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
+source "$SCRIPT_DIR/lib.sh"
 
 init_stage "$HOME/fedora-setup-apps.log"
 
@@ -130,6 +132,7 @@ install_dnf_packages() {
         "qemu"
         "ripgrep"
         "rpi-imager"
+        "ShellCheck"               # this repo is mostly shell; lint before committing
         "tinyxml2-devel"
         "tio"
         "tldr"

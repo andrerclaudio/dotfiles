@@ -9,15 +9,11 @@
 
 ## Phase 1: Automated Scripts & Shell Setup
 
-1. Make all installation files executable:
+> The three stage scripts are committed executable, so a fresh clone runs them
+> as-is - no `chmod` needed. `lib.sh` is sourced by them, not run, and stays
+> non-executable on purpose.
 
-    ```shell
-    chmod +x core.sh apps.sh extra.sh
-    ```
-
-    *`lib.sh` is sourced by the three scripts, not run, so it needs no `+x`.*
-
-2. Run the Core script and restart:
+1. Run the Core script and restart:
 
     ```shell
     ./core.sh
@@ -27,7 +23,7 @@
     *The reboot is not optional: the `tty` and `dialout` group memberships this
     script grants only take effect after a full logout.*
 
-3. Run the Apps script and restart:
+2. Run the Apps script and restart:
 
     ```shell
     ./apps.sh
@@ -39,7 +35,7 @@
 
     *Note: From now on, use the Alacritty or Ghostty terminal.*
 
-4. Install Oh My ZSH:
+3. Install Oh My ZSH:
     Open your terminal and run:
 
     ```shell
@@ -52,12 +48,12 @@
     sudo reboot
     ```
 
-5. **Start your personal accounts:**
+4. **Start your personal accounts:**
     - Open **Google Chrome** and log in.
     - Go to **GitHub** and log in.
     - Open **VS Code** and start Sync.
 
-6. Run the Extra script (Plugins, Fonts, Cargo, Zed, Ollama, Herdr, Antigravity
+5. Run the Extra script (Plugins, Fonts, Cargo, Zed, Ollama, Herdr, Antigravity
    CLI, configs, `~/.zshrc`, TPM) and restart:
 
     ```shell

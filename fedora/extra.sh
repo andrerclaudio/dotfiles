@@ -7,8 +7,11 @@
 # -u catches unset variables. No -e: one failed package should not abort the run.
 set -uo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(dirname "$SCRIPT_DIR")"
+
 # shellcheck source=lib.sh
-source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
+source "$SCRIPT_DIR/lib.sh"
 
 # init_stage also warms sudo: the Ollama installer (step 9) sets up a systemd
 # service and would otherwise stop this long run waiting for a password.
@@ -161,9 +164,6 @@ fi
 
 # 13. Configs
 echo "---> Copying configs into ~/.config..."
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(dirname "$SCRIPT_DIR")"
-
 # config/ mirrors ~/.config exactly, so this copy needs no exceptions: the one
 # file that belongs in $HOME (.zshrc) lives at the repo root, not here.
 if [[ -d "$REPO_ROOT/config" ]]; then
@@ -173,6 +173,7 @@ else
     echo "!!! SKIPPED: no config/ directory found next to this script."
 fi
 
+# 14. Home dotfiles
 echo "---> Installing ~/.zshrc..."
 # Replaces the .zshrc the Oh My Zsh installer wrote, keeping the old one as
 # ~/.zshrc.bak when it differed. Done here rather than as a manual step in the
@@ -188,7 +189,7 @@ else
     echo "!!! SKIPPED: no .zshrc found at the repo root."
 fi
 
-# 14. TPM (Tmux Plugin Manager)
+# 15. TPM (Tmux Plugin Manager)
 echo "---> Installing the Tmux Plugin Manager..."
 # ~/.tmux/plugins/tpm is the path the last line of tmux.conf runs. The plugins
 # go in with 'prefix + I'.

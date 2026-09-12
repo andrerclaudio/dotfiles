@@ -7,18 +7,22 @@
 # -u catches unset variables. No -e: one failed package should not abort the run.
 set -uo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # shellcheck source=lib.sh
-source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
+source "$SCRIPT_DIR/lib.sh"
 
 GIT_USER_NAME="Andre Ribeiro"
 GIT_USER_EMAIL="andre.ribeiro.srs@gmail.com"
 
 init_stage "$HOME/fedora-setup-core.log"
 
-# Without dnf5-plugins every setopt and copr call below is a silent no-op.
-ensure_dnf_plugins() {
-    banner "Ensuring dnf5-plugins (provides config-manager, copr)"
-    sudo dnf install -y dnf5-plugins
+# Without dnf5-plugins every setopt and copr call below is a silent no-op. git
+# comes along because configure_git_credentials needs it and a minimal or Server
+# install does not ship it - on Workstation this is already satisfied.
+ensure_dnf_prereqs() {
+    banner "Ensuring prerequisites (dnf5-plugins, git)"
+    sudo dnf install -y dnf5-plugins git
 }
 
 configure_package_management() {
@@ -139,7 +143,7 @@ add_serial_permissions() {
     echo "NOTE: group changes only apply after a full logout or reboot."
 }
 
-ensure_dnf_plugins
+ensure_dnf_prereqs
 configure_package_management
 add_rpm_fusion_repository
 update_and_upgrade

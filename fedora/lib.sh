@@ -4,6 +4,9 @@
 # extra.sh). Sourced, never executed on its own.
 #
 # Callers are expected to have run:  set -uo pipefail
+#
+# init_stage leaves two globals behind for the caller: LOG_FILE (the path being
+# written, quoted in error messages) and TEE_PID (used only by stage_cleanup).
 
 banner() {
     echo "# -----------------------------------------------------------------------#"
@@ -21,8 +24,9 @@ require_non_root() {
     ((EUID)) || { echo "Run this as your normal user, not with sudo."; exit 1; }
 }
 
-# Mirror stdout and stderr into $1. The original fds are parked on 3 and 4 so
-# stage_cleanup can restore them and let tee drain - see there.
+# Mirror stdout and stderr into $1, which is also published as $LOG_FILE for the
+# caller. The original fds are parked on 3 and 4 so stage_cleanup can restore
+# them and let tee drain - see there.
 start_logging() {
     LOG_FILE="$1"
     exec 3>&1 4>&2
