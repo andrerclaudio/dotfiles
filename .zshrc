@@ -1,10 +1,16 @@
 # ——————————————————————————————————————————————————————————————————————
 # PATHS & ENVIRONMENT
 # ——————————————————————————————————————————————————————————————————————
+# Allow "#" comments in this file - the plugins=() list below relies on them,
+# and zsh leaves INTERACTIVE_COMMENTS off by default in interactive shells.
+setopt INTERACTIVE_COMMENTS
+
 export ZSH="$HOME/.oh-my-zsh"
 export LANG="en_US.UTF-8"
-export LANGUAGE="en_US.UTF-8"
+export LANGUAGE="en_US:en"
 export BAT_THEME="gruvbox-dark"
+export EDITOR="nano"
+export VISUAL="$EDITOR"
 
 # Deduplicate PATH; prepend ~/.local/bin.
 typeset -U path
@@ -27,7 +33,7 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#458588'
 plugins=(
   git
   autoupdate
-  zsh-autocomplete
+  # zsh-autocomplete
   zsh-autosuggestions
   zsh-syntax-highlighting   # must stay last
 )
@@ -51,8 +57,9 @@ SAVEHIST=1000000
 setopt HIST_REDUCE_BLANKS       # strip extra whitespace
 setopt HIST_VERIFY              # expand !! before executing
 setopt HIST_IGNORE_ALL_DUPS     # remove older duplicates from history
-setopt HIST_SAVE_NO_DUPS        # do not write duplicates to history file
-setopt HIST_FIND_NO_DUPS        # do not cycle duplicates in search
+                                # (this alone covers HIST_SAVE_NO_DUPS and
+                                # HIST_FIND_NO_DUPS: no duplicate ever
+                                # reaches the list to be saved or found)
 
 # ——————————————————————————————————————————————————————————————————————
 # ALIASES & FUNCTIONS
@@ -62,21 +69,22 @@ alias my-ip="ip -c -h -s addr"
 alias e="eza -lbhHigaUm --git --group-directories-first --icons=auto --color-scale=all --colour=auto"
 alias zoom="tree -shaCL 2 --du"
 
-# Use bat as cat (Fedora: bat, Debian: batcat).
+# Use bat as cat (Fedora: bat, Debian: batcat). --paging=never keeps the
+# alias behaving like cat: print and return, never open a pager.
 if (( $+commands[bat] )); then
-    alias cat="bat"
+    alias cat="bat --paging=never"
 elif (( $+commands[batcat] )); then
-    alias cat="batcat"
+    alias cat="batcat --paging=never"
 fi
 
 # yazi: cd into its last visited directory on exit.
 function y() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-	yazi "$@" --cwd-file="$tmp"
-	if cwd="$(command cat -- "$tmp")" && [[ -n "$cwd" && "$cwd" != "$PWD" ]]; then
-		builtin cd -- "$cwd"
-	fi
-	rm -f -- "$tmp"
+    local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+    yazi "$@" --cwd-file="$tmp"
+    if cwd="$(command cat -- "$tmp")" && [[ -n "$cwd" && "$cwd" != "$PWD" ]]; then
+        builtin cd -- "$cwd"
+    fi
+    rm -f -- "$tmp"
 }
 
 # Update everything; missing tools are skipped.
@@ -88,7 +96,8 @@ function update() {
     print -P "\n%F{green}%B🚀 Starting full system update...%b%f"
 
     print -P "${hdr}📦 System Packages (DNF)${end}"
-    sudo dnf upgrade --refresh || return 1
+    # Do not return here: the rest of the function is independent of dnf.
+    sudo dnf upgrade --refresh || print -P "%F{red}  ✗ dnf upgrade failed%f"
 
     print -P "${hdr}🧩 Flatpaks${end}"
     if (( $+commands[flatpak] )); then
@@ -132,6 +141,13 @@ function update() {
         print -P "${skip} agy not installed"
     fi
 
+    print -P "${hdr}🤖 Claude CLI${end}"
+    if (( $+commands[claude] )); then
+        claude update
+    else
+        print -P "${skip} claude not installed"
+    fi
+
     print -P "\n%F{green}%B✨ All updates complete!%b%f\n"
 }
 
@@ -149,17 +165,18 @@ if [[ -s /etc/grc.zsh ]]; then
     source /etc/grc.zsh
 fi
 
-# zoxide: replaces cd with smarter navigation.
-if (( $+commands[zoxide] )); then
-    eval "$(zoxide init zsh --cmd cd)"
-fi
-
 # atuin: enhanced shell history.
 if [[ -f "$HOME/.atuin/bin/env" ]]; then
     source "$HOME/.atuin/bin/env"
 fi
 if (( $+commands[atuin] )); then
     eval "$(atuin init zsh)"
+fi
+
+# zoxide: replaces cd with smarter navigation. Kept last of the inits, as
+# zoxide recommends: its chpwd hook should be the one registered at the end.
+if (( $+commands[zoxide] )); then
+    eval "$(zoxide init zsh --cmd cd)"
 fi
 
 # Auto-attach tmux on SSH login.

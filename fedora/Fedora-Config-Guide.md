@@ -15,6 +15,8 @@
     chmod +x core.sh apps.sh extra.sh
     ```
 
+    *`lib.sh` is sourced by the three scripts, not run, so it needs no `+x`.*
+
 2. Run the Core script and restart:
 
     ```shell
@@ -56,19 +58,15 @@
     - Open **VS Code** and start Sync.
 
 6. Run the Extra script (Plugins, Fonts, Cargo, Zed, Ollama, Herdr, Antigravity
-   CLI, configs, TPM) and restart:
+   CLI, configs, `~/.zshrc`, TPM) and restart:
 
     ```shell
     ./extra.sh
     sudo reboot
     ```
 
-7. **Install the ZSH config:**
-    Overwrite the `~/.zshrc` the Oh My Zsh installer wrote:
-
-    ```shell
-    cp config/zsh/.zshrc ~/.zshrc
-    ```
+    *This also installs `~/.zshrc` over the one the Oh My Zsh installer wrote.
+    If that file differed, it is kept as `~/.zshrc.bak`.*
 
 ## Phase 2: Manual Authentications & GUI Tweaks
 

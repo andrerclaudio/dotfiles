@@ -7,26 +7,10 @@
 # -u catches unset variables. No -e: one failed package should not abort the run.
 set -uo pipefail
 
-LOG_FILE="$HOME/fedora-setup-apps.log"
+# shellcheck source=lib.sh
+source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
-# Under sudo, every --user flatpak below would land in root's installation.
-((EUID)) || { echo "Run this as your normal user, not with sudo."; exit 1; }
-
-exec > >(tee -a "$LOG_FILE") 2>&1
-echo "Logging this run to $LOG_FILE"
-
-# Keep the sudo timestamp alive for the whole run. Output to /dev/null so the
-# job cannot hold the log pipe open after the script exits.
-sudo -v || exit 1
-{ while true; do sudo -n true; sleep 50; kill -0 "$$" 2>/dev/null || exit; done; } >/dev/null 2>&1 &
-SUDO_KEEPALIVE_PID=$!
-trap 'kill "$SUDO_KEEPALIVE_PID" 2>/dev/null' EXIT
-
-banner() {
-    echo "# -----------------------------------------------------------------------#"
-    printf '# %-71s#\n' "$1"
-    echo "# -----------------------------------------------------------------------#"
-}
+init_stage "$HOME/fedora-setup-apps.log"
 
 add_apps_repo() {
     banner "Add 3rd-Party Repositories (LazyGit, Ghostty, Yazi, Chrome, VS Code)"
@@ -126,6 +110,7 @@ install_dnf_packages() {
         "libzstd-devel"
         "luarocks"
         "mpv"
+        "nano"
         "ncdu"
         "neovim"
         "net-tools"

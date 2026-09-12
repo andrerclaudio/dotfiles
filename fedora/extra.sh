@@ -7,12 +7,16 @@
 # -u catches unset variables. No -e: one failed package should not abort the run.
 set -uo pipefail
 
-LOG_FILE="$HOME/fedora-setup-extra.log"
+# shellcheck source=lib.sh
+source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
-((EUID)) || { echo "Run this as your normal user, not with sudo."; exit 1; }
+# init_stage also warms sudo: the Ollama installer (step 9) sets up a systemd
+# service and would otherwise stop this long run waiting for a password.
+init_stage "$HOME/fedora-setup-extra.log"
 
-exec > >(tee -a "$LOG_FILE") 2>&1
-echo "Logging this run to $LOG_FILE"
+# The 'have' guards below look for binaries these installers drop in ~/.local/bin
+# and ~/.cargo/bin, which a non-login bash may not have on PATH yet.
+PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 
 echo "# -----------------------------------------------------------------------#"
 echo "# Starting Extra Configurations & Installations                          #"
@@ -56,7 +60,11 @@ rm -f "$FONT_TAR"
 
 # 3. Rust and cargo utilities
 echo "---> Installing Rust and Cargo utilities..."
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+if have rustup; then
+    echo "     rustup already installed, skipping."
+else
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+fi
 
 if [[ -f "$HOME/.cargo/env" ]]; then
     # shellcheck source=/dev/null
@@ -69,7 +77,11 @@ fi
 
 # 4. Atuin
 echo "---> Installing Atuin..."
-curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+if have atuin; then
+    echo "     atuin already installed, skipping."
+else
+    curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+fi
 
 # 5. Eza gruvbox theme
 echo "---> Configuring Eza Gruvbox theme..."
@@ -107,37 +119,73 @@ fi
 # 8. Zed
 echo "---> Installing Zed..."
 # Lands in ~/.local/bin/zed and ~/.local/share/zed.app, so no root is needed.
-curl -fsSL https://zed.dev/install.sh | sh
+if have zed; then
+    echo "     zed already installed, skipping."
+else
+    curl -fsSL https://zed.dev/install.sh | sh
+fi
 
 # 9. Ollama
 echo "---> Installing Ollama..."
 # Configures a systemd service, so it may prompt for sudo.
-curl -fsSL https://ollama.com/install.sh | sh
+if have ollama; then
+    echo "     ollama already installed, skipping."
+else
+    curl -fsSL https://ollama.com/install.sh | sh
+fi
 
 # 10. Herdr
 echo "---> Installing Herdr..."
-curl -fsSL https://herdr.dev/install.sh | sh
+if have herdr; then
+    echo "     herdr already installed, skipping."
+else
+    curl -fsSL https://herdr.dev/install.sh | sh
+fi
 
 # 11. Antigravity CLI
 echo "---> Installing Antigravity CLI..."
-curl -fsSL https://antigravity.google/cli/install.sh | bash
+if have agy; then
+    echo "     antigravity CLI already installed, skipping."
+else
+    curl -fsSL https://antigravity.google/cli/install.sh | bash
+fi
 
 # 12. Claude Code CLI
 echo "---> Installing Claude Code CLI..."
 # Lands in ~/.local/bin/claude, so no root is needed.
-curl -fsSL https://claude.ai/install.sh | bash
+if have claude; then
+    echo "     claude already installed, skipping."
+else
+    curl -fsSL https://claude.ai/install.sh | bash
+fi
 
 # 13. Configs
 echo "---> Copying configs into ~/.config..."
-# ~/.zshrc is not touched here; the guide copies it by hand.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 
+# config/ mirrors ~/.config exactly, so this copy needs no exceptions: the one
+# file that belongs in $HOME (.zshrc) lives at the repo root, not here.
 if [[ -d "$REPO_ROOT/config" ]]; then
     mkdir -p "$HOME/.config"
     cp -r "$REPO_ROOT/config/." "$HOME/.config/"
 else
     echo "!!! SKIPPED: no config/ directory found next to this script."
+fi
+
+echo "---> Installing ~/.zshrc..."
+# Replaces the .zshrc the Oh My Zsh installer wrote, keeping the old one as
+# ~/.zshrc.bak when it differed. Done here rather than as a manual step in the
+# guide, so the shell config ships with everything else.
+if [[ -f "$REPO_ROOT/.zshrc" ]]; then
+    if [[ -f "$HOME/.zshrc" ]] && ! cmp -s "$REPO_ROOT/.zshrc" "$HOME/.zshrc"; then
+        cp -f "$HOME/.zshrc" "$HOME/.zshrc.bak"
+        echo "     previous ~/.zshrc saved as ~/.zshrc.bak"
+    fi
+    cp -f "$REPO_ROOT/.zshrc" "$HOME/.zshrc"
+    echo "     installed $HOME/.zshrc"
+else
+    echo "!!! SKIPPED: no .zshrc found at the repo root."
 fi
 
 # 14. TPM (Tmux Plugin Manager)
