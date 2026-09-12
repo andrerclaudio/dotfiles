@@ -122,7 +122,12 @@ curl -fsSL https://herdr.dev/install.sh | sh
 echo "---> Installing Antigravity CLI..."
 curl -fsSL https://antigravity.google/cli/install.sh | bash
 
-# 12. Configs
+# 12. Claude Code CLI
+echo "---> Installing Claude Code CLI..."
+# Lands in ~/.local/bin/claude, so no root is needed.
+curl -fsSL https://claude.ai/install.sh | bash
+
+# 13. Configs
 echo "---> Copying configs into ~/.config..."
 # ~/.zshrc is not touched here; the guide copies it by hand.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -135,7 +140,7 @@ else
     echo "!!! SKIPPED: no config/ directory found next to this script."
 fi
 
-# 13. TPM (Tmux Plugin Manager)
+# 14. TPM (Tmux Plugin Manager)
 echo "---> Installing the Tmux Plugin Manager..."
 # ~/.tmux/plugins/tpm is the path the last line of tmux.conf runs. The plugins
 # go in with 'prefix + I'.
