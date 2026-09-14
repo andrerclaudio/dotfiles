@@ -101,12 +101,19 @@ add_rpm_fusion_repository() {
     fedora_ver=$(rpm -E %fedora)
 
     sudo dnf install -y \
-        "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-${fedora_ver}.noarch.rpm"
-    sudo dnf install -y \
+        "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-${fedora_ver}.noarch.rpm" \
         "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${fedora_ver}.noarch.rpm"
 
-    sudo dnf config-manager setopt fedora-cisco-openh264.enabled=1
-    sudo dnf group install -y core
+    # mirrors.rpmfusion.org hands out a different mirror every time and some are
+    # down, so this can fail for no good reason. Enabling third-party repos in
+    # the Fedora installer does not help: that only brings in the narrow
+    # nvidia-driver and steam sub-repos. Stop here rather than let apps.sh
+    # quietly drop libavcodec-freeworld - re-running core.sh later is safe.
+    if ! rpm -q rpmfusion-free-release rpmfusion-nonfree-release >/dev/null 2>&1; then
+        echo "!!! RPM Fusion is missing - codecs would be skipped by apps.sh."
+        echo "!!! Check the network and re-run ./core.sh before apps.sh."
+        exit 1
+    fi
 }
 
 configure_git_credentials() {

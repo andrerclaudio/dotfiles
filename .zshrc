@@ -16,9 +16,6 @@ export VISUAL="$EDITOR"
 typeset -U path
 path=("$HOME/.local/bin" $path)
 
-# Needed by zsh-autocomplete's recent-directories feature.
-[[ -d "${XDG_DATA_HOME:-$HOME/.local/share}/zsh" ]] || mkdir -p "${XDG_DATA_HOME:-$HOME/.local/share}/zsh"
-
 # Rust/Cargo PATH setup.
 [[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
 
@@ -33,7 +30,6 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#458588'
 plugins=(
   git
   autoupdate
-  # zsh-autocomplete
   zsh-autosuggestions
   zsh-syntax-highlighting   # must stay last
 )

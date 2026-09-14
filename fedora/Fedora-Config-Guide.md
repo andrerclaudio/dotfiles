@@ -16,6 +16,7 @@
 1. Run the Core script and restart:
 
     ```shell
+    cd ~/dotfiles/fedora   # wherever you cloned the repo
     ./core.sh
     sudo reboot
     ```

@@ -39,7 +39,6 @@ if [[ -d "$HOME/.oh-my-zsh" ]]; then
     mkdir -p "${ZSH_CUSTOM}/plugins"
     clone https://github.com/zsh-users/zsh-autosuggestions.git "${ZSH_CUSTOM}/plugins/zsh-autosuggestions"
     clone https://github.com/zsh-users/zsh-syntax-highlighting.git "${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting"
-    clone https://github.com/marlonrichert/zsh-autocomplete.git "${ZSH_CUSTOM}/plugins/zsh-autocomplete"
     clone https://github.com/TamCore/autoupdate-oh-my-zsh-plugins.git "${ZSH_CUSTOM}/plugins/autoupdate"
 else
     echo "!!! SKIPPED: Oh My Zsh is not installed at ~/.oh-my-zsh."

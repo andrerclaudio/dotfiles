@@ -1,0 +1,4 @@
+# Python bytecode and type-checker caches from tools/
+__pycache__/
+*.py[cod]
+.mypy_cache/
