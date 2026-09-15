@@ -100,14 +100,15 @@ add_rpm_fusion_repository() {
     local fedora_ver
     fedora_ver=$(rpm -E %fedora)
 
-    sudo rpm --import \
-        "https://mirrors.rpmfusion.org/free/fedora/RPM-GPG-KEY-rpmfusion-free-fedora-${fedora_ver}" \
-        "https://mirrors.rpmfusion.org/nonfree/fedora/RPM-GPG-KEY-rpmfusion-nonfree-fedora-${fedora_ver}"
-
-    sudo dnf install -y --setopt=localpkg_gpgcheck=1 \
+    sudo dnf install -y \
         "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-${fedora_ver}.noarch.rpm" \
         "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${fedora_ver}.noarch.rpm"
 
+    # mirrors.rpmfusion.org hands out a different mirror every time and some are
+    # down, so this can fail for no good reason. Enabling third-party repos in
+    # the Fedora installer does not help: that only brings in the narrow
+    # nvidia-driver and steam sub-repos. Stop here rather than let apps.sh
+    # quietly drop libavcodec-freeworld - re-running core.sh later is safe.
     if ! rpm -q rpmfusion-free-release rpmfusion-nonfree-release >/dev/null 2>&1; then
         echo "!!! RPM Fusion is missing - codecs would be skipped by apps.sh."
         echo "!!! Check the network and re-run ./core.sh before apps.sh."
