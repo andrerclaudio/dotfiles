@@ -1,8 +1,7 @@
 #!/bin/bash
 #
 # RUN ORDER:  core.sh  ->  apps.sh  ->  extra.sh
-# Needs apps.sh first (the cargo builds want the C toolchain and the -devel
-# packages it installs) and Oh My Zsh already in place.
+# Needs apps.sh (C toolchain, -devel packages) and Oh My Zsh already in place.
 
 # -u catches unset variables. No -e: one failed package should not abort the run.
 set -uo pipefail
@@ -13,26 +12,24 @@ REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 # shellcheck source=lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
-# init_stage also warms sudo: the Ollama installer (step 9) sets up a systemd
-# service and would otherwise stop this long run waiting for a password.
+# init_stage warms sudo: the Ollama installer (step 9) needs it mid-run.
 init_stage "$HOME/fedora-setup-extra.log"
 
-# The 'have' guards below look for binaries these installers drop in ~/.local/bin
-# and ~/.cargo/bin, which a non-login bash may not have on PATH yet.
+# The 'have' guards look for binaries in these dirs, which bash may not have yet.
 PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 
 echo "# -----------------------------------------------------------------------#"
 echo "# Starting Extra Configurations & Installations                          #"
 echo "# -----------------------------------------------------------------------#"
 
-# Non-zero on failure, so callers can skip whatever depends on the clone.
+# Non-zero on failure, so callers can skip what depends on the clone.
 clone() {
     git clone --depth 1 "$1" "$2"
 }
 
 # 1. ZSH plugins
 echo "---> Installing ZSH Plugins..."
-# oh-my-zsh.sh sets ZSH_CUSTOM without exporting it, so bash needs its own default.
+# oh-my-zsh.sh sets ZSH_CUSTOM without exporting it, so set it here too.
 ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 
 if [[ -d "$HOME/.oh-my-zsh" ]]; then
@@ -46,7 +43,7 @@ fi
 
 # 2. Nerd font
 echo "---> Installing JetBrainsMono Nerd Font..."
-# fc-cache registers the font without waiting for a re-login.
+# fc-cache registers the font without a re-login.
 FONT_DIR="$HOME/.local/share/fonts/JetBrainsMono"
 FONT_TAR=$(mktemp -t JetBrainsMono.XXXXXX.tar.xz)
 mkdir -p "$FONT_DIR"
@@ -71,7 +68,7 @@ fi
 if [[ -f "$HOME/.cargo/env" ]]; then
     # shellcheck source=/dev/null
     source "$HOME/.cargo/env"
-    # --locked builds each crate against the Cargo.lock its author published.
+    # --locked builds against the Cargo.lock each author published.
     cargo install --locked tock pueue dysk cargo-update
 else
     echo "!!! rustup failed, skipping cargo installs."
@@ -87,8 +84,7 @@ fi
 
 # 5. Eza gruvbox theme
 echo "---> Configuring Eza Gruvbox theme..."
-# Link only on a good clone: a broken theme.yml breaks every eza call, and
-# .zshrc aliases 'e' to eza.
+# Link only on a good clone: a broken theme.yml breaks every eza call.
 mkdir -p ~/.config/eza
 if clone https://github.com/eza-community/eza-themes.git ~/.config/eza/eza-themes; then
     ln -sfn ~/.config/eza/eza-themes/themes/gruvbox-dark.yml ~/.config/eza/theme.yml
@@ -96,7 +92,7 @@ fi
 
 # 6. Gruvbox Plus icon pack
 echo "---> Installing Gruvbox Icons..."
-# The pack is app data; only the link Gnome Tweaks reads belongs in ~/.icons.
+# Only the link Gnome Tweaks reads belongs in ~/.icons.
 ICON_SRC="$HOME/.local/share/gruvbox-plus-icon-pack"
 mkdir -p ~/.icons
 if clone https://github.com/SylEleuth/gruvbox-plus-icon-pack.git "$ICON_SRC"; then
@@ -105,7 +101,7 @@ fi
 
 # 7. Google repo tool
 echo "---> Installing Google Repo Tool..."
-# -f on every curl below: without it an HTTP error page is saved or piped to sh.
+# -f on every curl: without it an HTTP error page gets saved or piped to sh.
 mkdir -p ~/.local/bin
 REPO_TMP=$(mktemp -t repo.XXXXXX)
 if curl -fsSL -o "$REPO_TMP" \
@@ -120,7 +116,7 @@ fi
 
 # 8. Zed
 echo "---> Installing Zed..."
-# Lands in ~/.local/bin/zed and ~/.local/share/zed.app, so no root is needed.
+# Lands under ~/.local, so no root is needed.
 if have zed; then
     echo "     zed already installed, skipping."
 else
@@ -129,7 +125,7 @@ fi
 
 # 9. Ollama
 echo "---> Installing Ollama..."
-# Configures a systemd service, so it may prompt for sudo.
+# Sets up a systemd service, so it may prompt for sudo.
 if have ollama; then
     echo "     ollama already installed, skipping."
 else
@@ -154,7 +150,7 @@ fi
 
 # 12. Claude Code CLI
 echo "---> Installing Claude Code CLI..."
-# Lands in ~/.local/bin/claude, so no root is needed.
+# Lands in ~/.local/bin, so no root is needed.
 if have claude; then
     echo "     claude already installed, skipping."
 else
@@ -163,8 +159,8 @@ fi
 
 # 13. cliamp
 echo "---> Installing cliamp..."
-# Lands in ~/.local/bin/cliamp (the PATH set above is what makes the installer
-# pick it over /usr/local/bin), so no root is needed.
+# The PATH set above is what makes the installer pick ~/.local/bin over
+# /usr/local/bin, so no root is needed.
 if have cliamp; then
     echo "     cliamp already installed, skipping."
 else
@@ -173,8 +169,7 @@ fi
 
 # 14. Configs
 echo "---> Copying configs into ~/.config..."
-# config/ mirrors ~/.config exactly, so this copy needs no exceptions: the one
-# file that belongs in $HOME (.zshrc) lives at the repo root, not here.
+# config/ mirrors ~/.config exactly; .zshrc lives at the repo root instead.
 if [[ -d "$REPO_ROOT/config" ]]; then
     mkdir -p "$HOME/.config"
     cp -r "$REPO_ROOT/config/." "$HOME/.config/"
@@ -185,8 +180,7 @@ fi
 # 15. Home dotfiles
 echo "---> Installing ~/.zshrc..."
 # Replaces the .zshrc the Oh My Zsh installer wrote, keeping the old one as
-# ~/.zshrc.bak when it differed. Done here rather than as a manual step in the
-# guide, so the shell config ships with everything else.
+# ~/.zshrc.bak when it differed.
 if [[ -f "$REPO_ROOT/.zshrc" ]]; then
     if [[ -f "$HOME/.zshrc" ]] && ! cmp -s "$REPO_ROOT/.zshrc" "$HOME/.zshrc"; then
         cp -f "$HOME/.zshrc" "$HOME/.zshrc.bak"
@@ -200,8 +194,7 @@ fi
 
 # 16. TPM (Tmux Plugin Manager)
 echo "---> Installing the Tmux Plugin Manager..."
-# ~/.tmux/plugins/tpm is the path the last line of tmux.conf runs. The plugins
-# go in with 'prefix + I'.
+# The path the last line of tmux.conf runs. Plugins go in with 'prefix + I'.
 clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
 
 echo "# -----------------------------------------------------------------------#"

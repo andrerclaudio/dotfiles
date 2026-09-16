@@ -17,9 +17,8 @@ GIT_USER_EMAIL="andre.ribeiro.srs@gmail.com"
 
 init_stage "$HOME/fedora-setup-core.log"
 
-# Without dnf5-plugins every setopt and copr call below is a silent no-op. git
-# comes along because configure_git_credentials needs it and a minimal or Server
-# install does not ship it - on Workstation this is already satisfied.
+# Without dnf5-plugins every setopt and copr call is a silent no-op. git is
+# needed by configure_git_credentials.
 ensure_dnf_prereqs() {
     banner "Ensuring prerequisites (dnf5-plugins, git)"
     sudo dnf install -y dnf5-plugins git
@@ -69,8 +68,8 @@ remove_unwanted_defaults() {
         "snapshot"
     )
 
-    # dnf5 aborts the whole transaction on any argument that matches nothing
-    # installed, so pass only what is here. 'rpm -qa' expands globs; 'rpm -q' does not.
+    # dnf5 aborts on any argument that matches nothing installed, so pass only
+    # what is here. 'rpm -qa' expands globs; 'rpm -q' does not.
     local pkg installed=()
     for pkg in "${apps[@]}"; do
         [[ -n "$(rpm -qa "$pkg" 2>/dev/null)" ]] && installed+=("$pkg")
@@ -89,10 +88,17 @@ install_flatpak_and_add_flathub() {
     banner "Adding Flatpak utility and Flathub Repository"
     sudo dnf install -y flatpak
 
-    # User and system installs keep separate remote lists, and apps.sh installs
-    # everything with --user.
+    # apps.sh installs everything with --user, and --user keeps its own remotes.
     flatpak remote-add --user --if-not-exists flathub \
         https://dl.flathub.org/repo/flathub.flatpakrepo
+}
+
+install_snapd() {
+    banner "Installing snapd"
+    sudo dnf install -y snapd
+
+    # /snap is where classic snaps expect to find themselves.
+    [[ -e /snap ]] || sudo ln -s /var/lib/snapd/snap /snap
 }
 
 add_rpm_fusion_repository() {
@@ -104,11 +110,9 @@ add_rpm_fusion_repository() {
         "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-${fedora_ver}.noarch.rpm" \
         "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${fedora_ver}.noarch.rpm"
 
-    # mirrors.rpmfusion.org hands out a different mirror every time and some are
-    # down, so this can fail for no good reason. Enabling third-party repos in
-    # the Fedora installer does not help: that only brings in the narrow
-    # nvidia-driver and steam sub-repos. Stop here rather than let apps.sh
-    # quietly drop libavcodec-freeworld - re-running core.sh later is safe.
+    # The mirror handed out is random and some are down, so this can fail for no
+    # good reason. Stop rather than let apps.sh silently drop the codecs;
+    # re-running core.sh is safe.
     if ! rpm -q rpmfusion-free-release rpmfusion-nonfree-release >/dev/null 2>&1; then
         echo "!!! RPM Fusion is missing - codecs would be skipped by apps.sh."
         echo "!!! Check the network and re-run ./core.sh before apps.sh."
@@ -119,8 +123,7 @@ add_rpm_fusion_repository() {
 configure_git_credentials() {
     banner "GIT Credentials"
 
-    # These are global settings shared by every repo on the machine, so say so
-    # when an earlier value is about to be replaced by the one at the top here.
+    # Global settings, so warn before replacing an existing value.
     local key old
     for key in user.name user.email; do
         old=$(git config --global --get "$key")
@@ -156,6 +159,7 @@ add_rpm_fusion_repository
 update_and_upgrade
 remove_unwanted_defaults
 install_flatpak_and_add_flathub
+install_snapd
 configure_git_credentials
 add_serial_permissions
 

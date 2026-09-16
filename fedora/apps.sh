@@ -25,8 +25,6 @@ add_apps_repo() {
     sudo dnf install -y fedora-workstation-repositories
     sudo dnf config-manager setopt google-chrome.enabled=1
 
-    # https://code.visualstudio.com/docs/setup/linux
-    #
     # Import the key first, write the repo only if that worked: under -y dnf
     # would otherwise fetch the key from gpgkey= and auto-accept it.
     echo "---> Adding the Microsoft VS Code repository..."
@@ -42,8 +40,7 @@ gpgcheck=1
 gpgkey=https://packages.microsoft.com/keys/microsoft.asc
 EOF
     else
-        # Any vscode.repo on disk was written by a run that had the key, so it
-        # is still valid. Deleting it would drop VS Code out of 'dnf upgrade'.
+        # An existing vscode.repo came from a run that had the key, so keep it.
         echo "!!! Could not fetch the Microsoft signing key; leaving the VS Code repo as-is."
         echo "    'code' will be reported as unavailable below if this is a first run."
     fi
@@ -74,7 +71,7 @@ install_dnf_packages() {
         "chafa"
         "cmake"
         "cmatrix"
-        "code"                     # VS Code, from the Microsoft repo added above
+        "code"                     # VS Code, from the Microsoft repo above
         "codespell"
         "dbus-devel"
         "distrobox"
@@ -132,7 +129,8 @@ install_dnf_packages() {
         "qemu"
         "ripgrep"
         "rpi-imager"
-        "ShellCheck"               # this repo is mostly shell; lint before committing
+        "ShellCheck"               # lint the scripts before committing
+        "syncthing"                # started by enable_syncthing below
         "tinyxml2-devel"
         "tio"
         "tldr"
@@ -151,13 +149,11 @@ install_dnf_packages() {
     local dnf_log
     dnf_log=$(mktemp -t dnf-install.XXXXXX)
 
-    # --skip-unavailable tolerates names no repo carries; --skip-broken tolerates
-    # a package that cannot be solved. Either one alone still aborts on the other.
+    # Skip names no repo carries and packages that cannot be solved.
     sudo dnf install -y --skip-unavailable --skip-broken "${packages[@]}" 2>&1 | tee "$dnf_log" \
         || echo "!!! dnf install failed - NOTHING may have been installed. See $LOG_FILE."
 
-    # Both skip flags are silent about what they drop, so print it - a renamed
-    # or retired package would otherwise go unnoticed for months.
+    # Both skip flags are silent about what they drop, so print it.
     echo
     echo "---> Packages DNF could not find or resolve (check these by hand):"
     grep -iE "no match for argument|skipping unavailable|not available|broken dependencies" "$dnf_log" \
@@ -205,8 +201,7 @@ install_flatpak_apps() {
         "org.videolan.VLC"
     )
 
-    # A batch is much faster, but flatpak refuses all of it over one bad ID -
-    # hence the one-at-a-time fallback.
+    # A batch is faster, but flatpak refuses all of it over one bad ID.
     echo "---> Installing Flathub applications..."
     flatpak install -y --noninteractive --user flathub "${apps[@]}" || {
         echo "!!! Batch install failed; retrying one at a time."
@@ -217,8 +212,24 @@ install_flatpak_apps() {
     }
 }
 
+enable_syncthing() {
+    banner "Enable the Syncthing daemon (user service)"
+
+    # The unit ships with the package, but the install above may have skipped it.
+    if ! systemctl --user cat syncthing.service >/dev/null 2>&1; then
+        echo "!!! SKIPPED: syncthing.service is not installed - see the DNF report above."
+        return
+    fi
+
+    # --user, never sudo: the daemon owns the synced files.
+    systemctl --user enable syncthing.service
+    systemctl --user start syncthing.service
+    echo "---> Syncthing is running; its web UI is at http://127.0.0.1:8384."
+}
+
 add_apps_repo
 install_dnf_packages
 install_flatpak_apps
+enable_syncthing
 
 banner "Application installation complete. Reboot, then continue the guide."

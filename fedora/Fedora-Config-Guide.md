@@ -31,8 +31,8 @@
     sudo reboot
     ```
 
-    *This installs from two sources: DNF (including the COPRs, Chrome, and
-    VS Code from Microsoft's own RPM repo) and Flathub (`--user`).*
+    *Installs from DNF (COPRs, Chrome, VS Code) and Flathub (`--user`), then
+    starts the Syncthing daemon — its web UI is at <http://127.0.0.1:8384>.*
 
     *Note: From now on, use the Alacritty or Ghostty terminal.*
 

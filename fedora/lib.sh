@@ -1,12 +1,7 @@
 #!/bin/bash
 #
-# Shared helpers for the Fedora post-install scripts (core.sh, apps.sh,
-# extra.sh). Sourced, never executed on its own.
-#
+# Shared helpers for core.sh, apps.sh and extra.sh. Sourced, never run directly.
 # Callers are expected to have run:  set -uo pipefail
-#
-# init_stage leaves two globals behind for the caller: LOG_FILE (the path being
-# written, quoted in error messages) and TEE_PID (used only by stage_cleanup).
 
 banner() {
     echo "# -----------------------------------------------------------------------#"
@@ -14,19 +9,17 @@ banner() {
     echo "# -----------------------------------------------------------------------#"
 }
 
-# True when $1 is an executable on PATH. Used to skip installers that already ran.
+# True when $1 is on PATH.
 have() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# Under sudo every --user flatpak and every ~/ path would land in root's home.
+# Under sudo, --user flatpaks and ~/ paths would land in root's home.
 require_non_root() {
     ((EUID)) || { echo "Run this as your normal user, not with sudo."; exit 1; }
 }
 
-# Mirror stdout and stderr into $1, which is also published as $LOG_FILE for the
-# caller. The original fds are parked on 3 and 4 so stage_cleanup can restore
-# them and let tee drain - see there.
+# Log to $1, also published as $LOG_FILE. Real fds parked on 3 and 4.
 start_logging() {
     LOG_FILE="$1"
     exec 3>&1 4>&2
@@ -35,8 +28,7 @@ start_logging() {
     echo "Logging this run to $LOG_FILE"
 }
 
-# Keep the sudo timestamp alive for the whole run. Output to /dev/null so the
-# job cannot hold the log pipe open after the script exits.
+# Keep the sudo timestamp alive. Silenced so it cannot hold the log pipe open.
 start_sudo_keepalive() {
     sudo -v || exit 1
     { while true; do sudo -n true; sleep 50; kill -0 "$$" 2>/dev/null || exit; done; } >/dev/null 2>&1 &
@@ -47,8 +39,7 @@ start_sudo_keepalive() {
 stage_cleanup() {
     [[ -n "${SUDO_KEEPALIVE_PID:-}" ]] && kill "$SUDO_KEEPALIVE_PID" 2>/dev/null
 
-    # Restoring the real fds closes the write end of the pipe, so tee sees EOF;
-    # waiting for it is what keeps the last lines of the run from being lost.
+    # Restoring the fds gives tee its EOF; waiting keeps the last lines.
     if [[ -n "${TEE_PID:-}" ]]; then
         exec 1>&3 2>&4 3>&- 4>&-
         wait "$TEE_PID" 2>/dev/null
@@ -56,7 +47,7 @@ stage_cleanup() {
     return 0
 }
 
-# One call per stage: refuse root, start the log, keep sudo warm, clean up after.
+# One call per stage: refuse root, log, keep sudo warm, clean up after.
 init_stage() {
     require_non_root
     start_logging "$1"

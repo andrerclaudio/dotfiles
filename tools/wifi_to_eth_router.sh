@@ -2,25 +2,13 @@
 ################################################################################
 # wifi_to_eth_router.sh
 #
-# Purpose:
-#   Configure a Raspberry Pi (Raspbian Bookworm/Bullseye) to share its Wi-Fi 
-#   (wlan0) internet connection over Ethernet (eth0) using NAT and DHCP.
-#   The Pi will act as a router, providing DHCP on eth0 and forwarding to wlan0.
+# Shares a Raspberry Pi's Wi-Fi (wlan0) internet over Ethernet (eth0) with NAT
+# and DHCP. Idempotent; safe to re-run.
 #
-# Usage:
-#   Run this script as root (sudo). Example:
-#     sudo bash wifi_to_eth_router.sh
-#   The script installs necessary packages, configures networking, and sets up 
-#   NAT forwarding. It is idempotent; safe to run multiple times without 
-#   duplicating configurations.
+# Run as root:  sudo bash wifi_to_eth_router.sh
 #
-# Prerequisites:
-#   - Raspberry Pi OS (Debian-based, Bookworm/Bullseye).
-#   - Wi-Fi interface (wlan0) must be already connected to the Internet.
-#   - Ethernet interface (eth0) is the target for sharing.
-#   - Required packages (dnsmasq, iptables-persistent) will be installed if missing.
-#   - Must be run as root (sudo).
-#
+# Needs: Raspberry Pi OS (Bookworm/Bullseye), wlan0 already online, eth0 free.
+# Installs dnsmasq and iptables-persistent if missing.
 ################################################################################
 
 set -euo pipefail

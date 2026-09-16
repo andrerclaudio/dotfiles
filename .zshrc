@@ -1,8 +1,7 @@
 # ——————————————————————————————————————————————————————————————————————
 # PATHS & ENVIRONMENT
 # ——————————————————————————————————————————————————————————————————————
-# Allow "#" comments in this file - the plugins=() list below relies on them,
-# and zsh leaves INTERACTIVE_COMMENTS off by default in interactive shells.
+# zsh leaves INTERACTIVE_COMMENTS off, and the plugins=() list needs it.
 setopt INTERACTIVE_COMMENTS
 
 export ZSH="$HOME/.oh-my-zsh"
@@ -52,10 +51,8 @@ SAVEHIST=1000000
 # Extras not set by Oh My Zsh.
 setopt HIST_REDUCE_BLANKS       # strip extra whitespace
 setopt HIST_VERIFY              # expand !! before executing
-setopt HIST_IGNORE_ALL_DUPS     # remove older duplicates from history
-                                # (this alone covers HIST_SAVE_NO_DUPS and
-                                # HIST_FIND_NO_DUPS: no duplicate ever
-                                # reaches the list to be saved or found)
+setopt HIST_IGNORE_ALL_DUPS     # remove older duplicates; covers the
+                                # SAVE_NO_DUPS and FIND_NO_DUPS cases too
 
 # ——————————————————————————————————————————————————————————————————————
 # ALIASES & FUNCTIONS
@@ -65,8 +62,7 @@ alias my-ip="ip -c -h -s addr"
 alias e="eza -lbhHigaUm --git --group-directories-first --icons=auto --color-scale=all --colour=auto"
 alias zoom="tree -shaCL 2 --du"
 
-# Use bat as cat (Fedora: bat, Debian: batcat). --paging=never keeps the
-# alias behaving like cat: print and return, never open a pager.
+# bat as cat. --paging=never keeps it printing and returning, like cat.
 if (( $+commands[bat] )); then
     alias cat="bat --paging=never"
 elif (( $+commands[batcat] )); then
@@ -176,8 +172,7 @@ if (( $+commands[atuin] )); then
     eval "$(atuin init zsh)"
 fi
 
-# zoxide: replaces cd with smarter navigation. Kept last of the inits, as
-# zoxide recommends: its chpwd hook should be the one registered at the end.
+# zoxide: smarter cd. Last of the inits, so its chpwd hook registers last.
 if (( $+commands[zoxide] )); then
     eval "$(zoxide init zsh --cmd cd)"
 fi

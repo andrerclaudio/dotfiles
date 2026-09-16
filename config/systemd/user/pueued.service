@@ -1,7 +1,5 @@
-# Pueue daemon, as a systemd user unit.
-#
-# extra.sh copies this to ~/.config/systemd/user/. Phase 3 of the guide starts it.
-# ExecStart uses %h because cargo installs pueued into ~/.cargo/bin, not /usr/bin.
+# Pueue daemon. extra.sh copies this to ~/.config/systemd/user/.
+# %h because cargo installs pueued into ~/.cargo/bin.
 
 [Unit]
 Description=Pueue Daemon - CLI process scheduler and manager
