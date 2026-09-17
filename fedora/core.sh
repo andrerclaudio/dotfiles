@@ -120,6 +120,16 @@ add_rpm_fusion_repository() {
     fi
 }
 
+tune_inotify_limit() {
+    banner "Raising the inotify watch limit (VS Code, syncthing)"
+
+    # A drop-in, not /etc/sysctl.conf: that file is deprecated and gets replaced
+    # on some upgrades.
+    echo "fs.inotify.max_user_watches=524288" | sudo tee /etc/sysctl.d/99-inotify.conf
+    sudo sysctl --system
+    sysctl fs.inotify.max_user_watches
+}
+
 configure_git_credentials() {
     banner "GIT Credentials"
 
@@ -160,6 +170,7 @@ update_and_upgrade
 remove_unwanted_defaults
 install_flatpak_and_add_flathub
 install_snapd
+tune_inotify_limit
 configure_git_credentials
 add_serial_permissions
 

@@ -197,6 +197,50 @@ echo "---> Installing the Tmux Plugin Manager..."
 # The path the last line of tmux.conf runs. Plugins go in with 'prefix + I'.
 clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
 
+# 17. Yazi flavor
+echo "---> Installing the Yazi gruvbox-dark flavor..."
+# After step 14: 'ya pkg' writes into ~/.config/yazi, which that step populates.
+if have ya; then
+    ya pkg add bennyyip/gruvbox-dark || echo "!!! Yazi flavor install failed, skipping."
+else
+    echo "!!! SKIPPED: yazi is not installed."
+fi
+
+# 18. Ollama models
+echo "---> Pulling Ollama models..."
+# Several GB and no resume, so each pull is reported on its own.
+if have ollama; then
+    for model in deepseek-r1:1.5b gemma3:1b qwen3-vl:4b; do
+        ollama pull "$model" || echo "!!! failed: $model"
+    done
+else
+    echo "!!! SKIPPED: ollama is not installed - see step 9."
+fi
+
+# 19. Distrobox containers
+echo "---> Creating the Debian and Ubuntu containers..."
+# --home keeps each container's files outside ~, so a reinstall of the host
+# does not take them with it.
+DISTROBOX_HOMES="$HOME/Documents/Distrobox"
+if have distrobox; then
+    DB_PKGS="systemd libpam-systemd pipewire-audio-client-libraries git tmux"
+    create_box() {  # $1 name, $2 image
+        if distrobox list | grep -qw "$1"; then
+            echo "     container '$1' already exists, skipping."
+            return
+        fi
+        mkdir -p "$DISTROBOX_HOMES/$1"
+        distrobox create --name "$1" --hostname "$1" --init --image "$2" \
+            --additional-packages "$DB_PKGS" --home "$DISTROBOX_HOMES/$1" \
+            || echo "!!! failed to create $1"
+    }
+    create_box Debian debian:latest
+    create_box Ubuntu ubuntu:24.04
+    echo "     enter one with 'distrobox enter Debian'."
+else
+    echo "!!! SKIPPED: distrobox is not installed."
+fi
+
 echo "# -----------------------------------------------------------------------#"
 echo "# Extra scripts installed successfully!                                  #"
 echo "# -----------------------------------------------------------------------#"

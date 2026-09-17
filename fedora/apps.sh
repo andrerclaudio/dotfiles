@@ -57,6 +57,7 @@ install_dnf_packages() {
     # Alphabetized. Plain names, no .x86_64 suffixes.
     local packages=(
         "0ad"
+        "abrt-desktop"             # crash reporting, with gnome-abrt below
         "alacritty"
         "alsa-lib-devel"
         "aria2"
@@ -92,6 +93,7 @@ install_dnf_packages() {
         "gdk-pixbuf2-devel"
         "ghostty"
         "glib2-devel"
+        "gnome-abrt"
         "gnome-shell-extension-pop-shell"
         "gnome-tweaks"
         "gobject-introspection-devel"
@@ -107,6 +109,7 @@ install_dnf_packages() {
         "libusb1-devel"
         "libvorbis-devel"
         "libzstd-devel"
+        "livecd-tools"
         "luarocks"
         "mpv"
         "nano"
@@ -115,12 +118,14 @@ install_dnf_packages() {
         "net-tools"
         "nmap"
         "nodejs-npm"
+        "openssh-server"           # the sshd unit is enabled by enable_sshd below
         "openssl"
         "openssl-devel"
         "papirus-icon-theme"
         "picocom"
         "pkgconf-pkg-config"
         "podman-compose"
+        "policycoreutils-python-utils"  # semanage, used by tools/change_swap.md
         "powerline-fonts"
         "pycharm-community"
         "python3-devel"
@@ -138,7 +143,9 @@ install_dnf_packages() {
         "tree"
         "vim-common"
         "xprop"
+        "xxd"
         "yazi"
+        "yt-dlp"
         "zig"
         "zlib-devel"
         "zoxide"
@@ -194,6 +201,7 @@ install_flatpak_apps() {
         "org.gnome.meld"
         "org.inkscape.Inkscape"
         "org.kde.kdenlive"
+        "org.kicad.KiCad"
         "org.libreoffice.LibreOffice"
         "org.nickvision.tubeconverter"
         "org.octave.Octave"
@@ -210,6 +218,22 @@ install_flatpak_apps() {
                 || echo "!!! failed: $app"
         done
     }
+}
+
+enable_sshd() {
+    banner "Enabling the SSH server"
+
+    if ! rpm -q openssh-server >/dev/null 2>&1; then
+        echo "!!! SKIPPED: openssh-server is not installed - see the DNF report above."
+        return
+    fi
+
+    sudo systemctl enable --now sshd
+
+    # Fedora Workstation ships firewalld enabled, so the port has to be opened.
+    sudo firewall-cmd --add-service=ssh --permanent
+    sudo firewall-cmd --reload
+    echo "---> sshd is running and port 22 is open."
 }
 
 enable_syncthing() {
@@ -231,5 +255,6 @@ add_apps_repo
 install_dnf_packages
 install_flatpak_apps
 enable_syncthing
+enable_sshd
 
 banner "Application installation complete. Reboot, then continue the guide."

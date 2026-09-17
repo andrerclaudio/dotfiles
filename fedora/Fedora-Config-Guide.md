@@ -32,7 +32,8 @@
     ```
 
     *Installs from DNF (COPRs, Chrome, VS Code) and Flathub (`--user`), then
-    starts the Syncthing daemon — its web UI is at <http://127.0.0.1:8384>.*
+    starts the Syncthing daemon — its web UI is at <http://127.0.0.1:8384> — and
+    enables `sshd`, opening port 22 in firewalld.*
 
     *Note: From now on, use the Alacritty or Ghostty terminal.*
 
@@ -55,7 +56,8 @@
     - Open **VS Code** and start Sync.
 
 5. Run the Extra script (Plugins, Fonts, Cargo, Zed, Ollama, Herdr, Antigravity
-   CLI, Claude Code CLI, cliamp, configs, `~/.zshrc`, TPM) and restart:
+   CLI, Claude Code CLI, cliamp, configs, `~/.zshrc`, TPM, the Yazi flavor, the
+   Ollama models and the Distrobox containers) and restart:
 
     ```shell
     ./extra.sh
@@ -64,6 +66,10 @@
 
     *This also installs `~/.zshrc` over the one the Oh My Zsh installer wrote.
     If that file differed, it is kept as `~/.zshrc.bak`.*
+
+    *The last steps are the slow ones: several GB of Ollama models, and the
+    Debian and Ubuntu containers, whose homes land in `~/Documents/Distrobox/`.
+    Enter one with `distrobox enter Debian`.*
 
 ## Phase 2: Manual Authentications & GUI Tweaks
 
@@ -115,20 +121,15 @@
     *If Secure Boot is enabled, the module must be signed or Secure Boot
     disabled, or it will refuse to load.*
 
-3. **Tune VS Code Settings (Inotify limits):**
-    Use a drop-in file rather than editing `/etc/sysctl.conf` (deprecated, and
-    replaced on some upgrades):
-
-    ```shell
-    echo "fs.inotify.max_user_watches=524288" | sudo tee /etc/sysctl.d/99-inotify.conf
-    sudo sysctl --system
-    ```
-
-    Verify:
+3. **Check the inotify limit (VS Code):**
+    `core.sh` already writes `/etc/sysctl.d/99-inotify.conf` and applies it.
+    Confirm it stuck:
 
     ```shell
     sysctl fs.inotify.max_user_watches
     ```
+
+    *Should print `524288`. If it prints the default, re-run `sudo sysctl --system`.*
 
 4. Install your preferred **PWA applications**.
 5. Install your preferred **Gnome Extensions**.
