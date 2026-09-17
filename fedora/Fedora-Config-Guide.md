@@ -68,8 +68,12 @@
     If that file differed, it is kept as `~/.zshrc.bak`.*
 
     *The last steps are the slow ones: several GB of Ollama models, and the
-    Debian and Ubuntu containers, whose homes land in `~/Documents/Distrobox/`.
-    Enter one with `distrobox enter Debian`.*
+    Debian and Ubuntu containers, whose homes land in `~/Documents/Distrobox/`.*
+
+    *`distrobox create` only pulls the image — the `--additional-packages`
+    (systemd, git, tmux, the pipewire libs) are installed on the **first**
+    `distrobox enter` of each container, so both `distrobox enter Debian` and
+    `distrobox enter Ubuntu` take a few minutes the first time.*
 
 ## Phase 2: Manual Authentications & GUI Tweaks
 

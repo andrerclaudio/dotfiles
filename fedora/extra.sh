@@ -198,10 +198,12 @@ echo "---> Installing the Tmux Plugin Manager..."
 clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
 
 # 17. Yazi flavor
-echo "---> Installing the Yazi gruvbox-dark flavor..."
-# After step 14: 'ya pkg' writes into ~/.config/yazi, which that step populates.
+echo "---> Installing the Yazi gruvbox-material flavor..."
+# After step 14: 'ya pkg' writes into ~/.config/yazi, which that step populates
+# with the theme.toml that selects this flavor.
 if have ya; then
-    ya pkg add bennyyip/gruvbox-dark || echo "!!! Yazi flavor install failed, skipping."
+    ya pkg add matt-dong-123/gruvbox-material \
+        || echo "!!! Yazi flavor install failed, skipping."
 else
     echo "!!! SKIPPED: yazi is not installed."
 fi
@@ -236,7 +238,7 @@ if have distrobox; then
     }
     create_box Debian debian:latest
     create_box Ubuntu ubuntu:24.04
-    echo "     enter one with 'distrobox enter Debian'."
+    echo "     enter them with 'distrobox enter Debian' / 'distrobox enter Ubuntu'."
 else
     echo "!!! SKIPPED: distrobox is not installed."
 fi
