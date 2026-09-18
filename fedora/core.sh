@@ -27,9 +27,10 @@ ensure_dnf_prereqs() {
 configure_package_management() {
     banner "Add new settings to improve package management efficiency"
 
+    # Above ~7 the streams starve each other and dnf times mirrors out.
     sudo dnf config-manager setopt \
         fastestmirror=True \
-        max_parallel_downloads=19 \
+        max_parallel_downloads=7 \
         defaultyes=True \
         keepcache=True
 }
@@ -125,8 +126,12 @@ tune_inotify_limit() {
 
     # A drop-in, not /etc/sysctl.conf: that file is deprecated and gets replaced
     # on some upgrades.
-    echo "fs.inotify.max_user_watches=524288" | sudo tee /etc/sysctl.d/99-inotify.conf
-    sudo sysctl --system
+    echo "fs.inotify.max_user_watches=524288" \
+        | sudo tee /etc/sysctl.d/99-inotify.conf >/dev/null
+
+    # -p on the one file, not --system: --system reprints every drop-in on the box.
+    echo "---> Applying the new limit..."
+    sudo sysctl -q -p /etc/sysctl.d/99-inotify.conf
     sysctl fs.inotify.max_user_watches
 }
 

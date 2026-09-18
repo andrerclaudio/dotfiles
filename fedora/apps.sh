@@ -23,6 +23,10 @@ add_apps_repo() {
     sudo dnf copr enable -y lihaohong/yazi
 
     sudo dnf install -y fedora-workstation-repositories
+
+    # Chrome's %post imports this too late, with the rpm lock still held.
+    sudo rpm --import https://dl.google.com/linux/linux_signing_key.pub \
+        || echo "!!! Could not fetch the Google signing key; 'google-chrome-stable' may be skipped below."
     sudo dnf config-manager setopt google-chrome.enabled=1
 
     # Import the key first, write the repo only if that worked: under -y dnf
@@ -76,7 +80,6 @@ install_dnf_packages() {
         "codespell"
         "dbus-devel"
         "distrobox"
-        "doxygen"
         "du-dust"                  # the binary is 'dust'; the package is du-dust
         "expect"
         "eza"
@@ -85,6 +88,7 @@ install_dnf_packages() {
         "fedora-packager"
         "ffmpeg-free"
         "flac-devel"
+        "flashrom"
         "fontawesome-fonts-all"
         "fzf"
         "gcc-c++"
@@ -106,9 +110,10 @@ install_dnf_packages() {
         "lazygit"
         "libadwaita-devel"
         "libavcodec-freeworld"
+        "libftdi"
+        "libjaylink"
         "libusb1-devel"
         "libvorbis-devel"
-        "libzstd-devel"
         "livecd-tools"
         "luarocks"
         "mpv"
@@ -118,9 +123,7 @@ install_dnf_packages() {
         "net-tools"
         "nmap"
         "nodejs-npm"
-        "openssh-server"           # the sshd unit is enabled by enable_sshd below
         "openssl"
-        "openssl-devel"
         "papirus-icon-theme"
         "picocom"
         "pkgconf-pkg-config"
@@ -147,7 +150,6 @@ install_dnf_packages() {
         "yazi"
         "yt-dlp"
         "zig"
-        "zlib-devel"
         "zoxide"
         "zsh"
         "zstd"
@@ -209,31 +211,13 @@ install_flatpak_apps() {
         "org.videolan.VLC"
     )
 
-    # A batch is faster, but flatpak refuses all of it over one bad ID.
-    echo "---> Installing Flathub applications..."
-    flatpak install -y --noninteractive --user flathub "${apps[@]}" || {
-        echo "!!! Batch install failed; retrying one at a time."
-        for app in "${apps[@]}"; do
-            flatpak install -y --noninteractive --user flathub "$app" \
-                || echo "!!! failed: $app"
-        done
-    }
-}
-
-enable_sshd() {
-    banner "Enabling the SSH server"
-
-    if ! rpm -q openssh-server >/dev/null 2>&1; then
-        echo "!!! SKIPPED: openssh-server is not installed - see the DNF report above."
-        return
-    fi
-
-    sudo systemctl enable --now sshd
-
-    # Fedora Workstation ships firewalld enabled, so the port has to be opened.
-    sudo firewall-cmd --add-service=ssh --permanent
-    sudo firewall-cmd --reload
-    echo "---> sshd is running and port 22 is open."
+    # Per app: a batch dies whole over one bad ID. The counter is the progress.
+    local app i=0 total=${#apps[@]}
+    for app in "${apps[@]}"; do
+        printf -- '---> [%2d/%d] %s\n' "$((++i))" "$total" "$app"
+        flatpak install -y --noninteractive --user flathub "$app" >/dev/null \
+            || echo "!!! failed: $app"
+    done
 }
 
 enable_syncthing() {
@@ -255,6 +239,5 @@ add_apps_repo
 install_dnf_packages
 install_flatpak_apps
 enable_syncthing
-enable_sshd
 
 banner "Application installation complete. Reboot, then continue the guide."

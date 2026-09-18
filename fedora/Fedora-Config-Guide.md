@@ -32,8 +32,9 @@
     ```
 
     *Installs from DNF (COPRs, Chrome, VS Code) and Flathub (`--user`), then
-    starts the Syncthing daemon — its web UI is at <http://127.0.0.1:8384> — and
-    enables `sshd`, opening port 22 in firewalld.*
+    starts the Syncthing daemon — its web UI is at <http://127.0.0.1:8384>.*
+
+    *The Flatpak stage installs one app at a time, printing `[n/34] <app-id>`.*
 
     *Note: From now on, use the Alacritty or Ghostty terminal.*
 

@@ -15,7 +15,7 @@ source "$SCRIPT_DIR/lib.sh"
 # init_stage warms sudo: the Ollama installer (step 9) needs it mid-run.
 init_stage "$HOME/fedora-setup-extra.log"
 
-# The 'have' guards look for binaries in these dirs, which bash may not have yet.
+# Later steps call binaries the earlier ones drop in these dirs.
 PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 
 echo "# -----------------------------------------------------------------------#"
@@ -59,11 +59,7 @@ rm -f "$FONT_TAR"
 
 # 3. Rust and cargo utilities
 echo "---> Installing Rust and Cargo utilities..."
-if have rustup; then
-    echo "     rustup already installed, skipping."
-else
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-fi
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 if [[ -f "$HOME/.cargo/env" ]]; then
     # shellcheck source=/dev/null
@@ -76,11 +72,8 @@ fi
 
 # 4. Atuin
 echo "---> Installing Atuin..."
-if have atuin; then
-    echo "     atuin already installed, skipping."
-else
-    curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
-fi
+curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh \
+    || echo "!!! Atuin install failed."
 
 # 5. Eza gruvbox theme
 echo "---> Configuring Eza Gruvbox theme..."
@@ -117,55 +110,32 @@ fi
 # 8. Zed
 echo "---> Installing Zed..."
 # Lands under ~/.local, so no root is needed.
-if have zed; then
-    echo "     zed already installed, skipping."
-else
-    curl -fsSL https://zed.dev/install.sh | sh
-fi
+curl -fsSL https://zed.dev/install.sh | sh || echo "!!! Zed install failed."
 
 # 9. Ollama
 echo "---> Installing Ollama..."
 # Sets up a systemd service, so it may prompt for sudo.
-if have ollama; then
-    echo "     ollama already installed, skipping."
-else
-    curl -fsSL https://ollama.com/install.sh | sh
-fi
+curl -fsSL https://ollama.com/install.sh | sh || echo "!!! Ollama install failed."
 
 # 10. Herdr
 echo "---> Installing Herdr..."
-if have herdr; then
-    echo "     herdr already installed, skipping."
-else
-    curl -fsSL https://herdr.dev/install.sh | sh
-fi
+curl -fsSL https://herdr.dev/install.sh | sh || echo "!!! Herdr install failed."
 
 # 11. Antigravity CLI
 echo "---> Installing Antigravity CLI..."
-if have agy; then
-    echo "     antigravity CLI already installed, skipping."
-else
-    curl -fsSL https://antigravity.google/cli/install.sh | bash
-fi
+curl -fsSL https://antigravity.google/cli/install.sh | bash \
+    || echo "!!! Antigravity CLI install failed."
 
 # 12. Claude Code CLI
 echo "---> Installing Claude Code CLI..."
 # Lands in ~/.local/bin, so no root is needed.
-if have claude; then
-    echo "     claude already installed, skipping."
-else
-    curl -fsSL https://claude.ai/install.sh | bash
-fi
+curl -fsSL https://claude.ai/install.sh | bash || echo "!!! Claude Code install failed."
 
 # 13. cliamp
 echo "---> Installing cliamp..."
 # The PATH set above is what makes the installer pick ~/.local/bin over
 # /usr/local/bin, so no root is needed.
-if have cliamp; then
-    echo "     cliamp already installed, skipping."
-else
-    curl -fsSL https://cliamp.stream/install.sh | sh
-fi
+curl -fsSL https://cliamp.stream/install.sh | sh || echo "!!! cliamp install failed."
 
 # 14. Configs
 echo "---> Copying configs into ~/.config..."
@@ -227,10 +197,6 @@ DISTROBOX_HOMES="$HOME/Documents/Distrobox"
 if have distrobox; then
     DB_PKGS="systemd libpam-systemd pipewire-audio-client-libraries git tmux"
     create_box() {  # $1 name, $2 image
-        if distrobox list | grep -qw "$1"; then
-            echo "     container '$1' already exists, skipping."
-            return
-        fi
         mkdir -p "$DISTROBOX_HOMES/$1"
         distrobox create --name "$1" --hostname "$1" --init --image "$2" \
             --additional-packages "$DB_PKGS" --home "$DISTROBOX_HOMES/$1" \

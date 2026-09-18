@@ -23,7 +23,8 @@ require_non_root() {
 start_logging() {
     LOG_FILE="$1"
     exec 3>&1 4>&2
-    exec > >(tee -a "$LOG_FILE") 2>&1
+    # Screen keeps the progress bars; the log gets the last redraw, no escapes.
+    exec > >(tee >(sed -u 's/\r*$//; s/.*\r//; s/\x1b\[[0-9;?]*[a-zA-Z]//g' >>"$LOG_FILE")) 2>&1
     TEE_PID=$!
     echo "Logging this run to $LOG_FILE"
 }
