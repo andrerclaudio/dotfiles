@@ -130,6 +130,10 @@
             "format": "\u001b[90m└─────────────────────────────────────────────────────────┘"
         },
         "break",
+        { "type": "colors", "block": { "width": 7, "range": [0, 7] }, "paddingLeft": 2 },
+        { "type": "colors", "block": { "width": 7, "range": [0, 7] }, "paddingLeft": 2 },
+        { "type": "colors", "block": { "width": 7, "range": [8, 15] }, "paddingLeft": 2 },
+        { "type": "colors", "block": { "width": 7, "range": [8, 15] }, "paddingLeft": 2 },
         "break",
         "break"
     ]
