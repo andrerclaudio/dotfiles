@@ -23,10 +23,6 @@ add_apps_repo() {
     sudo dnf copr enable -y lihaohong/yazi
 
     sudo dnf install -y fedora-workstation-repositories
-
-    # Chrome's %post imports this too late, with the rpm lock still held.
-    sudo rpm --import https://dl.google.com/linux/linux_signing_key.pub \
-        || echo "!!! Could not fetch the Google signing key; 'google-chrome-stable' may be skipped below."
     sudo dnf config-manager setopt google-chrome.enabled=1
 
     # Import the key first, write the repo only if that worked: under -y dnf
@@ -203,7 +199,6 @@ install_flatpak_apps() {
         "org.gnome.meld"
         "org.inkscape.Inkscape"
         "org.kde.kdenlive"
-        "org.kicad.KiCad"
         "org.libreoffice.LibreOffice"
         "org.nickvision.tubeconverter"
         "org.octave.Octave"
