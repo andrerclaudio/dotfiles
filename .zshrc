@@ -1,7 +1,7 @@
 # ——————————————————————————————————————————————————————————————————————
 # PATHS & ENVIRONMENT
 # ——————————————————————————————————————————————————————————————————————
-# zsh leaves INTERACTIVE_COMMENTS off, and the plugins=() list needs it.
+# Lets you paste a command with a trailing '#' comment at the prompt.
 setopt INTERACTIVE_COMMENTS
 
 export ZSH="$HOME/.oh-my-zsh"
@@ -57,7 +57,6 @@ setopt HIST_IGNORE_ALL_DUPS     # remove older duplicates; covers the
 # ——————————————————————————————————————————————————————————————————————
 # ALIASES & FUNCTIONS
 # ——————————————————————————————————————————————————————————————————————
-alias fastfetch="fastfetch --logo-padding-top 3 --logo-padding-left 4"
 alias my-ip="ip -c -h -s addr"
 alias e="eza -lbhHigaUm --git --group-directories-first --icons=auto --color-scale=all --colour=auto"
 alias zoom="tree -shaCL 2 --du"

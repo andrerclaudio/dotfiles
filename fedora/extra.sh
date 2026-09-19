@@ -18,9 +18,7 @@ init_stage "$HOME/fedora-setup-extra.log"
 # Later steps call binaries the earlier ones drop in these dirs.
 PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 
-echo "# -----------------------------------------------------------------------#"
-echo "# Starting Extra Configurations & Installations                          #"
-echo "# -----------------------------------------------------------------------#"
+banner "Starting Extra Configurations & Installations"
 
 # Non-zero on failure, so callers can skip what depends on the clone.
 clone() {
@@ -66,6 +64,7 @@ if [[ -f "$HOME/.cargo/env" ]]; then
     source "$HOME/.cargo/env"
     # --locked builds against the Cargo.lock each author published.
     cargo install --locked tock dysk cargo-update
+    # pueue is left unlocked on purpose.
     cargo install pueue
 else
     echo "!!! rustup failed, skipping cargo installs."
@@ -210,7 +209,4 @@ else
     echo "!!! SKIPPED: distrobox is not installed."
 fi
 
-echo "# -----------------------------------------------------------------------#"
-echo "# Extra scripts installed successfully!                                  #"
-echo "# -----------------------------------------------------------------------#"
-echo "Reboot it now."
+banner "Extra scripts installed. Reboot now."

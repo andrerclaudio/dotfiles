@@ -15,7 +15,7 @@ For each hex color defined in the palettes, the script:
 Useful for quickly generating wallpaper backgrounds, color swatches, or visual references
 of the Gruvbox theme in both dark and light variants.
 
-Pallets link:
+Palettes link:
 https://github.com/morhetz/gruvbox
 
 Requires: Pillow (install with `python3 -m pip install pillow`)
@@ -140,7 +140,7 @@ def generate_rect(hex6: str, size: tuple[int, int], out_dir: Path = OUT_DIR) -> 
     """
     rgb = hex_to_rgb(hex6)
     img = Image.new("RGB", size, rgb)
-    out_path = out_dir / f"{hex6}_{SIZE_W}-{SIZE_H}.png"
+    out_path = out_dir / f"{hex6}_{size[0]}-{size[1]}.png"
     img.save(out_path, format="PNG")
     return out_path
 

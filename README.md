@@ -10,7 +10,7 @@ Layout:
 - `fedora/` — post-install scripts, run in order: `core.sh` → `apps.sh` →
   `extra.sh`, with `lib.sh` holding what the three share. See
   `fedora/Fedora-Config-Guide.md`.
-- `tools/` — standalone helper scripts, not part of the install flow.
+- `tools/` — standalone helper scripts and notes, not part of the install flow.
 
 To use these dotfiles:
 

@@ -41,8 +41,7 @@ gpgkey=https://packages.microsoft.com/keys/microsoft.asc
 EOF
     else
         # An existing vscode.repo came from a run that had the key, so keep it.
-        echo "!!! Could not fetch the Microsoft signing key; leaving the VS Code repo as-is."
-        echo "    'code' will be reported as unavailable below if this is a first run."
+        echo "!!! No Microsoft signing key - leaving the VS Code repo as-is."
     fi
 
     sudo dnf makecache
@@ -156,13 +155,13 @@ install_dnf_packages() {
 
     # Skip names no repo carries and packages that cannot be solved.
     sudo dnf install -y --skip-unavailable --skip-broken "${packages[@]}" 2>&1 | tee "$dnf_log" \
-        || echo "!!! dnf install failed - NOTHING may have been installed. See $LOG_FILE."
+        || echo "!!! dnf install failed - see $LOG_FILE."
 
     # Both skip flags are silent about what they drop, so print it.
     echo
-    echo "---> Packages DNF could not find or resolve (check these by hand):"
+    echo "---> Packages DNF skipped (check these by hand):"
     grep -iE "no match for argument|skipping unavailable|not available|broken dependencies" "$dnf_log" \
-        || echo "     (none - everything resolved)"
+        || echo "     (none)"
     rm -f "$dnf_log"
 }
 
@@ -220,14 +219,14 @@ enable_syncthing() {
 
     # The unit ships with the package, but the install above may have skipped it.
     if ! systemctl --user cat syncthing.service >/dev/null 2>&1; then
-        echo "!!! SKIPPED: syncthing.service is not installed - see the DNF report above."
+        echo "!!! SKIPPED: syncthing.service is not installed."
         return
     fi
 
     # --user, never sudo: the daemon owns the synced files.
     systemctl --user enable syncthing.service
     systemctl --user start syncthing.service
-    echo "---> Syncthing is running; its web UI is at http://127.0.0.1:8384."
+    echo "---> Syncthing is running - web UI at http://127.0.0.1:8384"
 }
 
 add_apps_repo

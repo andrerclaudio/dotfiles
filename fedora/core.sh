@@ -76,13 +76,13 @@ remove_unwanted_defaults() {
         [[ -n "$(rpm -qa "$pkg" 2>/dev/null)" ]] && installed+=("$pkg")
     done
 
-    echo "---> Removing selected packages and unused dependencies..."
     if ((${#installed[@]})); then
+        echo "---> Removing ${#installed[@]} package(s) and unused dependencies..."
         sudo dnf remove -y "${installed[@]}"
         sudo dnf autoremove -y
+    else
+        echo "---> Nothing to remove."
     fi
-
-    echo "---> Cleanup complete."
 }
 
 install_flatpak_and_add_flathub() {
@@ -115,8 +115,7 @@ add_rpm_fusion_repository() {
     # good reason. Stop rather than let apps.sh silently drop the codecs;
     # re-running core.sh is safe.
     if ! rpm -q rpmfusion-free-release rpmfusion-nonfree-release >/dev/null 2>&1; then
-        echo "!!! RPM Fusion is missing - codecs would be skipped by apps.sh."
-        echo "!!! Check the network and re-run ./core.sh before apps.sh."
+        echo "!!! RPM Fusion is missing - re-run ./core.sh before apps.sh."
         exit 1
     fi
 }
@@ -148,7 +147,7 @@ configure_git_credentials() {
     git config --global user.name "$GIT_USER_NAME"
     git config --global user.email "$GIT_USER_EMAIL"
     git config --global init.defaultBranch main
-    echo "Git global variables configured successfully."
+    echo "---> Git configured."
 }
 
 add_serial_permissions() {
@@ -158,14 +157,14 @@ add_serial_permissions() {
 
     for group in tty dialout; do
         if id -nG "$user_name" | grep -qw "$group"; then
-            echo "User already has '$group' group permission."
+            echo "---> Already in $group."
         else
             sudo usermod -a -G "$group" "$user_name"
-            echo "${group^} group permission granted!"
+            echo "---> Added to $group."
         fi
     done
 
-    echo "NOTE: group changes only apply after a full logout or reboot."
+    echo "NOTE: group changes need a full logout or reboot."
 }
 
 ensure_dnf_prereqs

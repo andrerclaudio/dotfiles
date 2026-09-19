@@ -34,7 +34,7 @@
     *Installs from DNF (COPRs, Chrome, VS Code) and Flathub (`--user`), then
     starts the Syncthing daemon — its web UI is at <http://127.0.0.1:8384>.*
 
-    *The Flatpak stage installs one app at a time, printing `[n/34] <app-id>`.*
+    *The Flatpak stage installs one app at a time, printing `[n/33] <app-id>`.*
 
     *Note: From now on, use the Alacritty or Ghostty terminal.*
 
@@ -56,9 +56,9 @@
     - Go to **GitHub** and log in.
     - Open **VS Code** and start Sync.
 
-5. Run the Extra script (Plugins, Fonts, Cargo, Zed, Ollama, Herdr, Antigravity
-   CLI, Claude Code CLI, cliamp, configs, `~/.zshrc`, TPM, the Yazi flavor, the
-   Ollama models and the Distrobox containers) and restart:
+5. Run the Extra script and restart. It works through 19 numbered steps —
+   shell plugins, fonts, themes, the CLI tools, the configs, `~/.zshrc`, the
+   Ollama models and the Distrobox containers:
 
     ```shell
     ./extra.sh
