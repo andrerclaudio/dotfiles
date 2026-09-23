@@ -1,4 +1,4 @@
-# Pueue daemon. extra.sh copies this to ~/.config/systemd/user/.
+# Pueue daemon. extra.sh copies this to ~/.config/systemd/user/ and enables it.
 # %h because cargo installs pueued into ~/.cargo/bin.
 
 [Unit]

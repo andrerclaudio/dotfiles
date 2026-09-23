@@ -56,9 +56,9 @@
     - Go to **GitHub** and log in.
     - Open **VS Code** and start Sync.
 
-5. Run the Extra script and restart. It works through 19 numbered steps —
-   shell plugins, fonts, themes, the CLI tools, the configs, `~/.zshrc`, the
-   Ollama models and the Distrobox containers:
+5. Run the Extra script and restart. It works through 20 numbered steps —
+   shell plugins, fonts, themes, the CLI tools, the configs, the Pueue daemon,
+   `~/.zshrc`, the Ollama models and the Distrobox containers:
 
     ```shell
     ./extra.sh
@@ -98,19 +98,7 @@
 
 ## Phase 3: Specialized Software Setup & Tuning
 
-1. **Start the Pueue Daemon:**
-    The unit is already at `~/.config/systemd/user/pueued.service`, pointing at
-    `%h/.cargo/bin/pueued` (the Cargo-installed binary — there is no
-    `/usr/bin/pueued` on this system). Reload first, then enable
-    (`daemon-reload` before `enable`, not after):
-
-    ```shell
-    systemctl --user daemon-reload
-    systemctl --user enable --now pueued
-    systemctl --user status pueued
-    ```
-
-2. **Install Nvidia Drivers (If Needed):**
+1. **Install Nvidia Drivers (If Needed):**
 
     ```shell
     sudo dnf install -y akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs nvidia-settings nvidia-persistenced nvidia-modprobe
@@ -126,7 +114,7 @@
     *If Secure Boot is enabled, the module must be signed or Secure Boot
     disabled, or it will refuse to load.*
 
-3. **Check the inotify limit (VS Code):**
+2. **Check the inotify limit (VS Code):**
     `core.sh` already writes `/etc/sysctl.d/99-inotify.conf` and applies it.
     Confirm it stuck:
 
@@ -136,13 +124,13 @@
 
     *Should print `524288`. If it prints the default, re-run `sudo sysctl --system`.*
 
-4. Install your preferred **PWA applications**.
-5. Install your preferred **Gnome Extensions**.
+3. Install your preferred **PWA applications**.
+4. Install your preferred **Gnome Extensions**.
 
-6. **Initialize Tmux Plugins:**
+5. **Initialize Tmux Plugins:**
     Open a Tmux session and press `prefix + I` (default prefix: `Ctrl+b`) to
     install the plugins listed in `tmux.conf`.
 
     *`prefix + I` does nothing at all unless both halves are in place:
-    `~/.config/tmux/tmux.conf`, and the TPM clone at `~/.tmux/plugins/tpm` that
-    the last line of that file runs.
+    `~/.config/tmux/tmux.conf`, and the TPM clone at
+    `~/.config/tmux/plugins/tpm` that the last line of that file runs.

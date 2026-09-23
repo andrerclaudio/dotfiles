@@ -147,7 +147,19 @@ else
     echo "!!! SKIPPED: no config/ directory found next to this script."
 fi
 
-# 15. Home dotfiles
+# 15. Pueue daemon
+echo "---> Enabling the Pueue daemon..."
+# Needs pueued from step 3 and the unit step 14 just copied. daemon-reload
+# makes systemd see that new unit.
+if have pueued; then
+    systemctl --user daemon-reload
+    systemctl --user enable --now pueued.service \
+        || echo "!!! Pueue daemon failed to start."
+else
+    echo "!!! SKIPPED: pueued is not installed - see step 3."
+fi
+
+# 16. Home dotfiles
 echo "---> Installing ~/.zshrc..."
 # Replaces the .zshrc the Oh My Zsh installer wrote, keeping the old one as
 # ~/.zshrc.bak when it differed.
@@ -162,12 +174,14 @@ else
     echo "!!! SKIPPED: no .zshrc found at the repo root."
 fi
 
-# 16. TPM (Tmux Plugin Manager)
+# 17. TPM (Tmux Plugin Manager)
 echo "---> Installing the Tmux Plugin Manager..."
-# The path the last line of tmux.conf runs. Plugins go in with 'prefix + I'.
-clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+# The path the last line of tmux.conf runs. With tmux.conf under ~/.config/tmux,
+# TPM puts the plugins in ~/.config/tmux/plugins too, so it lives there as well.
+# Plugins go in with 'prefix + I'.
+clone https://github.com/tmux-plugins/tpm "$HOME/.config/tmux/plugins/tpm"
 
-# 17. Yazi flavor
+# 18. Yazi flavor
 echo "---> Installing the Yazi gruvbox-material flavor..."
 # After step 14: 'ya pkg' writes into ~/.config/yazi, which that step populates
 # with the theme.toml that selects this flavor.
@@ -178,7 +192,7 @@ else
     echo "!!! SKIPPED: yazi is not installed."
 fi
 
-# 18. Ollama models
+# 19. Ollama models
 echo "---> Pulling Ollama models..."
 # Several GB and no resume, so each pull is reported on its own.
 if have ollama; then
@@ -189,7 +203,7 @@ else
     echo "!!! SKIPPED: ollama is not installed - see step 9."
 fi
 
-# 19. Distrobox containers
+# 20. Distrobox containers
 echo "---> Creating the Debian and Ubuntu containers..."
 # --home keeps each container's files outside ~, so a reinstall of the host
 # does not take them with it.

@@ -1,8 +1,8 @@
 # Changing SWAP size on a Fedora machine
 
 Create a persistent swap file at `/swapfile` on a freshly installed machine.
-Run the steps in order, as root (`sudo` is already in each command). Works on
-Btrfs (the Fedora default) and on ext4/XFS.
+Run the steps in order, as root (`sudo` is already in each command). Written
+for Btrfs, the Fedora default - for ext4/XFS see the notes at the end.
 
 Pick the size once and reuse it through the rest of the guide:
 
@@ -21,34 +21,25 @@ back later.
 swapon --show
 free -h
 df -h /
+findmnt -no FSTYPE /
 ```
 
-`df` must show at least `SIZE_GIB` free.
+`df` must show at least `SIZE_GIB` free, and `findmnt` must print `btrfs`.
 
-## 2. Create the empty file, disable copy-on-write, lock down permissions
+## 2. Create the swap file
 
-Order matters: on Btrfs, `chattr +C` only takes effect while the file is still
-empty. On ext4/XFS the command fails harmlessly - carry on.
+One command does it all: creates the file, turns off copy-on-write, locks the
+permissions to `600`, allocates the space and formats it as swap. Takes a few
+seconds.
 
 ```shell
-sudo touch /swapfile
-sudo chattr +C /swapfile
-sudo chmod 600 /swapfile
+sudo btrfs filesystem mkswapfile --size "${SIZE_GIB}g" /swapfile
 ```
 
-## 3. Allocate the space
-
-Zeros, not `fallocate`: on Btrfs `fallocate` leaves holes behind and `mkswap`
-rejects a file with holes. This takes a while.
-
-```shell
-sudo dd if=/dev/zero of=/swapfile bs=1M count=$((SIZE_GIB * 1024)) status=progress conv=fdatasync
-```
-
-## 4. Label it for SELinux - before enabling it
+## 3. Label it for SELinux - before enabling it
 
 With SELinux enforcing, `swapon` on a file carrying the wrong type is denied, so
-this has to happen before step 5.
+this has to happen before step 4.
 
 ```shell
 # install semanage if missing
@@ -57,14 +48,13 @@ sudo semanage fcontext -a -t swapfile_t '/swapfile'
 sudo restorecon -v /swapfile
 ```
 
-## 5. Mark as swap and enable it
+## 4. Enable it
 
 ```shell
-sudo mkswap /swapfile
 sudo swapon /swapfile
 ```
 
-## 6. Verify
+## 5. Verify
 
 ```shell
 swapon --show
@@ -73,7 +63,7 @@ free -h
 
 `swapon --show` should list `/swapfile` at the new size.
 
-## 7. Make it survive a reboot
+## 6. Make it survive a reboot
 
 ```shell
 sudo cp /etc/fstab /etc/fstab.bak
@@ -84,7 +74,7 @@ sudo systemctl daemon-reload
 `nofail` keeps a missing swap file from blocking boot; `daemon-reload` lets
 systemd pick up the entry without a reboot.
 
-## 8. Confirm the fstab entry actually works
+## 7. Confirm the fstab entry actually works
 
 ```shell
 sudo swapoff /swapfile
@@ -99,5 +89,13 @@ boot will do the same thing.
 
 ## Notes
 
-- **Btrfs**: the swap file must stay NOCOW, uncompressed, and outside any
-  snapshotted subvolume - a snapshot of an active swap file will break it.
+- **Btrfs**: keep the swap file out of any subvolume you snapshot (Snapper,
+  Timeshift) - Btrfs refuses to snapshot a subvolume with an active swap file.
+- **ext4/XFS**: `btrfs filesystem mkswapfile` only works on Btrfs. Replace
+  step 2 with:
+
+  ```shell
+  sudo fallocate -l "${SIZE_GIB}G" /swapfile
+  sudo chmod 600 /swapfile
+  sudo mkswap /swapfile
+  ```
