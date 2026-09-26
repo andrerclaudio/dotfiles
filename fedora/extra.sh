@@ -64,8 +64,8 @@ if [[ -f "$HOME/.cargo/env" ]]; then
     source "$HOME/.cargo/env"
     # --locked builds against the Cargo.lock each author published.
     cargo install --locked tock dysk cargo-update
-    # pueue is left unlocked on purpose.
-    cargo install pueue
+    # pueue and leaf are left unlocked on purpose.
+    cargo install pueue leaf-markdown-viewer
 else
     echo "!!! rustup failed, skipping cargo installs."
 fi
