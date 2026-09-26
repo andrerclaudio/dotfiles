@@ -6,7 +6,6 @@ export ZSH="$HOME/.oh-my-zsh"
 export LANG="en_US.UTF-8"
 export LANGUAGE="en_US:en"
 export BAT_THEME="gruvbox-dark"
-export FZF_DEFAULT_OPTS="--color=fg:#ebdbb2,bg+:#3c3836,fg+:#ebdbb2,hl:#fabd2f,hl+:#fabd2f,info:#83a598,prompt:#b8bb26,pointer:#fe8019,marker:#fe8019,spinner:#fe8019,header:#928374,border:#665c54"
 export EDITOR="nano"
 export VISUAL="$EDITOR"
 
