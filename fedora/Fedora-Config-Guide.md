@@ -27,6 +27,9 @@
     *It also creates a 16 GiB swap file at `/swapfile` (`tools/change_swap.sh`),
     used once zram is full. Skipped if `/swapfile` already exists.*
 
+    *And it writes one 1920x1080 PNG per Gruvbox color into `~/Pictures/Solid`
+    (`tools/colors_solid.py`), ready to pick as a wallpaper.*
+
 2. Run the Apps script and restart:
 
     ```shell

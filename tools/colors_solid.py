@@ -8,9 +8,10 @@ For each hex color defined in the palettes, the script:
 - Normalizes and deduplicates all hex codes across both palettes.
 - Converts each hex code into its RGB equivalent.
 - Creates a solid-color image of size SIZE_W x SIZE_H (default: 1920 x 1080).
-- Saves each image into OUT_DIR as "<hex>_<width>-<height>.png"
-  (e.g., "solid/d65d0e_1920-1080.png"). OUT_DIR is created if missing and is
-  relative to the current directory, so run the script where you want it.
+- Saves each image into OUT_DIR, ~/Pictures/Solid, as "<hex>_<width>-<height>.png"
+  (e.g., "~/Pictures/Solid/d65d0e_1920-1080.png"). OUT_DIR is created if
+  missing, and a re-run overwrites the files with identical ones.
+  fedora/core.sh runs it on a fresh install.
 
 Useful for quickly generating wallpaper backgrounds, color swatches, or visual references
 of the Gruvbox theme in both dark and light variants.
@@ -18,7 +19,7 @@ of the Gruvbox theme in both dark and light variants.
 Palettes link:
 https://github.com/morhetz/gruvbox
 
-Requires: Pillow (install with `python3 -m pip install pillow`)
+Requires: Pillow (install with `sudo dnf install python3-pillow`)
 """
 
 from __future__ import annotations
@@ -100,7 +101,7 @@ SIZE_W: int = 1920
 SIZE_H: int = 1080
 
 # ------------------------------ Output -------------------------------------- #
-OUT_DIR: Path = Path("solid")
+OUT_DIR: Path = Path.home() / "Pictures" / "Solid"
 
 
 # ------------------------------ Helpers ------------------------------------- #

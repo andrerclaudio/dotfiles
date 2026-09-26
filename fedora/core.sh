@@ -160,6 +160,17 @@ configure_git_credentials() {
     echo "---> Git configured."
 }
 
+generate_solid_wallpapers() {
+    banner "Solid Gruvbox wallpapers (~/Pictures/Solid)"
+
+    # Pillow draws the PNGs.
+    sudo dnf install -y python3-pillow
+
+    # Only the summary line: the per-file lines add nothing to the log.
+    python3 "$REPO_ROOT/tools/colors_solid.py" | tail -n 1 \
+        || echo "!!! Wallpaper generation failed - see $LOG_FILE."
+}
+
 add_serial_permissions() {
     banner "Adding serial permissions (tty, dialout)"
     local user_name group
@@ -187,6 +198,7 @@ install_snapd
 tune_inotify_limit
 create_swap_file
 configure_git_credentials
+generate_solid_wallpapers
 add_serial_permissions
 
 banner "Core installs done. Reboot, then run ./apps.sh"

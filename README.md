@@ -11,7 +11,8 @@ Layout:
   `extra.sh`, with `lib.sh` holding what the three share. See
   `fedora/Fedora-Config-Guide.md`.
 - `tools/` — standalone helper scripts and notes, not part of the install flow.
-  The one exception is `change_swap.sh`, which `core.sh` also runs.
+  The exceptions are `change_swap.sh` and `colors_solid.py`, which `core.sh`
+  also runs.
 
 To use these dotfiles:
 
