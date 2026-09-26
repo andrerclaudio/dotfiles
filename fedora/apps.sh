@@ -123,7 +123,7 @@ install_dnf_packages() {
         "picocom"
         "pkgconf-pkg-config"
         "podman-compose"
-        "policycoreutils-python-utils"  # semanage, used by tools/change_swap.md
+        "policycoreutils-python-utils"  # semanage, used by tools/change_swap.sh
         "powerline-fonts"
         "pycharm-community"
         "python3-devel"

@@ -8,6 +8,7 @@
 set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 
 # shellcheck source=lib.sh
 source "$SCRIPT_DIR/lib.sh"
@@ -134,6 +135,15 @@ tune_inotify_limit() {
     sysctl fs.inotify.max_user_watches
 }
 
+create_swap_file() {
+    banner "Swap file (/swapfile, on top of zram)"
+
+    # Its own script so it can also run alone. It uses sudo per command, so it
+    # is not run under sudo. Does nothing if /swapfile is already there.
+    bash "$REPO_ROOT/tools/change_swap.sh" \
+        || echo "!!! Swap file setup failed - see $LOG_FILE."
+}
+
 configure_git_credentials() {
     banner "GIT Credentials"
 
@@ -175,6 +185,7 @@ remove_unwanted_defaults
 install_flatpak_and_add_flathub
 install_snapd
 tune_inotify_limit
+create_swap_file
 configure_git_credentials
 add_serial_permissions
 

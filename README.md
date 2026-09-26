@@ -11,6 +11,7 @@ Layout:
   `extra.sh`, with `lib.sh` holding what the three share. See
   `fedora/Fedora-Config-Guide.md`.
 - `tools/` — standalone helper scripts and notes, not part of the install flow.
+  The one exception is `change_swap.sh`, which `core.sh` also runs.
 
 To use these dotfiles:
 

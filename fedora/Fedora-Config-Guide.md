@@ -24,6 +24,9 @@
     *The reboot is not optional: the `tty` and `dialout` group memberships this
     script grants only take effect after a full logout.*
 
+    *It also creates a 16 GiB swap file at `/swapfile` (`tools/change_swap.sh`),
+    used once zram is full. Skipped if `/swapfile` already exists.*
+
 2. Run the Apps script and restart:
 
     ```shell
