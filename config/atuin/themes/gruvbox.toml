@@ -1,0 +1,12 @@
+# Gruvbox colors for the atuin search UI.
+[theme]
+name = "gruvbox"
+
+[colors]
+AlertInfo = "#b8bb26"
+AlertWarn = "#fabd2f"
+AlertError = "#fb4934"
+Annotation = "#83a598"
+Base = "#ebdbb2"
+Guidance = "#928374"
+Important = "#fe8019"

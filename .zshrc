@@ -6,6 +6,7 @@ export ZSH="$HOME/.oh-my-zsh"
 export LANG="en_US.UTF-8"
 export LANGUAGE="en_US:en"
 export BAT_THEME="gruvbox-dark"
+export FZF_DEFAULT_OPTS="--color=fg:#ebdbb2,bg+:#3c3836,fg+:#ebdbb2,hl:#fabd2f,hl+:#fabd2f,info:#83a598,prompt:#b8bb26,pointer:#fe8019,marker:#fe8019,spinner:#fe8019,header:#928374,border:#665c54"
 export EDITOR="nano"
 export VISUAL="$EDITOR"
 
@@ -57,6 +58,12 @@ if (( $+commands[bat] )); then
     alias cat="bat --paging=never"
 elif (( $+commands[batcat] )); then
     alias cat="batcat --paging=never"
+fi
+
+# Man pages through bat, in the BAT_THEME colors.
+if (( $+commands[bat] )); then
+    export MANROFFOPT="-c"
+    export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 fi
 
 # yazi: cd into its last visited directory on exit.
