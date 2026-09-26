@@ -1,9 +1,7 @@
 #!/bin/bash
-#
-# RUN ORDER:  core.sh  ->  apps.sh  ->  extra.sh
-# Needs apps.sh (C toolchain, -devel packages) and Oh My Zsh already in place.
+# Fedora post-install, stage 3 of 3 (core.sh -> apps.sh -> extra.sh): tools and configs.
 
-# -u catches unset variables. No -e: one failed package should not abort the run.
+# No -e: one failed step should not abort the run.
 set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -133,8 +131,7 @@ curl -fsSL https://claude.ai/install.sh | bash || echo "!!! Claude Code install 
 
 # 13. cliamp
 echo "---> Installing cliamp..."
-# The PATH set above is what makes the installer pick ~/.local/bin over
-# /usr/local/bin, so no root is needed.
+# The PATH above makes the installer use ~/.local/bin, so no root is needed.
 curl -fsSL https://cliamp.stream/install.sh | sh || echo "!!! cliamp install failed."
 
 # 14. Configs
@@ -149,8 +146,7 @@ fi
 
 # 15. Pueue daemon
 echo "---> Enabling the Pueue daemon..."
-# Needs pueued from step 3 and the unit step 14 just copied. daemon-reload
-# makes systemd see that new unit.
+# Needs pueued (step 3) and its unit (step 14); daemon-reload loads the unit.
 if have pueued; then
     systemctl --user daemon-reload
     systemctl --user enable --now pueued.service \
@@ -161,8 +157,7 @@ fi
 
 # 16. Home dotfiles
 echo "---> Installing ~/.zshrc..."
-# Replaces the .zshrc the Oh My Zsh installer wrote, keeping the old one as
-# ~/.zshrc.bak when it differed.
+# Replaces ~/.zshrc, keeping a differing one as ~/.zshrc.bak.
 if [[ -f "$REPO_ROOT/.zshrc" ]]; then
     if [[ -f "$HOME/.zshrc" ]] && ! cmp -s "$REPO_ROOT/.zshrc" "$HOME/.zshrc"; then
         cp -f "$HOME/.zshrc" "$HOME/.zshrc.bak"
@@ -176,15 +171,12 @@ fi
 
 # 17. TPM (Tmux Plugin Manager)
 echo "---> Installing the Tmux Plugin Manager..."
-# The path the last line of tmux.conf runs. With tmux.conf under ~/.config/tmux,
-# TPM puts the plugins in ~/.config/tmux/plugins too, so it lives there as well.
-# Plugins go in with 'prefix + I'.
+# The path tmux.conf runs TPM from; plugins install with 'prefix + I'.
 clone https://github.com/tmux-plugins/tpm "$HOME/.config/tmux/plugins/tpm"
 
 # 18. Yazi flavor
 echo "---> Installing the Yazi gruvbox-material flavor..."
-# After step 14: 'ya pkg' writes into ~/.config/yazi, which that step populates
-# with the theme.toml that selects this flavor.
+# After step 14, which copies the theme.toml that selects this flavor.
 if have ya; then
     ya pkg add matt-dong-123/gruvbox-material \
         || echo "!!! Yazi flavor install failed, skipping."
@@ -205,8 +197,7 @@ fi
 
 # 20. Distrobox containers
 echo "---> Creating the Debian and Ubuntu containers..."
-# --home keeps each container's files outside ~, so a reinstall of the host
-# does not take them with it.
+# --home gives each container its own home folder, apart from the host's ~.
 DISTROBOX_HOMES="$HOME/Documents/Distrobox"
 if have distrobox; then
     DB_PKGS="systemd libpam-systemd pipewire-audio-client-libraries git tmux"
@@ -221,6 +212,15 @@ if have distrobox; then
     echo "     enter them with 'distrobox enter Debian' / 'distrobox enter Ubuntu'."
 else
     echo "!!! SKIPPED: distrobox is not installed."
+fi
+
+# 21. GNOME app grid and dash
+echo "---> Laying out the GNOME app grid and dash..."
+# Last, so every app it lays out is installed; undo with tools/gnome_app_grid.sh --revert.
+if have dconf; then
+    bash "$REPO_ROOT/tools/gnome_app_grid.sh" || echo "!!! App grid layout failed."
+else
+    echo "!!! SKIPPED: dconf is not installed."
 fi
 
 banner "Extra scripts installed. Reboot now."

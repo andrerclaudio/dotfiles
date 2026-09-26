@@ -1,26 +1,6 @@
 #!/usr/bin/env python3
 
-"""
-colors_solid.py
-Generates solid-color PNG images for every unique color in the Gruvbox DARK and LIGHT palettes.
-
-For each hex color defined in the palettes, the script:
-- Normalizes and deduplicates all hex codes across both palettes.
-- Converts each hex code into its RGB equivalent.
-- Creates a solid-color image of size SIZE_W x SIZE_H (default: 1920 x 1080).
-- Saves each image into OUT_DIR, ~/Pictures/Solid, as "<hex>_<width>-<height>.png"
-  (e.g., "~/Pictures/Solid/d65d0e_1920-1080.png"). OUT_DIR is created if
-  missing, and a re-run overwrites the files with identical ones.
-  fedora/core.sh runs it on a fresh install.
-
-Useful for quickly generating wallpaper backgrounds, color swatches, or visual references
-of the Gruvbox theme in both dark and light variants.
-
-Palettes link:
-https://github.com/morhetz/gruvbox
-
-Requires: Pillow (install with `sudo dnf install python3-pillow`)
-"""
+"""Writes a solid PNG per unique Gruvbox color into ~/Pictures/Solid (needs python3-pillow)."""
 
 from __future__ import annotations
 
@@ -29,7 +9,7 @@ from pathlib import Path
 
 from PIL import Image
 
-# ------------------------------ Palettes ------------------------------------ #
+# ------------------ Palettes (https://github.com/morhetz/gruvbox) ----------- #
 DARK: dict[str, str] = {
     "bg": "282828",
     "red": "cc241d",
@@ -106,10 +86,7 @@ OUT_DIR: Path = Path.home() / "Pictures" / "Solid"
 
 # ------------------------------ Helpers ------------------------------------- #
 def normalize_hex(hex_str: str) -> str:
-    """
-    Normalize a hex color to a lowercase 6-digit string without '#'.
-    Raises ValueError for invalid inputs.
-    """
+    """Normalize a hex color to 6 lowercase digits without '#'; raise ValueError if invalid."""
     s = hex_str.strip().lstrip("#").lower()
     if len(s) != 6 or any(c not in "0123456789abcdef" for c in s):
         raise ValueError(f"Invalid 6-hex color: {hex_str!r}")
@@ -117,16 +94,12 @@ def normalize_hex(hex_str: str) -> str:
 
 
 def hex_to_rgb(hex6: str) -> tuple[int, int, int]:
-    """
-    Convert a normalized 6-hex string (e.g., 'aabbcc') to an (R, G, B) tuple.
-    """
+    """Convert a normalized 6-hex string (e.g., 'aabbcc') to an (R, G, B) tuple."""
     return (int(hex6[0:2], 16), int(hex6[2:4], 16), int(hex6[4:6], 16))
 
 
 def unique_hex_values(palettes: Iterable[dict[str, str]]) -> set[str]:
-    """
-    Collect unique normalized hex values from all provided palettes.
-    """
+    """Collect the unique normalized hex values across all palettes."""
     uniques: set[str] = set()
     for pal in palettes:
         for value in pal.values():
@@ -135,10 +108,7 @@ def unique_hex_values(palettes: Iterable[dict[str, str]]) -> set[str]:
 
 
 def generate_rect(hex6: str, size: tuple[int, int], out_dir: Path = OUT_DIR) -> Path:
-    """
-    Create a solid-color PNG of given size filled with hex6 and save it inside
-    out_dir as '<hex6>_<width>-<height>.png'. Returns the output file path.
-    """
+    """Save a solid hex6 PNG as out_dir/'<hex6>_<width>-<height>.png' and return its path."""
     rgb = hex_to_rgb(hex6)
     img = Image.new("RGB", size, rgb)
     out_path = out_dir / f"{hex6}_{size[0]}-{size[1]}.png"
@@ -150,9 +120,7 @@ def generate_rect(hex6: str, size: tuple[int, int], out_dir: Path = OUT_DIR) -> 
 
 
 def main() -> None:
-    """
-    Entry point: generate one PNG per unique hex across DARK and LIGHT.
-    """
+    """Generate one PNG per unique hex across DARK and LIGHT."""
     size: tuple[int, int] = (SIZE_W, SIZE_H)
     colors: set[str] = unique_hex_values([DARK, LIGHT])
 

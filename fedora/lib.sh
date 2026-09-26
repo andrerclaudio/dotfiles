@@ -1,7 +1,5 @@
 #!/bin/bash
-#
-# Shared helpers for core.sh, apps.sh and extra.sh. Sourced, never run directly.
-# Callers are expected to have run:  set -uo pipefail
+# Shared helpers for core.sh, apps.sh and extra.sh; sourced, never run.
 
 banner() {
     echo "# -----------------------------------------------------------------------#"

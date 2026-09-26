@@ -62,9 +62,10 @@
     - Go to **GitHub** and log in.
     - Open **VS Code** and start Sync.
 
-5. Run the Extra script and restart. It works through 20 numbered steps —
+5. Run the Extra script and restart. It works through 21 numbered steps —
    shell plugins, fonts, themes, the CLI tools, the configs, the Pueue daemon,
-   `~/.zshrc`, the Ollama models and the Distrobox containers:
+   `~/.zshrc`, the Ollama models, the Distrobox containers and the GNOME app
+   grid:
 
     ```shell
     ./extra.sh
@@ -74,13 +75,20 @@
     *This also installs `~/.zshrc` over the one the Oh My Zsh installer wrote.
     If that file differed, it is kept as `~/.zshrc.bak`.*
 
-    *The last steps are the slow ones: several GB of Ollama models, and the
+    *The slow steps come near the end: several GB of Ollama models, and the
     Debian and Ubuntu containers, whose homes land in `~/Documents/Distrobox/`.*
 
     *`distrobox create` only pulls the image — the `--additional-packages`
     (systemd, git, tmux, the pipewire libs) are installed on the **first**
     `distrobox enter` of each container, so both `distrobox enter Debian` and
     `distrobox enter Ubuntu` take a few minutes the first time.*
+
+    *The last step sorts the app grid into folders and sets the dash
+    (`tools/gnome_app_grid.sh`). It shows after the reboot. To undo it:*
+
+    ```shell
+    ../tools/gnome_app_grid.sh --revert
+    ```
 
 ## Phase 2: Manual Authentications & GUI Tweaks
 

@@ -1,7 +1,5 @@
-# ——————————————————————————————————————————————————————————————————————
-# PATHS & ENVIRONMENT
-# ——————————————————————————————————————————————————————————————————————
-# Lets you paste a command with a trailing '#' comment at the prompt.
+# ——— PATHS & ENVIRONMENT ——————————————————————————————————————————————
+# Allow trailing '#' comments at the prompt.
 setopt INTERACTIVE_COMMENTS
 
 export ZSH="$HOME/.oh-my-zsh"
@@ -18,9 +16,7 @@ path=("$HOME/.local/bin" $path)
 # Rust/Cargo PATH setup.
 [[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
 
-# ——————————————————————————————————————————————————————————————————————
-# OH-MY-ZSH CONFIGURATION
-# ——————————————————————————————————————————————————————————————————————
+# ——— OH-MY-ZSH CONFIGURATION ——————————————————————————————————————————
 ZSH_THEME="agnoster"
 zstyle ':omz:update' mode auto
 HIST_STAMPS="dd.mm.yyyy"
@@ -40,9 +36,7 @@ else
     print -u2 "oh-my-zsh not found at $ZSH - running a plain zsh."
 fi
 
-# ——————————————————————————————————————————————————————————————————————
-# HISTORY SETTINGS
-# ——————————————————————————————————————————————————————————————————————
+# ——— HISTORY SETTINGS —————————————————————————————————————————————————
 # Set AFTER oh-my-zsh.sh to avoid being overridden.
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=1000000
@@ -51,17 +45,14 @@ SAVEHIST=1000000
 # Extras not set by Oh My Zsh.
 setopt HIST_REDUCE_BLANKS       # strip extra whitespace
 setopt HIST_VERIFY              # expand !! before executing
-setopt HIST_IGNORE_ALL_DUPS     # remove older duplicates; covers the
-                                # SAVE_NO_DUPS and FIND_NO_DUPS cases too
+setopt HIST_IGNORE_ALL_DUPS     # remove older duplicates
 
-# ——————————————————————————————————————————————————————————————————————
-# ALIASES & FUNCTIONS
-# ——————————————————————————————————————————————————————————————————————
+# ——— ALIASES & FUNCTIONS ——————————————————————————————————————————————
 alias my-ip="ip -c -h -s addr"
 alias e="eza -lbhHigaUm --git --group-directories-first --icons=auto --color-scale=all --colour=auto"
 alias zoom="tree -shaCL 2 --du"
 
-# bat as cat. --paging=never keeps it printing and returning, like cat.
+# bat as cat, without the pager.
 if (( $+commands[bat] )); then
     alias cat="bat --paging=never"
 elif (( $+commands[batcat] )); then
@@ -149,9 +140,7 @@ function update() {
     print -P "\n%F{green}%B✨ All updates complete!%b%f\n"
 }
 
-# ——————————————————————————————————————————————————————————————————————
-# INITIALIZATIONS & TOOLS
-# ——————————————————————————————————————————————————————————————————————
+# ——— INITIALIZATIONS & TOOLS ——————————————————————————————————————————
 
 # Disk overview on first interactive shell.
 if [[ -o interactive && $SHLVL -eq 1 ]] && (( $+commands[dysk] )); then

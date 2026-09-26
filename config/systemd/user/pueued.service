@@ -1,5 +1,4 @@
-# Pueue daemon. extra.sh copies this to ~/.config/systemd/user/ and enables it.
-# %h because cargo installs pueued into ~/.cargo/bin.
+# Pueue daemon, installed and enabled by extra.sh; pueued comes from cargo.
 
 [Unit]
 Description=Pueue Daemon - CLI process scheduler and manager

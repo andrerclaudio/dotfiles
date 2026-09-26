@@ -1,16 +1,5 @@
 #!/bin/bash
-################################################################################
-# change_swap.sh
-#
-# Creates a persistent swap file at /swapfile on a freshly installed machine.
-# Written for Btrfs, the Fedora default. Does nothing if /swapfile already
-# exists. core.sh runs it; on its own, run it as your normal user:
-#
-#   bash change_swap.sh
-#
-# Keep the swap file out of any subvolume you snapshot (Snapper, Timeshift) -
-# Btrfs refuses to snapshot a subvolume with an active swap file.
-################################################################################
+# Creates a persistent swap file at /swapfile on Btrfs; skips if it exists. Run as your user.
 
 # -e: each step needs the one before it.
 set -euo pipefail
@@ -33,20 +22,16 @@ if (($(df --output=avail -B1 / | tail -n 1) < SIZE_GIB << 30)); then
     exit 1
 fi
 
-# semanage, for step 3. Installed before the file exists, so a failure here
-# leaves nothing half done.
+# semanage for step 3, installed first so a failure leaves nothing half done.
 sudo dnf install -y policycoreutils-python-utils
 
-# 2. Create the swap file
-# One command: creates the file, turns off copy-on-write, sets mode 600,
-# allocates the space and formats it as swap.
+# 2. Create the swap file (mkswapfile also disables copy-on-write and sets mode 600)
 echo "---> Creating a ${SIZE_GIB} GiB /swapfile..."
 sudo btrfs filesystem mkswapfile --size "${SIZE_GIB}g" /swapfile
 
-# 3. Label it for SELinux - before enabling it
-# With SELinux enforcing, swapon on a file of the wrong type is denied.
-# -m when an earlier /swapfile already left the rule behind.
+# 3. Label it for SELinux - swapon is denied without it
 echo "---> Labelling /swapfile for SELinux..."
+# -m if the rule already exists.
 sudo semanage fcontext -a -t swapfile_t '/swapfile' 2>/dev/null \
     || sudo semanage fcontext -m -t swapfile_t '/swapfile'
 sudo restorecon -v /swapfile
@@ -54,9 +39,7 @@ sudo restorecon -v /swapfile
 # 4. Enable it
 sudo swapon /swapfile
 
-# 5. Make it survive a reboot
-# nofail keeps a missing swap file from blocking boot; daemon-reload lets
-# systemd pick up the entry without a reboot.
+# 5. Make it survive a reboot (nofail: a missing file never blocks boot)
 if ! grep -q '^/swapfile ' /etc/fstab; then
     echo "---> Adding /swapfile to /etc/fstab..."
     sudo cp /etc/fstab /etc/fstab.bak
@@ -64,8 +47,7 @@ if ! grep -q '^/swapfile ' /etc/fstab; then
     sudo systemctl daemon-reload
 fi
 
-# 6. Confirm the fstab entry actually works
-# If /swapfile comes back from fstab, the next boot will do the same thing.
+# 6. Confirm the fstab entry works
 sudo swapoff /swapfile
 sudo swapon -a
 if ! swapon --show=NAME --noheadings --raw | grep -qx /swapfile; then

@@ -1,17 +1,6 @@
 #!/bin/bash
-################################################################################
-# wifi_to_eth_router.sh
-#
-# Shares a Raspberry Pi's Wi-Fi internet over Ethernet (eth0). NetworkManager's
-# "shared" mode does the NAT, the DHCP server and the IP forwarding, and brings
-# them all back on every boot. Safe to re-run.
-#
-# Run as root:  sudo bash wifi_to_eth_router.sh
-# Undo with:    sudo nmcli connection delete eth-share
-#
-# Needs: Raspberry Pi OS Bookworm or later (NetworkManager), Wi-Fi already
-# online. Bullseye and older use dhcpcd - take this script from git history.
-################################################################################
+# Shares a Raspberry Pi's Wi-Fi over eth0 with NetworkManager (Pi OS Bookworm+).
+# Run: sudo bash wifi_to_eth_router.sh   Undo: sudo nmcli connection delete eth-share
 
 set -euo pipefail
 
@@ -42,10 +31,9 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get install -y dnsmasq-base
 
-# The old version of this script ran the dnsmasq service on eth0. Left running,
-# it holds the DHCP port and NetworkManager's dnsmasq cannot start.
+# A standalone dnsmasq service holds the DHCP port NetworkManager needs.
 if systemctl is-active --quiet dnsmasq; then
-    echo "Stopping the old standalone dnsmasq service..."
+    echo "Stopping the standalone dnsmasq service..."
     systemctl disable --now dnsmasq
 fi
 
@@ -61,17 +49,14 @@ mkdir -p /etc/NetworkManager/dnsmasq-shared.d
     echo "bogus-priv"       # don't forward reverse lookups of private IPs
 } > /etc/NetworkManager/dnsmasq-shared.d/eth-share.conf
 
-# Deleted first: nmcli would add a second profile with the same name.
-# The priority beats the default "Wired connection 1", which would otherwise
-# take eth0 at boot as a normal DHCP client.
+# Recreated each run; the priority beats the default "Wired connection 1".
 echo "Creating the $CON_NAME connection on $ETH_IFACE..."
 nmcli connection delete "$CON_NAME" &>/dev/null || true
 nmcli connection add type ethernet ifname "$ETH_IFACE" con-name "$CON_NAME" \
     ipv4.method shared ipv4.addresses "$IP_ADDR" \
     connection.autoconnect-priority 100
 
-# Without a cable this fails, but the profile is saved and comes up on its own
-# once eth0 has a link.
+# Without a cable this fails, but the saved profile comes up once eth0 has a link.
 if nmcli connection up "$CON_NAME"; then
     echo "Done. Devices on $ETH_IFACE now get an address and internet from the Pi."
 else

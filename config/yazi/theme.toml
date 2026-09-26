@@ -1,9 +1,6 @@
-# theme.toml
-# Selects the flavor extra.sh installs with
-# 'ya pkg add matt-dong-123/gruvbox-material'.
-# Without this file the flavor sits unused in ~/.config/yazi/flavors/.
+# Selects the gruvbox-material flavor that extra.sh installs.
 
 [flavor]
-# Both keys, so the flavor applies whichever mode the terminal reports.
+# Same flavor for dark and light terminals.
 dark = "gruvbox-material"
 light = "gruvbox-material"

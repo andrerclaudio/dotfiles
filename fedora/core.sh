@@ -1,10 +1,7 @@
 #!/bin/bash
-#
-# Fedora post-install, stage 1 of 3: core system configuration.
-#
-# RUN ORDER:  core.sh  ->  apps.sh  ->  extra.sh
+# Fedora post-install, stage 1 of 3 (core.sh -> apps.sh -> extra.sh): core system.
 
-# -u catches unset variables. No -e: one failed package should not abort the run.
+# No -e: one failed step should not abort the run.
 set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -18,8 +15,7 @@ GIT_USER_EMAIL="andre.ribeiro.srs@gmail.com"
 
 init_stage "$HOME/fedora-setup-core.log"
 
-# Without dnf5-plugins every setopt and copr call is a silent no-op. git is
-# needed by configure_git_credentials.
+# dnf5-plugins provides setopt and copr; git is used by configure_git_credentials.
 ensure_dnf_prereqs() {
     banner "Ensuring prerequisites (dnf5-plugins, git)"
     sudo dnf install -y dnf5-plugins git
@@ -70,8 +66,7 @@ remove_unwanted_defaults() {
         "snapshot"
     )
 
-    # dnf5 aborts on any argument that matches nothing installed, so pass only
-    # what is here. 'rpm -qa' expands globs; 'rpm -q' does not.
+    # dnf5 aborts on unmatched names, so pass only installed ones; rpm -qa expands globs.
     local pkg installed=()
     for pkg in "${apps[@]}"; do
         [[ -n "$(rpm -qa "$pkg" 2>/dev/null)" ]] && installed+=("$pkg")
@@ -112,9 +107,7 @@ add_rpm_fusion_repository() {
         "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-${fedora_ver}.noarch.rpm" \
         "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${fedora_ver}.noarch.rpm"
 
-    # The mirror handed out is random and some are down, so this can fail for no
-    # good reason. Stop rather than let apps.sh silently drop the codecs;
-    # re-running core.sh is safe.
+    # Stop here: without RPM Fusion, apps.sh would silently skip the codecs.
     if ! rpm -q rpmfusion-free-release rpmfusion-nonfree-release >/dev/null 2>&1; then
         echo "!!! RPM Fusion is missing - re-run ./core.sh before apps.sh."
         exit 1
@@ -124,8 +117,7 @@ add_rpm_fusion_repository() {
 tune_inotify_limit() {
     banner "Raising the inotify watch limit (VS Code, syncthing)"
 
-    # A drop-in, not /etc/sysctl.conf: that file is deprecated and gets replaced
-    # on some upgrades.
+    # A drop-in, since /etc/sysctl.conf is deprecated.
     echo "fs.inotify.max_user_watches=524288" \
         | sudo tee /etc/sysctl.d/99-inotify.conf >/dev/null
 
@@ -138,8 +130,7 @@ tune_inotify_limit() {
 create_swap_file() {
     banner "Swap file (/swapfile, on top of zram)"
 
-    # Its own script so it can also run alone. It uses sudo per command, so it
-    # is not run under sudo. Does nothing if /swapfile is already there.
+    # Runs as the user (it calls sudo itself); skips if /swapfile exists.
     bash "$REPO_ROOT/tools/change_swap.sh" \
         || echo "!!! Swap file setup failed - see $LOG_FILE."
 }
@@ -166,7 +157,7 @@ generate_solid_wallpapers() {
     # Pillow draws the PNGs.
     sudo dnf install -y python3-pillow
 
-    # Only the summary line: the per-file lines add nothing to the log.
+    # Log only the summary line.
     python3 "$REPO_ROOT/tools/colors_solid.py" | tail -n 1 \
         || echo "!!! Wallpaper generation failed - see $LOG_FILE."
 }

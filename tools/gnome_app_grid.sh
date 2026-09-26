@@ -1,32 +1,17 @@
 #!/usr/bin/env bash
-# Apply a declarative GNOME app-grid layout: folders, their contents, the page
-# order, and the dash. Idempotent - run it as often as you like, the result is
-# identical. It runs only when you invoke it; nothing calls it at login.
-#
-#   gnome_app_grid.sh            apply the layout
-#   gnome_app_grid.sh --dry-run  show what would change, touch nothing
-#   gnome_app_grid.sh --revert   restore the pristine (pre-script) state
+# Applies a GNOME app-grid layout (folders, order, dash); safe to re-run.
+#   gnome_app_grid.sh               apply the layout
+#   gnome_app_grid.sh --dry-run     show what would change, touch nothing
+#   gnome_app_grid.sh --revert      restore the pre-script state
 #   gnome_app_grid.sh --revert DIR  restore a specific backup directory
-#
-# Edit the FOLDERS, LOOSE and DASH blocks below to change things; everything
-# else derives from them.
 
 set -euo pipefail
 
 BACKUP_ROOT="$HOME/.config"
 PRISTINE="$BACKUP_ROOT/gnome-app-grid-backup-pristine"
 
-# ---------------------------------------------------------------- the layout
-# Only apps that ship with Fedora Workstation or that fedora/*.sh installs.
-# Anything added by hand later (Chrome web apps, Spotify) is left out on
-# purpose: GNOME appends it to the end of the grid on its own.
-#
-# One folder per block: id, display name, then its apps in the order you want.
-# An app listed here that isn't installed is dropped with a warning.
-#
-# GNOME never shows a dash app in the grid or in a folder, so listing one in a
-# folder only decides where it goes if it is ever unpinned. A folder whose apps
-# are all pinned is hidden - that is why Google does not show up.
+# ------------------- the layout: Fedora-default and fedora/*.sh apps only
+# One block per folder: id|name|apps; apps not installed are skipped.
 
 FOLDERS=(
     "office|Office|
@@ -38,7 +23,7 @@ FOLDERS=(
         org.libreoffice.LibreOffice.base.desktop
         org.libreoffice.LibreOffice.math.desktop"
 
-    # VS Code and GNU Octave are not here on purpose - they live in the dash.
+    # VS Code and GNU Octave live in the dash.
     "development|Development|
         pycharm-community.desktop
         nvim.desktop
@@ -51,10 +36,11 @@ FOLDERS=(
         com.mitchellh.ghostty.desktop
         Alacritty.desktop"
 
+    # Hidden while Chrome is pinned to the dash.
     "google|Google|
         google-chrome.desktop"
 
-    # FileZilla is not here on purpose - it lives in the dash.
+    # FileZilla lives in the dash.
     "downloads|Downloads & Sync|
         syncthing-start.desktop
         syncthing-ui.desktop
@@ -121,8 +107,7 @@ FOLDERS=(
         com.heroicgameslauncher.hgl.desktop"
 )
 
-# Apps that stay out of any folder. They trail the folders on the grid, in this
-# order. Dash apps need no entry - GNOME keeps them off the grid entirely.
+# Apps outside any folder, placed after the folders in this order.
 LOOSE=(
     app.zen_browser.zen.desktop
     org.gnome.Nautilus.desktop
@@ -165,8 +150,7 @@ installed() {
     return 1
 }
 
-# Keep only the installed entries of a list, warning about the rest.
-# Sets the global KEPT array.
+# Sets KEPT to the installed entries of a list, warning about the rest.
 keep_installed() {
     local label=$1; shift
     local app
@@ -204,9 +188,7 @@ backup() {
     dconf dump /org/gnome/shell/            > "$dir/shell.dconf"
     say "  backed up to $dir"
 
-    # The pristine copy is the state before this script ever ran. It is written
-    # once and never overwritten - without that, a second run would back up the
-    # already-applied layout and --revert would become a no-op.
+    # Written once, so --revert always restores the pre-script state.
     if [[ ! -d "$PRISTINE" ]]; then
         cp -r "$dir" "$PRISTINE"
         say "  recorded pristine state in $PRISTINE"
@@ -229,8 +211,7 @@ apply() {
     say "Backing up current settings"
     backup
 
-    # Wipe the whole folder tree. This clears dead entries too: Fedora's stock
-    # folders, stale UUID folders, and any folder made by hand in the grid.
+    # Wipe the whole folder tree, stale and hand-made folders included.
     say "Clearing existing folders"
     run dconf reset -f /org/gnome/desktop/app-folders/
 
@@ -243,7 +224,7 @@ apply() {
         name=${block#*|}; name=${name%%|*}
         apps_raw=${block##*|}
 
-        # Word splitting on apps_raw is what turns the block into a list.
+        # Word splitting turns the block into a list.
         # shellcheck disable=SC2086
         keep_installed "$name" $apps_raw
 
@@ -274,8 +255,7 @@ apply() {
     run dconf write /org/gnome/desktop/app-folders/folder-children \
         "$(as_gvariant_list "${children[@]}")"
 
-    # Single page, everything positioned explicitly. Joined by hand rather than
-    # with IFS + "${array[*]}" - setting IFS also changes how run() prints.
+    # One page, every entry positioned; joined by hand, as IFS would change run().
     local layout_str="" entry
     for entry in "${layout_entries[@]}"; do
         [[ -n $layout_str ]] && layout_str+=", "
@@ -302,7 +282,7 @@ apply() {
 case "${1:-}" in
     --dry-run) DRY_RUN=1; apply ;;
     --revert)  shift; revert "${1:-}" ;;
-    -h|--help) sed -n '2,12p' "$0" | sed 's/^# \?//' ;;
+    -h|--help) sed -n '2,6p' "$0" | sed 's/^# \?//' ;;
     "")        apply ;;
     *)         warn "unknown option: $1"; exit 2 ;;
 esac

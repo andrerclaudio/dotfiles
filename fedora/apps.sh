@@ -1,10 +1,7 @@
 #!/bin/bash
-#
-# Fedora post-install, stage 2 of 3: applications.
-#
-# RUN ORDER:  core.sh  ->  apps.sh  ->  extra.sh
+# Fedora post-install, stage 2 of 3 (core.sh -> apps.sh -> extra.sh): applications.
 
-# -u catches unset variables. No -e: one failed package should not abort the run.
+# No -e: one failed step should not abort the run.
 set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -25,8 +22,7 @@ add_apps_repo() {
     sudo dnf install -y fedora-workstation-repositories
     sudo dnf config-manager setopt google-chrome.enabled=1
 
-    # Import the key first, write the repo only if that worked: under -y dnf
-    # would otherwise fetch the key from gpgkey= and auto-accept it.
+    # Import the key first, so dnf -y cannot auto-accept it from gpgkey=.
     echo "---> Adding the Microsoft VS Code repository..."
     if sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc; then
         sudo tee /etc/yum.repos.d/vscode.repo >/dev/null <<'EOF'
@@ -40,7 +36,6 @@ gpgcheck=1
 gpgkey=https://packages.microsoft.com/keys/microsoft.asc
 EOF
     else
-        # An existing vscode.repo came from a run that had the key, so keep it.
         echo "!!! No Microsoft signing key - leaving the VS Code repo as-is."
     fi
 
