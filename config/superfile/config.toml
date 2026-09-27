@@ -1,0 +1,3 @@
+# Superfile settings; anything not set here uses the default.
+theme = "gruvbox"
+ignore_missing_fields = true

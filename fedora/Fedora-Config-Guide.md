@@ -62,7 +62,7 @@
     - Go to **GitHub** and log in.
     - Open **VS Code** and start Sync.
 
-5. Run the Extra script and restart. It works through 21 numbered steps —
+5. Run the Extra script and restart. It works through 22 numbered steps —
    shell plugins, fonts, themes, the CLI tools, the configs, the Pueue daemon,
    `~/.zshrc`, the Ollama models, the Distrobox containers and the GNOME app
    grid:

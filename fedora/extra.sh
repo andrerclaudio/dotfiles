@@ -10,7 +10,7 @@ REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 # shellcheck source=lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
-# init_stage warms sudo: the Ollama installer (step 9) needs it mid-run.
+# init_stage warms sudo: the Ollama and superfile installers (steps 9, 14) need it mid-run.
 init_stage "$HOME/fedora-setup-extra.log"
 
 # Later steps call binaries the earlier ones drop in these dirs.
@@ -134,7 +134,12 @@ echo "---> Installing cliamp..."
 # The PATH above makes the installer use ~/.local/bin, so no root is needed.
 curl -fsSL https://cliamp.stream/install.sh | sh || echo "!!! cliamp install failed."
 
-# 14. Configs
+# 14. superfile
+echo "---> Installing superfile..."
+# Moves spf into /usr/local/bin with sudo; its gruvbox config comes with step 15.
+curl -fsSL https://superfile.dev/install.sh | bash || echo "!!! superfile install failed."
+
+# 15. Configs
 echo "---> Copying configs into ~/.config..."
 # config/ mirrors ~/.config exactly; .zshrc lives at the repo root instead.
 if [[ -d "$REPO_ROOT/config" ]]; then
@@ -144,9 +149,9 @@ else
     echo "!!! SKIPPED: no config/ directory found next to this script."
 fi
 
-# 15. Pueue daemon
+# 16. Pueue daemon
 echo "---> Enabling the Pueue daemon..."
-# Needs pueued (step 3) and its unit (step 14); daemon-reload loads the unit.
+# Needs pueued (step 3) and its unit (step 15); daemon-reload loads the unit.
 if have pueued; then
     systemctl --user daemon-reload
     systemctl --user enable --now pueued.service \
@@ -155,7 +160,7 @@ else
     echo "!!! SKIPPED: pueued is not installed - see step 3."
 fi
 
-# 16. Home dotfiles
+# 17. Home dotfiles
 echo "---> Installing ~/.zshrc..."
 # Replaces ~/.zshrc, keeping a differing one as ~/.zshrc.bak.
 if [[ -f "$REPO_ROOT/.zshrc" ]]; then
@@ -169,14 +174,14 @@ else
     echo "!!! SKIPPED: no .zshrc found at the repo root."
 fi
 
-# 17. TPM (Tmux Plugin Manager)
+# 18. TPM (Tmux Plugin Manager)
 echo "---> Installing the Tmux Plugin Manager..."
 # The path tmux.conf runs TPM from; plugins install with 'prefix + I'.
 clone https://github.com/tmux-plugins/tpm "$HOME/.config/tmux/plugins/tpm"
 
-# 18. Yazi flavor
+# 19. Yazi flavor
 echo "---> Installing the Yazi gruvbox-material flavor..."
-# After step 14, which copies the theme.toml that selects this flavor.
+# After step 15, which copies the theme.toml that selects this flavor.
 if have ya; then
     ya pkg add matt-dong-123/gruvbox-material \
         || echo "!!! Yazi flavor install failed, skipping."
@@ -184,7 +189,7 @@ else
     echo "!!! SKIPPED: yazi is not installed."
 fi
 
-# 19. Ollama models
+# 20. Ollama models
 echo "---> Pulling Ollama models..."
 # Several GB and no resume, so each pull is reported on its own.
 if have ollama; then
@@ -195,7 +200,7 @@ else
     echo "!!! SKIPPED: ollama is not installed - see step 9."
 fi
 
-# 20. Distrobox containers
+# 21. Distrobox containers
 echo "---> Creating the Debian and Ubuntu containers..."
 # --home gives each container its own home folder, apart from the host's ~.
 DISTROBOX_HOMES="$HOME/Documents/Distrobox"
@@ -214,7 +219,7 @@ else
     echo "!!! SKIPPED: distrobox is not installed."
 fi
 
-# 21. GNOME app grid and dash
+# 22. GNOME app grid and dash
 echo "---> Laying out the GNOME app grid and dash..."
 # Last, so every app it lays out is installed; undo with tools/gnome_app_grid.sh --revert.
 if have dconf; then
