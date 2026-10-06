@@ -139,6 +139,15 @@
     *Should print `524288`. If it prints the default, re-run `sudo sysctl --system`.*
 
 3. Install your preferred **PWA applications**.
+
+    *To list the Gmail PWA under Settings > Apps > Default Apps > Mail, run the
+    command below. Chrome drops it from that list when it rewrites the Gmail
+    launcher (a name or icon change), so run it again then:*
+
+    ```shell
+    ../tools/gmail_pwa_mailto.sh
+    ```
+
 4. Install your preferred **Gnome Extensions**.
 
 5. **Initialize Tmux Plugins:**
