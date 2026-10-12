@@ -61,7 +61,7 @@ if [[ -f "$HOME/.cargo/env" ]]; then
     # shellcheck source=/dev/null
     source "$HOME/.cargo/env"
     # --locked builds against the Cargo.lock each author published.
-    cargo install --locked tock dysk cargo-update
+    cargo install --locked tock dysk cargo-update spotatui
     # pueue and leaf are left unlocked on purpose.
     cargo install pueue leaf-markdown-viewer
 else
