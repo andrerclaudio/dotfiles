@@ -10,7 +10,7 @@ Layout:
 - `fedora/` — post-install scripts, run in order: `core.sh` → `apps.sh` →
   `extra.sh`, with `lib.sh` holding what the three share. See
   `fedora/Fedora-Config-Guide.md`.
-- `tools/` — standalone helper scripts and notes, not part of the install flow.
+- `tools/` — standalone helper scripts, not part of the install flow.
   The exceptions: `core.sh` also runs `change_swap.sh` and `colors_solid.py`,
   and `extra.sh` runs `gnome_app_grid.sh` as its last step.
 

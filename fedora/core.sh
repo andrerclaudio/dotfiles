@@ -7,7 +7,7 @@ set -uo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 
-# shellcheck source=lib.sh
+# shellcheck source=SCRIPTDIR/lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
 GIT_USER_NAME="Andre Ribeiro"
@@ -163,18 +163,17 @@ generate_solid_wallpapers() {
 }
 
 add_serial_permissions() {
-    banner "Adding serial permissions (tty, dialout)"
-    local user_name group
+    banner "Adding serial permissions (dialout)"
+    # dialout covers ttyUSB*, ttyACM* and ttyS*.
+    local user_name
     user_name=$(id -u -n)
 
-    for group in tty dialout; do
-        if id -nG "$user_name" | grep -qw "$group"; then
-            echo "---> Already in $group."
-        else
-            sudo usermod -a -G "$group" "$user_name"
-            echo "---> Added to $group."
-        fi
-    done
+    if id -nG "$user_name" | grep -qw dialout; then
+        echo "---> Already in dialout."
+    else
+        sudo usermod -a -G dialout "$user_name"
+        echo "---> Added to dialout."
+    fi
 
     echo "NOTE: group changes need a full logout or reboot."
 }

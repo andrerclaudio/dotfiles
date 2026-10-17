@@ -34,13 +34,14 @@ FOLDERS=(
     "terminals|Terminals|
         org.gnome.Ptyxis.desktop
         com.mitchellh.ghostty.desktop
-        Alacritty.desktop"
+        Alacritty.desktop
+        kitty.desktop"
 
     # Hidden while Chrome is pinned to the dash.
     "google|Google|
         google-chrome.desktop"
 
-    # FileZilla lives in the dash.
+    # FileZilla and LocalSend live in the dash.
     "downloads|Downloads & Sync|
         syncthing-start.desktop
         syncthing-ui.desktop
@@ -67,7 +68,8 @@ FOLDERS=(
         org.blender.Blender.desktop
         org.kde.kdenlive.desktop
         com.obsproject.Studio.desktop
-        org.gnome.Loupe.desktop"
+        org.gnome.Loupe.desktop
+        com.jeffser.Pigment.desktop"
 
     "monitoring|Monitoring|
         htop.desktop
@@ -121,6 +123,7 @@ DASH=(
     md.obsidian.Obsidian.desktop
     org.filezillaproject.Filezilla.desktop
     org.remmina.Remmina.desktop
+    org.localsend.localsend_app.desktop
     org.kde.kdenlive.desktop
     org.octave.Octave.desktop
     org.inkscape.Inkscape.desktop

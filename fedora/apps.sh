@@ -6,7 +6,7 @@ set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# shellcheck source=lib.sh
+# shellcheck source=SCRIPTDIR/lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
 init_stage "$HOME/fedora-setup-apps.log"
@@ -40,6 +40,20 @@ EOF
     fi
 
     sudo dnf makecache
+}
+
+# Prints what dnf skipped, from the dnf log in $1.
+report_skipped_packages() {
+    echo
+    echo "---> Packages DNF skipped (check these by hand):"
+    # Unavailable names, plus each skip heading with its rows.
+    awk '
+        /^Skipping packages with/ { print; in_rows = 1; found = 1; next }
+        in_rows && /^[[:space:]]+[^[:space:]]/ { print; next }
+        { in_rows = 0 }
+        /^No match for argument/ { print; found = 1 }
+        END { if (!found) print "     (none)" }
+    ' "$1"
 }
 
 install_dnf_packages() {
@@ -97,6 +111,7 @@ install_dnf_packages() {
         "gtk4-devel"
         "htop"
         "iperf3"
+        "kitty"
         "lazygit"
         "libadwaita-devel"
         "libavcodec-freeworld"
@@ -114,6 +129,7 @@ install_dnf_packages() {
         "nmap"
         "nodejs-npm"
         "openssl"
+        "openssl-devel"            # for cargo-update
         "papirus-icon-theme"
         "picocom"
         "pkgconf-pkg-config"
@@ -152,11 +168,7 @@ install_dnf_packages() {
     sudo dnf install -y --skip-unavailable --skip-broken "${packages[@]}" 2>&1 | tee "$dnf_log" \
         || echo "!!! dnf install failed - see $LOG_FILE."
 
-    # Both skip flags are silent about what they drop, so print it.
-    echo
-    echo "---> Packages DNF skipped (check these by hand):"
-    grep -iE "no match for argument|skipping unavailable|not available|broken dependencies" "$dnf_log" \
-        || echo "     (none)"
+    report_skipped_packages "$dnf_log"
     rm -f "$dnf_log"
 }
 
@@ -167,6 +179,7 @@ install_flatpak_apps() {
     local apps=(
         "app.zen_browser.zen"
         "com.heroicgameslauncher.hgl"
+        "com.jeffser.Pigment"
         "com.mattjakeman.ExtensionManager"
         "com.obsproject.Studio"
         "com.ranfdev.DistroShelf"
@@ -194,6 +207,7 @@ install_flatpak_apps() {
         "org.inkscape.Inkscape"
         "org.kde.kdenlive"
         "org.libreoffice.LibreOffice"
+        "org.localsend.localsend_app"
         "org.nickvision.tubeconverter"
         "org.octave.Octave"
         "org.remmina.Remmina"

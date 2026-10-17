@@ -7,7 +7,7 @@ set -uo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 
-# shellcheck source=lib.sh
+# shellcheck source=SCRIPTDIR/lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
 # init_stage warms sudo: the Ollama and superfile installers (steps 9, 14) need it mid-run.
@@ -20,6 +20,10 @@ banner "Starting Extra Configurations & Installations"
 
 # Non-zero on failure, so callers can skip what depends on the clone.
 clone() {
+    if [[ -d "$2/.git" ]]; then
+        echo "     already cloned: $2"
+        return 0
+    fi
     git clone --depth 1 "$1" "$2"
 }
 
@@ -113,6 +117,7 @@ curl -fsSL https://zed.dev/install.sh | sh || echo "!!! Zed install failed."
 # 9. Ollama
 echo "---> Installing Ollama..."
 # Sets up a systemd service, so it may prompt for sudo.
+# NVIDIA machines need the driver installed first.
 curl -fsSL https://ollama.com/install.sh | sh || echo "!!! Ollama install failed."
 
 # 10. Herdr
@@ -208,7 +213,7 @@ if have distrobox; then
     DB_PKGS="systemd libpam-systemd pipewire-audio-client-libraries git tmux"
     create_box() {  # $1 name, $2 image
         mkdir -p "$DISTROBOX_HOMES/$1"
-        distrobox create --name "$1" --hostname "$1" --init --image "$2" \
+        distrobox create --yes --name "$1" --hostname "$1" --init --image "$2" \
             --additional-packages "$DB_PKGS" --home "$DISTROBOX_HOMES/$1" \
             || echo "!!! failed to create $1"
     }

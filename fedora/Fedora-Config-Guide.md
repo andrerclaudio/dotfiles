@@ -2,7 +2,8 @@
 
 > **Target: Fedora 44 and later** (dnf5, GNOME 50+, Wayland-only session).
 >
-> **Run order matters.** `core.sh` → `apps.sh` → **Oh My Zsh** → `extra.sh`.
+> **Run order matters.** `core.sh` → `apps.sh` → **Nvidia drivers** (if needed) →
+> **Oh My Zsh** → `extra.sh`.
 >
 > Each script writes a log to `~/fedora-setup-<stage>.log` — check it for
 > packages DNF could not find.
@@ -21,8 +22,8 @@
     sudo reboot
     ```
 
-    *The reboot is not optional: the `tty` and `dialout` group memberships this
-    script grants only take effect after a full logout.*
+    *The reboot is not optional: the `dialout` group membership this script
+    grants only takes effect after a full logout.*
 
     *It also creates a 16 GiB swap file at `/swapfile` (`tools/change_swap.sh`),
     used once zram is full. Skipped if `/swapfile` already exists.*
@@ -40,11 +41,35 @@
     *Installs from DNF (COPRs, Chrome, VS Code) and Flathub (`--user`), then
     starts the Syncthing daemon — its web UI is at <http://127.0.0.1:8384>.*
 
-    *The Flatpak stage installs one app at a time, printing `[n/33] <app-id>`.*
+    *The Flatpak stage installs one app at a time, printing `[n/35] <app-id>`.*
 
     *Note: From now on, use the Alacritty or Ghostty terminal.*
 
-3. Install Oh My ZSH:
+3. **Install Nvidia Drivers (If Needed) and restart:**
+
+    ```shell
+    sudo dnf install -y akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs nvidia-settings nvidia-persistenced nvidia-modprobe
+    ```
+
+    *Wait for the kernel module to finish building before rebooting — otherwise
+    you boot to a black screen. Check with:*
+
+    ```shell
+    modinfo -F version nvidia
+    ```
+
+    *If Secure Boot is enabled, the module must be signed or Secure Boot
+    disabled, or it will refuse to load.*
+
+    ```shell
+    sudo reboot
+    ```
+
+    *Do this before `extra.sh`: on a machine with an NVIDIA GPU but no
+    `nvidia-smi`, Ollama's installer tries to install NVIDIA's own driver. On
+    dnf5 that aborts, and `extra.sh` wrongly reports "Ollama install failed".*
+
+4. Install Oh My ZSH:
     Open your terminal and run:
 
     ```shell
@@ -57,12 +82,12 @@
     sudo reboot
     ```
 
-4. **Start your personal accounts:**
+5. **Start your personal accounts:**
     - Open **Google Chrome** and log in.
     - Go to **GitHub** and log in.
     - Open **VS Code** and start Sync.
 
-5. Run the Extra script and restart. It works through 22 numbered steps —
+6. Run the Extra script and restart. It works through 22 numbered steps —
    shell plugins, fonts, themes, the CLI tools, the configs, the Pueue daemon,
    `~/.zshrc`, the Ollama models, the Distrobox containers and the GNOME app
    grid:
@@ -112,23 +137,7 @@
 
 ## Phase 3: Specialized Software Setup & Tuning
 
-1. **Install Nvidia Drivers (If Needed):**
-
-    ```shell
-    sudo dnf install -y akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs nvidia-settings nvidia-persistenced nvidia-modprobe
-    ```
-
-    *Wait for the kernel module to finish building before rebooting — otherwise
-    you boot to a black screen. Check with:*
-
-    ```shell
-    modinfo -F version nvidia
-    ```
-
-    *If Secure Boot is enabled, the module must be signed or Secure Boot
-    disabled, or it will refuse to load.*
-
-2. **Check the inotify limit (VS Code):**
+1. **Check the inotify limit (VS Code):**
     `core.sh` already writes `/etc/sysctl.d/99-inotify.conf` and applies it.
     Confirm it stuck:
 
@@ -138,7 +147,7 @@
 
     *Should print `524288`. If it prints the default, re-run `sudo sysctl --system`.*
 
-3. Install your preferred **PWA applications**.
+2. Install your preferred **PWA applications**.
 
     *To list the Gmail PWA under Settings > Apps > Default Apps > Mail, run the
     command below. Chrome drops it from that list when it rewrites the Gmail
@@ -148,9 +157,9 @@
     ../tools/gmail_pwa_mailto.sh
     ```
 
-4. Install your preferred **Gnome Extensions**.
+3. Install your preferred **Gnome Extensions**.
 
-5. **Initialize Tmux Plugins:**
+4. **Initialize Tmux Plugins:**
     Open a Tmux session and press `prefix + I` (default prefix: `Ctrl+b`) to
     install the plugins listed in `tmux.conf`.
 
