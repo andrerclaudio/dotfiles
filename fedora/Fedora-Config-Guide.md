@@ -38,8 +38,9 @@
     sudo reboot
     ```
 
-    *Installs from DNF (COPRs, Chrome, VS Code) and Flathub (`--user`), then
-    starts the Syncthing daemon — its web UI is at <http://127.0.0.1:8384>.*
+    *Installs from DNF (COPRs, Chrome, VS Code), Flathub (`--user`) and Snap
+    (Spotify), then starts the Syncthing daemon — its web UI is at
+    <http://127.0.0.1:8384>.*
 
     *The Flatpak stage installs one app at a time, printing `[n/35] <app-id>`.*
 
@@ -88,14 +89,17 @@
     - Open **VS Code** and start Sync.
 
 6. Run the Extra script and restart. It works through 22 numbered steps —
-   shell plugins, fonts, themes, the CLI tools, the configs, the Pueue daemon,
-   `~/.zshrc`, the Ollama models, the Distrobox containers and the GNOME app
-   grid:
+   Ollama and superfile, then the shell plugins, fonts, the CLI tools and
+   themes, the configs, the Pueue daemon, `~/.zshrc`, TPM, the Yazi flavor,
+   the Ollama models, the Distrobox containers and the GNOME app grid:
 
     ```shell
     ./extra.sh
     sudo reboot
     ```
+
+    *Only steps 1-2 run with sudo. The script then clears the sudo ticket, so
+    the remaining installers cannot use it.*
 
     *This also installs `~/.zshrc` over the one the Oh My Zsh installer wrote.
     If that file differed, it is kept as `~/.zshrc.bak`.*

@@ -29,7 +29,7 @@ configure_package_management() {
         fastestmirror=True \
         max_parallel_downloads=7 \
         defaultyes=True \
-        keepcache=True
+        keepcache=False
 }
 
 update_and_upgrade() {
@@ -181,8 +181,8 @@ add_serial_permissions() {
 ensure_dnf_prereqs
 configure_package_management
 add_rpm_fusion_repository
-update_and_upgrade
 remove_unwanted_defaults
+update_and_upgrade
 install_flatpak_and_add_flathub
 install_snapd
 tune_inotify_limit

@@ -10,11 +10,8 @@ REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 # shellcheck source=SCRIPTDIR/lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
-# init_stage warms sudo: the Ollama and superfile installers (steps 9, 14) need it mid-run.
+# Only steps 1-2 get sudo; drop_sudo clears it before the other installers run.
 init_stage "$HOME/fedora-setup-extra.log"
-
-# Later steps call binaries the earlier ones drop in these dirs.
-PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 
 banner "Starting Extra Configurations & Installations"
 
@@ -27,7 +24,23 @@ clone() {
     git clone --depth 1 "$1" "$2"
 }
 
-# 1. ZSH plugins
+# 1. Ollama
+echo "---> Installing Ollama..."
+# Uses sudo for its systemd service; NVIDIA machines need the driver first.
+curl -fsSL https://ollama.com/install.sh | sh || echo "!!! Ollama install failed."
+
+# 2. superfile
+echo "---> Installing superfile..."
+# Moves spf into /usr/local/bin with sudo; its gruvbox config comes with step 15.
+curl -fsSL https://superfile.dev/install.sh | bash || echo "!!! superfile install failed."
+
+echo "---> Dropping sudo for the remaining steps..."
+drop_sudo
+
+# Later steps call binaries the earlier ones drop in these dirs.
+PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
+
+# 3. ZSH plugins
 echo "---> Installing ZSH Plugins..."
 # oh-my-zsh.sh sets ZSH_CUSTOM without exporting it, so set it here too.
 ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
@@ -41,7 +54,7 @@ else
     echo "!!! SKIPPED: Oh My Zsh is not installed at ~/.oh-my-zsh."
 fi
 
-# 2. Nerd font
+# 4. Nerd font
 echo "---> Installing JetBrainsMono Nerd Font..."
 # fc-cache registers the font without a re-login.
 FONT_DIR="$HOME/.local/share/fonts/JetBrainsMono"
@@ -57,7 +70,7 @@ else
 fi
 rm -f "$FONT_TAR"
 
-# 3. Rust and cargo utilities
+# 5. Rust and cargo utilities
 echo "---> Installing Rust and Cargo utilities..."
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
@@ -72,12 +85,12 @@ else
     echo "!!! rustup failed, skipping cargo installs."
 fi
 
-# 4. Atuin
+# 6. Atuin
 echo "---> Installing Atuin..."
 curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh \
     || echo "!!! Atuin install failed."
 
-# 5. Eza gruvbox theme
+# 7. Eza gruvbox theme
 echo "---> Configuring Eza Gruvbox theme..."
 # Link only on a good clone: a broken theme.yml breaks every eza call.
 mkdir -p ~/.config/eza
@@ -85,7 +98,7 @@ if clone https://github.com/eza-community/eza-themes.git ~/.config/eza/eza-theme
     ln -sfn ~/.config/eza/eza-themes/themes/gruvbox-dark.yml ~/.config/eza/theme.yml
 fi
 
-# 6. Gruvbox Plus icon pack
+# 8. Gruvbox Plus icon pack
 echo "---> Installing Gruvbox Icons..."
 # Only the link Gnome Tweaks reads belongs in ~/.icons.
 ICON_SRC="$HOME/.local/share/gruvbox-plus-icon-pack"
@@ -94,7 +107,7 @@ if clone https://github.com/SylEleuth/gruvbox-plus-icon-pack.git "$ICON_SRC"; th
     ln -sfn "$ICON_SRC/Gruvbox-Plus-Dark" ~/.icons/Gruvbox-Plus-Dark
 fi
 
-# 7. Google repo tool
+# 9. Google repo tool
 echo "---> Installing Google Repo Tool..."
 # -f on every curl: without it an HTTP error page gets saved or piped to sh.
 mkdir -p ~/.local/bin
@@ -109,40 +122,27 @@ else
     rm -f "$REPO_TMP"
 fi
 
-# 8. Zed
+# 10. Zed
 echo "---> Installing Zed..."
-# Lands under ~/.local, so no root is needed.
 curl -fsSL https://zed.dev/install.sh | sh || echo "!!! Zed install failed."
 
-# 9. Ollama
-echo "---> Installing Ollama..."
-# Sets up a systemd service, so it may prompt for sudo.
-# NVIDIA machines need the driver installed first.
-curl -fsSL https://ollama.com/install.sh | sh || echo "!!! Ollama install failed."
-
-# 10. Herdr
+# 11. Herdr
 echo "---> Installing Herdr..."
 curl -fsSL https://herdr.dev/install.sh | sh || echo "!!! Herdr install failed."
 
-# 11. Antigravity CLI
+# 12. Antigravity CLI
 echo "---> Installing Antigravity CLI..."
 curl -fsSL https://antigravity.google/cli/install.sh | bash \
     || echo "!!! Antigravity CLI install failed."
 
-# 12. Claude Code CLI
+# 13. Claude Code CLI
 echo "---> Installing Claude Code CLI..."
-# Lands in ~/.local/bin, so no root is needed.
 curl -fsSL https://claude.ai/install.sh | bash || echo "!!! Claude Code install failed."
 
-# 13. cliamp
+# 14. cliamp
 echo "---> Installing cliamp..."
 # The PATH above makes the installer use ~/.local/bin, so no root is needed.
 curl -fsSL https://cliamp.stream/install.sh | sh || echo "!!! cliamp install failed."
-
-# 14. superfile
-echo "---> Installing superfile..."
-# Moves spf into /usr/local/bin with sudo; its gruvbox config comes with step 15.
-curl -fsSL https://superfile.dev/install.sh | bash || echo "!!! superfile install failed."
 
 # 15. Configs
 echo "---> Copying configs into ~/.config..."
@@ -156,13 +156,13 @@ fi
 
 # 16. Pueue daemon
 echo "---> Enabling the Pueue daemon..."
-# Needs pueued (step 3) and its unit (step 15); daemon-reload loads the unit.
+# Needs pueued (step 5) and its unit (step 15); daemon-reload loads the unit.
 if have pueued; then
     systemctl --user daemon-reload
     systemctl --user enable --now pueued.service \
         || echo "!!! Pueue daemon failed to start."
 else
-    echo "!!! SKIPPED: pueued is not installed - see step 3."
+    echo "!!! SKIPPED: pueued is not installed - see step 5."
 fi
 
 # 17. Home dotfiles
@@ -202,7 +202,7 @@ if have ollama; then
         ollama pull "$model" || echo "!!! failed: $model"
     done
 else
-    echo "!!! SKIPPED: ollama is not installed - see step 9."
+    echo "!!! SKIPPED: ollama is not installed - see step 1."
 fi
 
 # 21. Distrobox containers

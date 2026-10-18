@@ -223,6 +223,20 @@ install_flatpak_apps() {
     done
 }
 
+install_snap_apps() {
+    banner "Install packages via Snap"
+
+    local apps=(
+        "spotify"
+    )
+
+    local app
+    sudo snap wait system seed.loaded
+    for app in "${apps[@]}"; do
+        sudo snap install "$app" || echo "!!! failed: $app"
+    done
+}
+
 enable_syncthing() {
     banner "Enable the Syncthing daemon (user service)"
 
@@ -233,14 +247,17 @@ enable_syncthing() {
     fi
 
     # --user, never sudo: the daemon owns the synced files.
-    systemctl --user enable syncthing.service
-    systemctl --user start syncthing.service
-    echo "---> Syncthing is running - web UI at http://127.0.0.1:8384"
+    if systemctl --user enable --now syncthing.service; then
+        echo "---> Syncthing is running - web UI at http://127.0.0.1:8384"
+    else
+        echo "!!! Syncthing failed to start."
+    fi
 }
 
 add_apps_repo
 install_dnf_packages
 install_flatpak_apps
+install_snap_apps
 enable_syncthing
 
 banner "Application installation complete. Reboot, then continue the guide."

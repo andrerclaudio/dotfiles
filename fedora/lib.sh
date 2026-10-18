@@ -30,8 +30,16 @@ start_logging() {
 # Keep the sudo timestamp alive. Silenced so it cannot hold the log pipe open.
 start_sudo_keepalive() {
     sudo -v || exit 1
-    { while true; do sudo -n true; sleep 50; kill -0 "$$" 2>/dev/null || exit; done; } >/dev/null 2>&1 &
+    { trap exit TERM; while true; do sudo -n true; sleep 50 & wait $!; kill -0 "$$" 2>/dev/null || exit; done; } >/dev/null 2>&1 &
     SUDO_KEEPALIVE_PID=$!
+}
+
+# Stops the keepalive after any refresh in flight, then clears the sudo ticket.
+drop_sudo() {
+    kill "$SUDO_KEEPALIVE_PID" 2>/dev/null
+    wait "$SUDO_KEEPALIVE_PID" 2>/dev/null
+    SUDO_KEEPALIVE_PID=
+    sudo -k
 }
 
 # Registered on EXIT by init_stage.

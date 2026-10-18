@@ -60,6 +60,7 @@ FOLDERS=(
     "media|Media|
         org.videolan.VLC.desktop
         mpv.desktop
+        spotify_spotify.desktop
         cliamp.desktop"
 
     "graphics|Graphics & Video|
@@ -117,6 +118,7 @@ LOOSE=(
 
 # The dash, left to right.
 DASH=(
+    spotify_spotify.desktop
     google-chrome.desktop
     com.microsoft.VSCode.desktop
     com.mitchellh.ghostty.desktop
