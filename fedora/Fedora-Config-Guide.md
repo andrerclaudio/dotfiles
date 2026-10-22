@@ -3,14 +3,14 @@
 > **Target: Fedora 44 and later** (dnf5, GNOME 50+, Wayland-only session).
 >
 > **Run order matters.** `core.sh` → `apps.sh` → **Nvidia drivers** (if needed) →
-> **Oh My Zsh** → `extra.sh`.
+> **Oh My Zsh** → `extra.sh` → `desktop.sh`.
 >
 > Each script writes a log to `~/fedora-setup-<stage>.log` — check it for
 > packages DNF could not find.
 
 ## Phase 1: Automated Scripts & Shell Setup
 
-> The three stage scripts are committed executable, so a fresh clone runs them
+> The four stage scripts are committed executable, so a fresh clone runs them
 > as-is - no `chmod` needed. `lib.sh` is sourced by them, not run, and stays
 > non-executable on purpose.
 
@@ -119,6 +119,21 @@
     ../tools/gnome_app_grid.sh --revert
     ```
 
+7. Run the Desktop script and restart. Use a terminal inside the GNOME
+   session, not SSH or a TTY:
+
+    ```shell
+    ./desktop.sh
+    sudo reboot
+    ```
+
+    *It sets the hostname and the Performance power profile, turns on the SSH
+    server, and installs Blur my Shell, Caffeine, Clipboard Indicator and Logo
+    Menu from extensions.gnome.org. It then applies the GNOME settings:
+    appearance, fonts and icons, shortcuts, Pop Shell tiling, the extensions'
+    settings, default apps and the Gruvbox Spotify icon. The extensions start
+    after the reboot.*
+
 ## Phase 2: Manual Authentications & GUI Tweaks
 
 1. **Log into Atuin:**
@@ -127,14 +142,7 @@
     atuin login -u andrerc-outlook
     ```
 
-2. **Apply Gnome Tweaks:**
-    Open the Gnome Tweaks application and apply the following settings downloaded by the scripts:
-    - **Fonts:** `JetBrainsMonoNL Nerd Font Mono`
-    - **Appearance (Icons):** `Gruvbox-Plus-Dark`
-
-    *If the font doesn't appear in the list, run `fc-cache -f` and reopen Tweaks.*
-
-3. **Change DNS addresses:**
+2. **Change DNS addresses:**
     Go to Wi-Fi settings, change DNS from automatic to manual, and add:
     - **IPV4:** `8.8.8.8, 8.8.4.4`
     - **IPV6:** `2001:4860:4860::8888, 2001:4860:4860::8844`
@@ -161,7 +169,8 @@
     ../tools/gmail_pwa_mailto.sh
     ```
 
-3. Install your preferred **Gnome Extensions**.
+3. Install any other **Gnome Extensions** you want. `desktop.sh` already
+   installs Blur my Shell, Caffeine, Clipboard Indicator and Logo Menu.
 
 4. **Initialize Tmux Plugins:**
     Open a Tmux session and press `prefix + I` (default prefix: `Ctrl+b`) to

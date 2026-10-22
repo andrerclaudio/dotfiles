@@ -1,5 +1,5 @@
 #!/bin/bash
-# Fedora post-install, stage 3 of 3 (core.sh -> apps.sh -> extra.sh): tools and configs.
+# Fedora post-install, stage 3 of 4 (core.sh -> apps.sh -> extra.sh -> desktop.sh): tools and configs.
 
 # No -e: one failed step should not abort the run.
 set -uo pipefail
@@ -100,7 +100,7 @@ fi
 
 # 8. Gruvbox Plus icon pack
 echo "---> Installing Gruvbox Icons..."
-# Only the link Gnome Tweaks reads belongs in ~/.icons.
+# Only the link GNOME reads the icon theme from belongs in ~/.icons.
 ICON_SRC="$HOME/.local/share/gruvbox-plus-icon-pack"
 mkdir -p ~/.icons
 if clone https://github.com/SylEleuth/gruvbox-plus-icon-pack.git "$ICON_SRC"; then
@@ -233,4 +233,4 @@ else
     echo "!!! SKIPPED: dconf is not installed."
 fi
 
-banner "Extra scripts installed. Reboot now."
+banner "Extra scripts installed. Reboot, then run ./desktop.sh"

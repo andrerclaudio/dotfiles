@@ -8,7 +8,7 @@ Layout:
 - `config/` — copied verbatim into `~/.config`. Only put things here that belong
   under `~/.config`.
 - `fedora/` — post-install scripts, run in order: `core.sh` → `apps.sh` →
-  `extra.sh`, with `lib.sh` holding what the three share. See
+  `extra.sh` → `desktop.sh`, with `lib.sh` holding what the four share. See
   `fedora/Fedora-Config-Guide.md`.
 - `tools/` — standalone helper scripts, not part of the install flow.
   The exceptions: `core.sh` also runs `change_swap.sh` and `colors_solid.py`,

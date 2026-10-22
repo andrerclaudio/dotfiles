@@ -1,5 +1,5 @@
 #!/bin/bash
-# Fedora post-install, stage 2 of 3 (core.sh -> apps.sh -> extra.sh): applications.
+# Fedora post-install, stage 2 of 4 (core.sh -> apps.sh -> extra.sh -> desktop.sh): applications.
 
 # No -e: one failed step should not abort the run.
 set -uo pipefail

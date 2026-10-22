@@ -1,5 +1,5 @@
 #!/bin/bash
-# Fedora post-install, stage 1 of 3 (core.sh -> apps.sh -> extra.sh): core system.
+# Fedora post-install, stage 1 of 4 (core.sh -> apps.sh -> extra.sh -> desktop.sh): core system.
 
 # No -e: one failed step should not abort the run.
 set -uo pipefail
@@ -52,6 +52,7 @@ remove_unwanted_defaults() {
         "gnome-clocks"
         "gnome-connections"
         "gnome-contacts"
+        "gnome-extensions-app"
         "gnome-font-viewer"
         "gnome-logs"
         "gnome-maps"

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Shared helpers for core.sh, apps.sh and extra.sh; sourced, never run.
+# Shared helpers for core.sh, apps.sh, extra.sh and desktop.sh; sourced, never run.
 
 banner() {
     echo "# -----------------------------------------------------------------------#"
