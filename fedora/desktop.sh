@@ -51,16 +51,16 @@ enable_ssh() {
 }
 
 # The running shell only sees new extensions after a login, so edit the setting directly.
-enable_extension() {
+add_to_extension_list() {  # $1 enabled-extensions or disabled-extensions, $2 UUID
     local list
-    list=$(gsettings get org.gnome.shell enabled-extensions)
+    list=$(gsettings get org.gnome.shell "$1")
     list=${list#@as }
     if [[ "$list" == "[]" ]]; then
-        list="['$1']"
+        list="['$2']"
     else
-        list="${list%]}, '$1']"
+        list="${list%]}, '$2']"
     fi
-    gsettings set org.gnome.shell enabled-extensions "$list"
+    gsettings set org.gnome.shell "$1" "$list"
 }
 
 install_extensions() {
@@ -76,7 +76,7 @@ install_extensions() {
         if curl -fsSL -o "$zip" \
             "https://extensions.gnome.org/download-extension/${uuid}.shell-extension.zip?shell_version=${shell_ver}" \
             && gnome-extensions install "$zip"; then
-            enable_extension "$uuid"
+            add_to_extension_list enabled-extensions "$uuid"
         else
             echo "!!! failed: $uuid"
         fi
@@ -84,6 +84,13 @@ install_extensions() {
     rm -f "$zip"
 
     echo "NOTE: the extensions start after the next login."
+}
+
+set_fedora_extensions() {
+    banner "Pop Shell on, Fedora background logo off"
+    # Both ship with Fedora; disabled-extensions takes precedence over enabled-extensions.
+    add_to_extension_list enabled-extensions "pop-shell@system76.com"
+    add_to_extension_list disabled-extensions "background-logo@fedorahosted.org"
 }
 
 # Each block below is in 'dconf dump /' format; keys not listed keep their defaults.
@@ -118,9 +125,6 @@ automatic-timezone=true
 
 [system/locale]
 region='pt_BR.UTF-8'
-
-[org/gnome/desktop/privacy]
-report-technical-problems=true
 
 [org/gnome/desktop/search-providers]
 disabled=['org.gnome.Software.desktop', 'org.gnome.Nautilus.desktop']
@@ -264,6 +268,7 @@ set_hostname
 set_power_profile
 enable_ssh
 install_extensions
+set_fedora_extensions
 apply_gnome_settings
 set_fonts_and_icons
 set_shortcuts

@@ -39,7 +39,7 @@
     ```
 
     *Installs from DNF (COPRs, Chrome, VS Code), Flathub (`--user`) and Snap
-    (Spotify), then starts the Syncthing daemon — its web UI is at
+    (Spotify, PyCharm), then starts the Syncthing daemon — its web UI is at
     <http://127.0.0.1:8384>.*
 
     *The Flatpak stage installs one app at a time, printing `[n/35] <app-id>`.*
@@ -129,7 +129,8 @@
 
     *It sets the hostname and the Performance power profile, turns on the SSH
     server, and installs Blur my Shell, Caffeine, Clipboard Indicator and Logo
-    Menu from extensions.gnome.org. It then applies the GNOME settings:
+    Menu from extensions.gnome.org. It turns on Pop Shell and turns off
+    Fedora's background logo extension. It then applies the GNOME settings:
     appearance, fonts and icons, shortcuts, Pop Shell tiling, the extensions'
     settings, default apps and the Gruvbox Spotify icon. The extensions start
     after the reboot.*

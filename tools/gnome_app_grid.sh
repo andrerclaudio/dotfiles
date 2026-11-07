@@ -25,7 +25,7 @@ FOLDERS=(
 
     # VS Code and GNU Octave live in the dash.
     "development|Development|
-        pycharm-community.desktop
+        pycharm_pycharm.desktop
         nvim.desktop
         org.gnome.GHex.desktop
         org.gnome.meld.desktop
@@ -76,7 +76,6 @@ FOLDERS=(
         htop.desktop
         org.gnome.SystemMonitor.desktop
         btop.desktop
-        org.freedesktop.GnomeAbrt.desktop
         org.gnome.Logs.desktop"
 
     "disks|Disks & Drives|

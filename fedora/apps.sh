@@ -65,7 +65,6 @@ install_dnf_packages() {
     # Alphabetized. Plain names, no .x86_64 suffixes.
     local packages=(
         "0ad"
-        "abrt-desktop"             # crash reporting, with gnome-abrt below
         "alacritty"
         "alsa-lib-devel"
         "aria2"
@@ -101,7 +100,6 @@ install_dnf_packages() {
         "gdk-pixbuf2-devel"
         "ghostty"
         "glib2-devel"
-        "gnome-abrt"
         "gnome-shell-extension-pop-shell"
         "gnome-tweaks"
         "gobject-introspection-devel"
@@ -136,7 +134,6 @@ install_dnf_packages() {
         "podman-compose"
         "policycoreutils-python-utils"  # semanage, used by tools/change_swap.sh
         "powerline-fonts"
-        "pycharm-community"
         "python3-devel"
         "python3-pip"
         "python3-tkinter"
@@ -230,10 +227,18 @@ install_snap_apps() {
         "spotify"
     )
 
+    # Unconfined snaps, such as IDEs, install only with --classic.
+    local classic_apps=(
+        "pycharm"
+    )
+
     local app
     sudo snap wait system seed.loaded
     for app in "${apps[@]}"; do
         sudo snap install "$app" || echo "!!! failed: $app"
+    done
+    for app in "${classic_apps[@]}"; do
+        sudo snap install --classic "$app" || echo "!!! failed: $app"
     done
 }
 
