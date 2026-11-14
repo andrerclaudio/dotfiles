@@ -14,7 +14,7 @@ init_stage "$HOME/fedora-setup-apps.log"
 add_apps_repo() {
     banner "Add 3rd-Party Repositories (LazyGit, Ghostty, Yazi, Chrome, VS Code)"
 
-    # lazygit, ghostty and yazi are not in the official Fedora repos.
+    # COPRs for packages Fedora doesn't ship.
     sudo dnf copr enable -y dejan/lazygit
     sudo dnf copr enable -y scottames/ghostty
     sudo dnf copr enable -y lihaohong/yazi
@@ -100,13 +100,13 @@ install_dnf_packages() {
         "gdk-pixbuf2-devel"
         "ghostty"
         "glib2-devel"
-        "gnome-shell-extension-pop-shell"
         "gnome-tweaks"
         "gobject-introspection-devel"
         "google-chrome-stable"
         "gparted"
         "grc"
         "gtk4-devel"
+        "helix"
         "htop"
         "iperf3"
         "kitty"
@@ -127,7 +127,7 @@ install_dnf_packages() {
         "nmap"
         "nodejs-npm"
         "openssl"
-        "openssl-devel"            # for cargo-update
+        "openssl-devel"            # headers for cargo builds
         "papirus-icon-theme"
         "picocom"
         "pkgconf-pkg-config"

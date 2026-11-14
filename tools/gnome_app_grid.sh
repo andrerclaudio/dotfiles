@@ -12,6 +12,7 @@ PRISTINE="$BACKUP_ROOT/gnome-app-grid-backup-pristine"
 
 # ------------------- the layout: Fedora-default and fedora/*.sh apps only
 # One block per folder: id|name|apps; apps not installed are skipped.
+# GNOME hides dash apps from the grid.
 
 FOLDERS=(
     "office|Office|
@@ -23,11 +24,11 @@ FOLDERS=(
         org.libreoffice.LibreOffice.base.desktop
         org.libreoffice.LibreOffice.math.desktop"
 
-    # VS Code and GNU Octave live in the dash.
     "development|Development|
         pycharm_pycharm.desktop
         nvim.desktop
         org.gnome.GHex.desktop
+        Helix.desktop
         org.gnome.meld.desktop
         dev.zed.Zed.desktop"
 
@@ -37,18 +38,16 @@ FOLDERS=(
         Alacritty.desktop
         kitty.desktop"
 
-    # Hidden while Chrome is pinned to the dash.
     "google|Google|
         google-chrome.desktop"
 
-    # FileZilla and LocalSend live in the dash.
     "downloads|Downloads & Sync|
         syncthing-start.desktop
         syncthing-ui.desktop
         de.haeckerfelix.Fragments.desktop
         org.nickvision.tubeconverter.desktop"
 
-    # Ubuntu and Debian are the entries extra.sh's distrobox containers create.
+    # Some entries come from extra.sh's distrobox containers.
     "machines|Machines|
         org.gnome.Boxes.desktop
         com.ranfdev.DistroShelf.desktop

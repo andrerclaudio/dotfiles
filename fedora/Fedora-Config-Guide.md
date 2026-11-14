@@ -127,13 +127,11 @@
     sudo reboot
     ```
 
-    *It sets the hostname and the Performance power profile, turns on the SSH
-    server, and installs Blur my Shell, Caffeine, Clipboard Indicator and Logo
-    Menu from extensions.gnome.org. It turns on Pop Shell and turns off
-    Fedora's background logo extension. It then applies the GNOME settings:
-    appearance, fonts and icons, shortcuts, Pop Shell tiling, the extensions'
-    settings, default apps and the Gruvbox Spotify icon. The extensions start
-    after the reboot.*
+    *It installs Blur my Shell, Caffeine, Clipboard Indicator, Logo Menu and
+    Mosaic from extensions.gnome.org, then sets the fonts and icons, the
+    shortcuts, the default apps and the Gruvbox icons for the Spotify and
+    PyCharm snaps. The extensions start after the reboot with their default
+    settings.*
 
 ## Phase 2: Manual Authentications & GUI Tweaks
 
@@ -171,7 +169,8 @@
     ```
 
 3. Install any other **Gnome Extensions** you want. `desktop.sh` already
-   installs Blur my Shell, Caffeine, Clipboard Indicator and Logo Menu.
+   installs Blur my Shell, Caffeine, Clipboard Indicator, Logo Menu and
+   Mosaic.
 
 4. **Initialize Tmux Plugins:**
     Open a Tmux session and press `prefix + I` (default prefix: `Ctrl+b`) to

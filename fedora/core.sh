@@ -15,7 +15,7 @@ GIT_USER_EMAIL="andre.ribeiro.srs@gmail.com"
 
 init_stage "$HOME/fedora-setup-core.log"
 
-# dnf5-plugins provides setopt and copr; git is used by configure_git_credentials.
+# Tools the later steps need.
 ensure_dnf_prereqs() {
     banner "Ensuring prerequisites (dnf5-plugins, git)"
     sudo dnf install -y dnf5-plugins git
@@ -40,7 +40,7 @@ update_and_upgrade() {
 remove_unwanted_defaults() {
     banner "Removing Unwanted Defaults (GNOME Apps & LibreOffice)"
 
-    # libreoffice* matches the whole suite.
+    # Globs match a whole suite.
     local apps=(
         "baobab"
         "decibels"
