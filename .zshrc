@@ -1,3 +1,4 @@
+# shellcheck shell=bash disable=SC2034,SC2154,SC2206,SC2155,SC2164,SC1091,SC1094
 # ——— PATHS & ENVIRONMENT ——————————————————————————————————————————————
 # Allow trailing '#' comments at the prompt.
 setopt INTERACTIVE_COMMENTS
