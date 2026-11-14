@@ -109,10 +109,11 @@ function update() {
     fi
 
     print -P "${hdr}🚚 Cargo Binaries${end}"
-    if (( $+commands[cargo-install-update] )); then
-        cargo install-update -a
+    if (( $+commands[cargo] )); then
+        # Upgrades only what has a newer release; same list as extra.sh.
+        cargo install --locked tock dysk pueue leaf-markdown-viewer
     else
-        print -P "${skip} cargo-update not installed"
+        print -P "${skip} cargo not installed"
     fi
 
     print -P "${hdr}🐑 Herdr${end}"

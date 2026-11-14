@@ -78,9 +78,7 @@ if [[ -f "$HOME/.cargo/env" ]]; then
     # shellcheck source=/dev/null
     source "$HOME/.cargo/env"
     # --locked builds against the Cargo.lock each author published.
-    cargo install --locked tock dysk
-    # Unlocked: some published locks don't build against OpenSSL 4.
-    cargo install pueue leaf-markdown-viewer cargo-update
+    cargo install --locked tock dysk pueue leaf-markdown-viewer
 else
     echo "!!! rustup failed, skipping cargo installs."
 fi

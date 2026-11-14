@@ -97,10 +97,6 @@ name='Alacritty'
 binding='<Super>g'
 command='ghostty'
 name='Ghostty'
-
-[org/gnome/desktop/wm/keybindings]
-switch-to-workspace-left=['<Control><Alt>Left']
-switch-to-workspace-right=['<Control><Alt>Right']
 EOF
 }
 
