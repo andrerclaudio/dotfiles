@@ -1,5 +1,5 @@
 #!/bin/bash
-# Fedora post-install, stage 2 of 4 (core.sh -> apps.sh -> extra.sh -> desktop.sh): applications.
+# Fedora post-install, stage 2 of 4: applications.
 
 # No -e: one failed step should not abort the run.
 set -uo pipefail
@@ -211,7 +211,7 @@ install_flatpak_apps() {
         "org.videolan.VLC"
     )
 
-    # Per app: a batch dies whole over one bad ID. The counter is the progress.
+    # One at a time, so a bad ID fails alone.
     local app i=0 total=${#apps[@]}
     for app in "${apps[@]}"; do
         printf -- '---> [%2d/%d] %s\n' "$((++i))" "$total" "$app"
@@ -245,7 +245,7 @@ install_snap_apps() {
 enable_syncthing() {
     banner "Enable the Syncthing daemon (user service)"
 
-    # The unit ships with the package, but the install above may have skipped it.
+    # Skip if the package wasn't installed.
     if ! systemctl --user cat syncthing.service >/dev/null 2>&1; then
         echo "!!! SKIPPED: syncthing.service is not installed."
         return

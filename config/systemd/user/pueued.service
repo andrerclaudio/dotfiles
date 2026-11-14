@@ -1,4 +1,4 @@
-# Pueue daemon, installed and enabled by extra.sh; pueued comes from cargo.
+# Pueue daemon, enabled by extra.sh.
 
 [Unit]
 Description=Pueue Daemon - CLI process scheduler and manager

@@ -8,6 +8,41 @@
 > Each script writes a log to `~/fedora-setup-<stage>.log` — check it for
 > packages DNF could not find.
 
+```text
+  Fresh Fedora install
+          │
+          ▼
+  ┌────────────────────────────────────┐
+  │ core.sh     repos, upgrade, swap,  │──▶ tools/change_swap.sh
+  │             git, wallpapers        │──▶ tools/colors_solid.py
+  └────────────────────────────────────┘
+          │ reboot
+          ▼
+  ┌────────────────────────────────────┐
+  │ apps.sh     DNF, Flatpak, Snap     │
+  └────────────────────────────────────┘
+          │ reboot
+          ▼
+  ┌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┐
+  ╎ by hand:    Nvidia driver, reboot  ╎
+  ╎             Oh My Zsh, reboot      ╎
+  ╎             sign-ins               ╎
+  └╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┘
+          │
+          ▼
+  ┌────────────────────────────────────┐
+  │ extra.sh    tools, configs, grid   │──▶ tools/gnome_app_grid.sh
+  └────────────────────────────────────┘
+          │ reboot
+          ▼
+  ┌────────────────────────────────────┐
+  │ desktop.sh  extensions, shortcuts  │
+  └────────────────────────────────────┘
+          │ reboot
+          ▼
+  Phases 2-3, by hand
+```
+
 ## Phase 1: Automated Scripts & Shell Setup
 
 > The four stage scripts are committed executable, so a fresh clone runs them

@@ -124,7 +124,6 @@ def main() -> None:
     size: tuple[int, int] = (SIZE_W, SIZE_H)
     colors: set[str] = unique_hex_values([DARK, LIGHT])
 
-    # parents/exist_ok so a re-run, or a nested OUT_DIR, is not a special case.
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     generated: int = 0

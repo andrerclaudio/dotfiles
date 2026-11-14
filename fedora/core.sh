@@ -1,5 +1,5 @@
 #!/bin/bash
-# Fedora post-install, stage 1 of 4 (core.sh -> apps.sh -> extra.sh -> desktop.sh): core system.
+# Fedora post-install, stage 1 of 4: core system.
 
 # No -e: one failed step should not abort the run.
 set -uo pipefail
@@ -75,7 +75,7 @@ install_flatpak_and_add_flathub() {
     banner "Adding Flatpak utility and Flathub Repository"
     sudo dnf install -y flatpak
 
-    # apps.sh installs everything with --user, and --user keeps its own remotes.
+    # Per-user remote, as apps.sh installs with --user.
     flatpak remote-add --user --if-not-exists flathub \
         https://dl.flathub.org/repo/flathub.flatpakrepo
 }
@@ -93,7 +93,7 @@ add_rpm_fusion_repository() {
     local fedora_ver
     fedora_ver=$(rpm -E %fedora)
 
-    # The release RPMs come from mirrors, so check them against RPM Fusion's keys.
+    # Check the release RPMs against RPM Fusion's keys.
     local keys=/usr/share/distribution-gpg-keys/rpmfusion
     sudo dnf install -y distribution-gpg-keys
     sudo rpmkeys --import \
@@ -103,7 +103,7 @@ add_rpm_fusion_repository() {
         "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-${fedora_ver}.noarch.rpm" \
         "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${fedora_ver}.noarch.rpm"
 
-    # Stop here: without RPM Fusion, apps.sh would silently skip the codecs.
+    # Stop here: without RPM Fusion, apps.sh would skip the codecs.
     if ! rpm -q rpmfusion-free-release rpmfusion-nonfree-release >/dev/null 2>&1; then
         echo "!!! RPM Fusion is missing - re-run ./core.sh before apps.sh."
         exit 1
@@ -117,7 +117,7 @@ tune_inotify_limit() {
     echo "fs.inotify.max_user_watches=524288" \
         | sudo tee /etc/sysctl.d/99-inotify.conf >/dev/null
 
-    # -p on the one file, not --system: --system reprints every drop-in on the box.
+    # Load only this drop-in.
     echo "---> Applying the new limit..."
     sudo sysctl -q -p /etc/sysctl.d/99-inotify.conf
     sysctl fs.inotify.max_user_watches

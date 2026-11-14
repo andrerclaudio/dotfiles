@@ -1,5 +1,5 @@
 #!/bin/bash
-# Shared helpers for core.sh, apps.sh, extra.sh and desktop.sh; sourced, never run.
+# Shared helpers for the stage scripts; sourced, never run.
 
 banner() {
     echo "# -----------------------------------------------------------------------#"
@@ -17,24 +17,24 @@ require_non_root() {
     ((EUID)) || { echo "Run this as your normal user, not with sudo."; exit 1; }
 }
 
-# Log to $1, also published as $LOG_FILE. Real fds parked on 3 and 4.
+# Copy all output into the log file $1.
 start_logging() {
     LOG_FILE="$1"
     exec 3>&1 4>&2
-    # Screen keeps the progress bars; the log gets the last redraw, no escapes.
+    # The log gets each line's last redraw, without escape codes.
     exec > >(tee >(sed -u 's/\r*$//; s/.*\r//; s/\x1b\[[0-9;?]*[a-zA-Z]//g' >>"$LOG_FILE"); wait $!) 2>&1
     TEE_PID=$!
     echo "Logging to $LOG_FILE"
 }
 
-# Keep the sudo timestamp alive. Silenced, with fds 3 and 4 closed, so it holds no pipe open.
+# Keep the sudo timestamp alive in the background.
 start_sudo_keepalive() {
     sudo -v || exit 1
     { trap exit TERM; while true; do sudo -n true; sleep 50 & wait $!; kill -0 "$$" 2>/dev/null || exit; done; } >/dev/null 2>&1 3>&- 4>&- &
     SUDO_KEEPALIVE_PID=$!
 }
 
-# Stops the keepalive after any refresh in flight, then clears the sudo ticket.
+# Stop the keepalive and clear the sudo ticket.
 drop_sudo() {
     kill "$SUDO_KEEPALIVE_PID" 2>/dev/null
     wait "$SUDO_KEEPALIVE_PID" 2>/dev/null

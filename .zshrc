@@ -165,7 +165,7 @@ if (( $+commands[atuin] )); then
     eval "$(atuin init zsh)"
 fi
 
-# zoxide: smarter cd. Last of the inits, so its chpwd hook registers last.
+# zoxide: smarter cd, initialized last.
 if (( $+commands[zoxide] )); then
     eval "$(zoxide init zsh --cmd cd)"
 fi

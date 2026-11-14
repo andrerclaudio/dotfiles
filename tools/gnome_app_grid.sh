@@ -270,7 +270,7 @@ apply() {
     run dconf write /org/gnome/desktop/app-folders/folder-children \
         "$(as_gvariant_list "${children[@]}")"
 
-    # One page, every entry positioned; joined by hand, as IFS would change run().
+    # All entries on one page.
     local layout_str="" entry
     for entry in "${layout_entries[@]}"; do
         [[ -n $layout_str ]] && layout_str+=", "

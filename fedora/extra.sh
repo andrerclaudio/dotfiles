@@ -1,5 +1,5 @@
 #!/bin/bash
-# Fedora post-install, stage 3 of 4 (core.sh -> apps.sh -> extra.sh -> desktop.sh): tools and configs.
+# Fedora post-install, stage 3 of 4: tools and configs.
 
 # No -e: one failed step should not abort the run.
 set -uo pipefail
@@ -10,7 +10,7 @@ REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 # shellcheck source=SCRIPTDIR/lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
-# Only steps 1-2 get sudo; drop_sudo clears it before the other installers run.
+# Only steps 1-2 get sudo.
 init_stage "$HOME/fedora-setup-extra.log"
 
 banner "Starting Extra Configurations & Installations"
@@ -26,7 +26,7 @@ clone() {
 
 # 1. Ollama
 echo "---> Installing Ollama..."
-# Uses sudo for its systemd service; NVIDIA machines need the driver first.
+# Needs sudo; NVIDIA machines need the driver first.
 curl --proto '=https' --tlsv1.2 -fsSL https://ollama.com/install.sh | sh \
     || echo "!!! Ollama install failed."
 
@@ -96,7 +96,7 @@ curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh \
 
 # 7. Eza gruvbox theme
 echo "---> Configuring Eza Gruvbox theme..."
-# Link only on a good clone: a broken theme.yml breaks every eza call.
+# Link only on a good clone, so theme.yml never dangles.
 mkdir -p ~/.config/eza
 if clone https://github.com/eza-community/eza-themes.git ~/.config/eza/eza-themes; then
     ln -sfn ~/.config/eza/eza-themes/themes/gruvbox-dark.yml ~/.config/eza/theme.yml
@@ -137,23 +137,23 @@ curl --proto '=https' --tlsv1.2 -fsSL https://claude.ai/install.sh | bash \
 
 # 13. cliamp
 echo "---> Installing cliamp..."
-# The PATH above makes the installer use ~/.local/bin, so no root is needed.
+# Installs into ~/.local/bin, without root.
 curl --proto '=https' --tlsv1.2 -fsSL https://cliamp.stream/install.sh | sh \
     || echo "!!! cliamp install failed."
 
 # 14. Configs
 echo "---> Copying configs into ~/.config..."
-# config/ mirrors ~/.config exactly; .zshrc lives at the repo root instead.
+# config/ mirrors ~/.config.
 if [[ -d "$REPO_ROOT/config" ]]; then
     mkdir -p "$HOME/.config"
     cp -r "$REPO_ROOT/config/." "$HOME/.config/"
 else
-    echo "!!! SKIPPED: no config/ directory found next to this script."
+    echo "!!! SKIPPED: no config/ directory found at the repo root."
 fi
 
 # 15. Pueue daemon
 echo "---> Enabling the Pueue daemon..."
-# Needs pueued (step 5) and its unit (step 14); daemon-reload loads the unit.
+# Needs pueued (step 5) and its unit (step 14).
 if have pueued; then
     systemctl --user daemon-reload
     systemctl --user enable --now pueued.service \
@@ -194,7 +194,7 @@ fi
 
 # 19. Ollama models
 echo "---> Pulling Ollama models..."
-# Several GB each, so each pull is reported on its own.
+# Large downloads, so each pull is reported on its own.
 if have ollama; then
     for model in deepseek-r1:1.5b gemma3:1b qwen3-vl:4b; do
         ollama pull "$model" || echo "!!! failed: $model"
@@ -205,7 +205,7 @@ fi
 
 # 20. Distrobox containers
 echo "---> Creating the Debian and Ubuntu containers..."
-# --home gives each container its own home folder, apart from the host's ~.
+# Each container gets its own home folder.
 DISTROBOX_HOMES="$HOME/Documents/Distrobox"
 if have distrobox; then
     DB_PKGS="systemd libpam-systemd pipewire-audio-client-libraries git tmux"
@@ -224,7 +224,7 @@ fi
 
 # 21. GNOME app grid and dash
 echo "---> Laying out the GNOME app grid and dash..."
-# Last, so every app it lays out is installed; undo with tools/gnome_app_grid.sh --revert.
+# Last, after every app is installed.
 if have dconf; then
     bash "$REPO_ROOT/tools/gnome_app_grid.sh" || echo "!!! App grid layout failed."
 else

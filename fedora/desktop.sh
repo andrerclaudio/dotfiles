@@ -1,5 +1,5 @@
 #!/bin/bash
-# Fedora post-install, stage 4 of 4 (core.sh -> apps.sh -> extra.sh -> desktop.sh): GNOME desktop.
+# Fedora post-install, stage 4 of 4: GNOME desktop.
 
 # No -e: one failed step should not abort the run.
 set -uo pipefail
@@ -29,7 +29,7 @@ require_non_root
 start_logging "$HOME/fedora-setup-desktop.log"
 trap stage_cleanup EXIT
 
-# The running shell only sees new extensions after a login, so edit the setting directly.
+# Append the extension to the enabled list.
 enable_extension() {  # $1 UUID
     local list
     list=$(gsettings get org.gnome.shell enabled-extensions)
@@ -54,7 +54,7 @@ EOF
 install_extensions() {
     banner "GNOME extensions (extensions.gnome.org)"
 
-    # With no release for this shell, the site sends its latest one, so check it.
+    # Skip any extension without a release for this shell.
     local shell_ver uuid zip
     shell_ver=$(gnome-shell --version | grep -oE '[0-9]+' | head -n 1)
     zip=$(mktemp -t extension.XXXXXX.zip)
@@ -77,7 +77,7 @@ install_extensions() {
     echo "NOTE: the extensions start after the next login."
 }
 
-# Each block below is in 'dconf dump /' format; keys not listed keep their defaults.
+# 'dconf dump /' format; unlisted keys stay as they are.
 set_fonts_and_icons() {
     banner "Fonts and icon theme"
     # The font comes from extra.sh step 4, the icons from step 8.
@@ -124,7 +124,7 @@ set_default_apps() {
 set_snap_icons_style() {
     banner "Snap launchers with the Gruvbox icons"
 
-    # Snaps ignore the icon theme, so a local copy of each launcher points at the icon.
+    # A local copy of each launcher points at its Gruvbox icon.
     local src_dir="/var/lib/snapd/desktop/applications"
     local icon_dir="$HOME/.icons/Gruvbox-Plus-Dark/apps/scalable"
     local dst_dir="$HOME/.local/share/applications"

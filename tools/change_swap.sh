@@ -1,5 +1,5 @@
 #!/bin/bash
-# Creates a persistent swap file at /swapfile on Btrfs; skips if it exists. Run as your user.
+# Creates a persistent swap file at /swapfile on Btrfs; run as your user.
 
 # -e: each step needs the one before it.
 set -euo pipefail
@@ -24,10 +24,10 @@ if (($(df --output=avail -B1 / | tail -n 1) < (SIZE_GIB + MARGIN_GIB) << 30)); t
     exit 1
 fi
 
-# semanage for step 3, installed first so a failure leaves nothing half done.
+# semanage, needed by step 3.
 sudo dnf install -y policycoreutils-python-utils
 
-# 2. Create the swap file (mkswapfile also disables copy-on-write and sets mode 600)
+# 2. Create the swap file
 echo "---> Creating a ${SIZE_GIB} GiB /swapfile..."
 sudo btrfs filesystem mkswapfile --size "${SIZE_GIB}g" /swapfile
 
