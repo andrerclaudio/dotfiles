@@ -45,7 +45,7 @@ rewrite_launcher() {
 update_launcher() {
     TMP=$(mktemp)
     rewrite_launcher "$@" > "$TMP"
-    grep -q '^Exec=' "$TMP" || { echo "!!! ${LAUNCHER##*/} has no Exec line - left untouched."; exit 1; }
+    grep -q '^Exec=' "$TMP" || { echo "!!! ${LAUNCHER##*/} has no Exec line, so it was left untouched."; exit 1; }
     if cmp -s "$TMP" "$LAUNCHER"; then
         echo "---> ${LAUNCHER##*/} is already up to date."
     else
@@ -98,7 +98,7 @@ apply() {
         echo "Done. Reopen Settings > Apps > Default Apps and pick Gmail under Mail."
         echo "Test with: xdg-open 'mailto:test@example.com?subject=Hello'"
     else
-        echo "!!! GNOME still doesn't list Gmail for $MIME - check: gio mime $MIME"
+        echo "!!! GNOME still doesn't list Gmail for $MIME; check with: gio mime $MIME"
         exit 1
     fi
 }

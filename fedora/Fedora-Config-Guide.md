@@ -1,11 +1,8 @@
 # Fedora Initial Configuration Guide
 
-> **Target: Fedora 44 and later** (dnf5, GNOME 50+, Wayland-only session).
+> Target: Fedora 44 and later (dnf5, GNOME 50+, Wayland-only session).
 >
-> **Run order matters.** `core.sh` → `apps.sh` → **Nvidia drivers** (if needed) →
-> **Oh My Zsh** → `extra.sh` → `desktop.sh`.
->
-> Each script writes a log to `~/fedora-setup-<stage>.log` — check it for
+> Each script writes a log to `~/fedora-setup-<stage>.log`. Check it for
 > packages DNF could not find.
 
 ```text
@@ -43,11 +40,9 @@
   Phases 2-3, by hand
 ```
 
-## Phase 1: Automated Scripts & Shell Setup
+## Phase 1: Automated scripts and shell setup
 
-> The four stage scripts are committed executable, so a fresh clone runs them
-> as-is - no `chmod` needed. `lib.sh` is sourced by them, not run, and stays
-> non-executable on purpose.
+> The stage scripts are already executable; no `chmod` needed.
 
 1. Run the Core script and restart:
 
@@ -57,11 +52,9 @@
     sudo reboot
     ```
 
-    *The reboot is not optional: the `dialout` group membership this script
-    grants only takes effect after a full logout.*
+    *Reboot so the `dialout` group membership this script grants takes effect.*
 
-    *It also creates a 16 GiB swap file at `/swapfile` (`tools/change_swap.sh`),
-    used once zram is full. Skipped if `/swapfile` already exists.*
+    *It also creates a 16 GiB swap file at `/swapfile`, used once zram is full.*
 
     *And it writes one 1920x1080 PNG per Gruvbox color into `~/Pictures/Solid`
     (`tools/colors_solid.py`), ready to pick as a wallpaper.*
@@ -74,22 +67,20 @@
     sudo reboot
     ```
 
-    *Installs from DNF (COPRs, Chrome, VS Code), Flathub (`--user`) and Snap
-    (Spotify, PyCharm), then starts the Syncthing daemon — its web UI is at
-    <http://127.0.0.1:8384>.*
+    *Installs apps from DNF, Flathub and Snap, then starts Syncthing.*
 
     *The Flatpak stage installs one app at a time, printing `[n/total] <app-id>`.*
 
-    *Note: From now on, use the Alacritty or Ghostty terminal.*
+    *From now on, use the Alacritty or Ghostty terminal.*
 
-3. **Install Nvidia Drivers (If Needed) and restart:**
+3. Install the Nvidia drivers (if needed) and restart:
 
     ```shell
     sudo dnf install -y akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs nvidia-settings nvidia-persistenced nvidia-modprobe
     ```
 
-    *Wait for the kernel module to finish building before rebooting — otherwise
-    you boot to a black screen. Check with:*
+    *Wait for the kernel module to finish building before rebooting, or you
+    boot to a black screen. Check with:*
 
     ```shell
     modinfo -F version nvidia
@@ -102,9 +93,7 @@
     sudo reboot
     ```
 
-    *Do this before `extra.sh`: on a machine with an NVIDIA GPU but no
-    `nvidia-smi`, Ollama's installer tries to install NVIDIA's own driver. On
-    dnf5 that aborts, and `extra.sh` wrongly reports "Ollama install failed".*
+    *Do this before `extra.sh`, or the Ollama install fails.*
 
 4. Install Oh My ZSH:
     Open your terminal and run:
@@ -113,21 +102,18 @@
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
     ```
 
-    *Note: When the installation finishes, it may drop you into a new ZSH prompt. Type `exit` to return to your normal prompt if needed, and then restart:*
+    *If it leaves you in a new ZSH prompt, type `exit`, then restart:*
 
     ```shell
     sudo reboot
     ```
 
-5. **Start your personal accounts:**
-    - Open **Google Chrome** and log in.
-    - Go to **GitHub** and log in.
-    - Open **VS Code** and start Sync.
+5. Start your personal accounts:
+    - Open Google Chrome and log in.
+    - Go to GitHub and log in.
+    - Open VS Code and start Sync.
 
-6. Run the Extra script and restart. It works through numbered steps —
-   Ollama and superfile, then the shell plugins, fonts, the CLI tools and
-   themes, the configs, the Pueue daemon, `~/.zshrc`, TPM, the Yazi flavor,
-   the Ollama models, the Distrobox containers and the GNOME app grid:
+6. Run the Extra script and restart:
 
     ```shell
     cd ~/dotfiles/fedora
@@ -135,22 +121,15 @@
     sudo reboot
     ```
 
-    *Only steps 1-2 run with sudo. The script then clears the sudo ticket, so
-    the remaining installers cannot use it.*
+    *Only steps 1-2 run with sudo.*
 
-    *This also installs `~/.zshrc` over the one the Oh My Zsh installer wrote.
-    If that file differed, it is kept as `~/.zshrc.bak`.*
+    *It replaces `~/.zshrc`, keeping the old one as `~/.zshrc.bak`.*
 
-    *The slow steps come near the end: several GB of Ollama models, and the
-    Debian and Ubuntu containers, whose homes land in `~/Documents/Distrobox/`.*
+    *The Ollama models and the Distrobox containers are the slow steps.*
 
-    *`distrobox create` only pulls the image — the `--additional-packages`
-    (systemd, git, tmux, the pipewire libs) are installed on the **first**
-    `distrobox enter` of each container, so both `distrobox enter Debian` and
-    `distrobox enter Ubuntu` take a few minutes the first time.*
+    *The first `distrobox enter` of each container takes a few minutes.*
 
-    *The last step sorts the app grid into folders and sets the dash
-    (`tools/gnome_app_grid.sh`). It shows after the reboot. To undo it:*
+    *To undo the app grid layout:*
 
     ```shell
     cd ~/dotfiles/fedora
@@ -166,28 +145,24 @@
     sudo reboot
     ```
 
-    *It installs the extensions listed in `desktop.sh` from
-    extensions.gnome.org, then sets the fonts and icons, the
-    shortcuts, the default apps and the Gruvbox icons for the Spotify and
-    PyCharm snaps. The extensions start after the reboot with their default
-    settings.*
+    *The extensions it installs start after the reboot, with default settings.*
 
-## Phase 2: Manual Authentications & GUI Tweaks
+## Phase 2: Logins and network settings
 
-1. **Log into Atuin:**
+1. Log into Atuin:
 
     ```shell
     atuin login -u andrerc-outlook
     ```
 
-2. **Change DNS addresses:**
+2. Change the DNS addresses:
     Go to Wi-Fi settings, change DNS from automatic to manual, and add:
-    - **IPV4:** `8.8.8.8, 8.8.4.4`
-    - **IPV6:** `2001:4860:4860::8888, 2001:4860:4860::8844`
+    - IPv4: `8.8.8.8, 8.8.4.4`
+    - IPv6: `2001:4860:4860::8888, 2001:4860:4860::8844`
 
-## Phase 3: Specialized Software Setup & Tuning
+## Phase 3: Checks and extras
 
-1. **Check the inotify limit (VS Code):**
+1. Check the inotify limit (VS Code):
     `core.sh` already writes `/etc/sysctl.d/99-inotify.conf` and applies it.
     Confirm it stuck:
 
@@ -197,24 +172,20 @@
 
     *Should print `524288`. If it prints the default, re-run `sudo sysctl --system`.*
 
-2. Install your preferred **PWA applications**.
+2. Install your preferred PWA applications.
 
-    *To list the Gmail PWA under Settings > Apps > Default Apps > Mail, run the
-    command below. Chrome drops it from that list when it rewrites the Gmail
-    launcher (a name or icon change), so run it again then:*
+    *To list the Gmail PWA as a Mail app, run this, and again if Chrome drops it:*
 
     ```shell
     cd ~/dotfiles/fedora
     ../tools/gmail_pwa_mailto.sh
     ```
 
-3. Install any other **Gnome Extensions** you want, on top of the ones
+3. Install any other GNOME extensions you want, on top of the ones
    `desktop.sh` installs.
 
-4. **Initialize Tmux Plugins:**
-    Open a Tmux session and press `prefix + I` (default prefix: `Ctrl+b`) to
+4. Initialize the tmux plugins:
+    Open a tmux session and press `prefix + I` (default prefix: `Ctrl+b`) to
     install the plugins listed in `tmux.conf`.
 
-    *`prefix + I` does nothing at all unless both halves are in place:
-    `~/.config/tmux/tmux.conf`, and the TPM clone at
-    `~/.config/tmux/plugins/tpm` that the last line of that file runs.*
+    *Needs the TPM clone that `extra.sh` installs.*

@@ -33,7 +33,7 @@ plugins=(
 if [[ -r "$ZSH/oh-my-zsh.sh" ]]; then
     source "$ZSH/oh-my-zsh.sh"
 else
-    print -u2 "oh-my-zsh not found at $ZSH - running a plain zsh."
+    print -u2 "oh-my-zsh not found at $ZSH; running a plain zsh."
 fi
 
 # ——— HISTORY SETTINGS —————————————————————————————————————————————————

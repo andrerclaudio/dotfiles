@@ -52,7 +52,7 @@ EOF
 }
 
 install_extensions() {
-    banner "GNOME extensions (extensions.gnome.org)"
+    banner "Installing GNOME extensions"
 
     # Skip any extension without a release for this shell.
     local shell_ver uuid zip
@@ -79,7 +79,7 @@ install_extensions() {
 
 # 'dconf dump /' format; unlisted keys stay as they are.
 set_fonts_and_icons() {
-    banner "Fonts and icon theme"
+    banner "Setting the fonts and icon theme"
     # The font comes from extra.sh step 4, the icons from step 8.
     dconf load / <<'EOF'
 [org/gnome/desktop/interface]
@@ -91,7 +91,7 @@ EOF
 }
 
 set_shortcuts() {
-    banner "Keyboard shortcuts"
+    banner "Setting keyboard shortcuts"
     dconf load / <<'EOF'
 [org/gnome/settings-daemon/plugins/media-keys]
 custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/']
@@ -116,13 +116,13 @@ EOF
 }
 
 set_default_apps() {
-    banner "Default apps (Chrome for the web, Inkscape for SVG)"
+    banner "Setting default apps"
     xdg-settings set default-web-browser google-chrome.desktop
     xdg-mime default org.inkscape.Inkscape.desktop image/svg+xml
 }
 
 set_snap_icons_style() {
-    banner "Snap launchers with the Gruvbox icons"
+    banner "Pointing snap launchers at the Gruvbox icons"
 
     # A local copy of each launcher points at its Gruvbox icon.
     local src_dir="/var/lib/snapd/desktop/applications"

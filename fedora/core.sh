@@ -17,12 +17,12 @@ init_stage "$HOME/fedora-setup-core.log"
 
 # Tools the later steps need.
 ensure_dnf_prereqs() {
-    banner "Ensuring prerequisites (dnf5-plugins, git)"
+    banner "Installing prerequisites (dnf5-plugins, git)"
     sudo dnf install -y dnf5-plugins git
 }
 
 configure_package_management() {
-    banner "Add new settings to improve package management efficiency"
+    banner "Setting DNF options"
 
     # Above ~7 the streams starve each other and dnf times mirrors out.
     sudo dnf config-manager setopt \
@@ -32,12 +32,12 @@ configure_package_management() {
 }
 
 update_and_upgrade() {
-    banner "System Update and Upgrade"
+    banner "Updating the system"
     sudo dnf upgrade -y
 }
 
 remove_unwanted_defaults() {
-    banner "Removing Unwanted Defaults (GNOME Apps & LibreOffice)"
+    banner "Removing unwanted default apps"
 
     # Globs match a whole suite.
     local apps=(
@@ -72,7 +72,7 @@ remove_unwanted_defaults() {
 }
 
 install_flatpak_and_add_flathub() {
-    banner "Adding Flatpak utility and Flathub Repository"
+    banner "Adding Flatpak and the Flathub remote"
     sudo dnf install -y flatpak
 
     # Per-user remote, as apps.sh installs with --user.
@@ -105,7 +105,7 @@ add_rpm_fusion_repository() {
 
     # Stop here: without RPM Fusion, apps.sh would skip the codecs.
     if ! rpm -q rpmfusion-free-release rpmfusion-nonfree-release >/dev/null 2>&1; then
-        echo "!!! RPM Fusion is missing - re-run ./core.sh before apps.sh."
+        echo "!!! RPM Fusion is missing. Run ./core.sh again before apps.sh."
         exit 1
     fi
 }
@@ -124,15 +124,15 @@ tune_inotify_limit() {
 }
 
 create_swap_file() {
-    banner "Swap file (/swapfile, on top of zram)"
+    banner "Creating the swap file"
 
     # Runs as the user (it calls sudo itself); skips if /swapfile exists.
     bash "$REPO_ROOT/tools/change_swap.sh" \
-        || echo "!!! Swap file setup failed - see $LOG_FILE."
+        || echo "!!! Swap file setup failed; see $LOG_FILE."
 }
 
 configure_git_credentials() {
-    banner "GIT Credentials"
+    banner "Configuring git"
 
     # Global settings, so warn before replacing an existing value.
     local key old
@@ -148,14 +148,14 @@ configure_git_credentials() {
 }
 
 generate_solid_wallpapers() {
-    banner "Solid Gruvbox wallpapers (~/Pictures/Solid)"
+    banner "Writing the solid Gruvbox wallpapers"
 
     # Pillow draws the PNGs.
     sudo dnf install -y python3-pillow
 
     # Log only the summary line.
     python3 "$REPO_ROOT/tools/colors_solid.py" | tail -n 1 \
-        || echo "!!! Wallpaper generation failed - see $LOG_FILE."
+        || echo "!!! Wallpaper generation failed; see $LOG_FILE."
 }
 
 add_serial_permissions() {

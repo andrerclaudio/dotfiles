@@ -9,12 +9,12 @@ MARGIN_GIB=10
 
 # 1. Check what is already there
 if [[ -e /swapfile ]]; then
-    echo "---> /swapfile already exists - nothing to do."
+    echo "---> /swapfile already exists; nothing to do."
     exit 0
 fi
 
 if [[ "$(findmnt -no FSTYPE /)" != btrfs ]]; then
-    echo "!!! / is not Btrfs - 'btrfs filesystem mkswapfile' only works there."
+    echo "!!! / is not Btrfs, which 'btrfs filesystem mkswapfile' needs."
     exit 1
 fi
 
@@ -31,7 +31,7 @@ sudo dnf install -y policycoreutils-python-utils
 echo "---> Creating a ${SIZE_GIB} GiB /swapfile..."
 sudo btrfs filesystem mkswapfile --size "${SIZE_GIB}g" /swapfile
 
-# 3. Label it for SELinux - swapon is denied without it
+# 3. Label it for SELinux (swapon needs it)
 echo "---> Labelling /swapfile for SELinux..."
 # -m if the rule already exists.
 sudo semanage fcontext -a -t swapfile_t '/swapfile' 2>/dev/null \
@@ -53,7 +53,7 @@ fi
 sudo swapoff /swapfile
 sudo swapon -a
 if ! swapon --show=NAME --noheadings --raw | grep -qx /swapfile; then
-    echo "!!! /swapfile did not come back from /etc/fstab - check the entry."
+    echo "!!! /swapfile did not come back from /etc/fstab; check the entry."
     exit 1
 fi
 

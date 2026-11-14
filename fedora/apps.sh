@@ -12,7 +12,7 @@ source "$SCRIPT_DIR/lib.sh"
 init_stage "$HOME/fedora-setup-apps.log"
 
 add_apps_repo() {
-    banner "Add 3rd-Party Repositories"
+    banner "Adding third-party repositories"
 
     # COPRs for packages Fedora doesn't ship.
     sudo dnf copr enable -y dejan/lazygit
@@ -36,7 +36,7 @@ gpgcheck=1
 gpgkey=https://packages.microsoft.com/keys/microsoft.asc
 EOF
     else
-        echo "!!! No Microsoft signing key - leaving the VS Code repo as-is."
+        echo "!!! No Microsoft signing key, so the VS Code repo was not added."
     fi
 
     sudo dnf makecache
@@ -57,7 +57,7 @@ report_skipped_packages() {
 }
 
 install_dnf_packages() {
-    banner "Install packages via DNF package manager"
+    banner "Installing DNF packages"
 
     # Separate call so a bad group name is reported clearly.
     sudo dnf group install -y development-tools || echo "!!! failed: development-tools group"
@@ -163,14 +163,14 @@ install_dnf_packages() {
 
     # Skip names no repo carries and packages that cannot be solved.
     sudo dnf install -y --skip-unavailable --skip-broken "${packages[@]}" 2>&1 | tee "$dnf_log" \
-        || echo "!!! dnf install failed - see $LOG_FILE."
+        || echo "!!! dnf install failed; see $LOG_FILE."
 
     report_skipped_packages "$dnf_log"
     rm -f "$dnf_log"
 }
 
 install_flatpak_apps() {
-    banner "Install packages via Flatpak"
+    banner "Installing Flatpak apps"
 
     # Alphabetized.
     local apps=(
@@ -221,7 +221,7 @@ install_flatpak_apps() {
 }
 
 install_snap_apps() {
-    banner "Install packages via Snap"
+    banner "Installing Snap apps"
 
     local apps=(
         "spotify"
@@ -243,7 +243,7 @@ install_snap_apps() {
 }
 
 enable_syncthing() {
-    banner "Enable the Syncthing daemon (user service)"
+    banner "Enabling the Syncthing daemon"
 
     # Skip if the package wasn't installed.
     if ! systemctl --user cat syncthing.service >/dev/null 2>&1; then
@@ -253,7 +253,7 @@ enable_syncthing() {
 
     # --user, never sudo: the daemon owns the synced files.
     if systemctl --user enable --now syncthing.service; then
-        echo "---> Syncthing is running - web UI at http://127.0.0.1:8384"
+        echo "---> Syncthing is running; its web UI is at http://127.0.0.1:8384"
     else
         echo "!!! Syncthing failed to start."
     fi

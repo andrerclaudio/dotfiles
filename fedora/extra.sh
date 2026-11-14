@@ -13,7 +13,7 @@ source "$SCRIPT_DIR/lib.sh"
 # Only steps 1-2 get sudo.
 init_stage "$HOME/fedora-setup-extra.log"
 
-banner "Starting Extra Configurations & Installations"
+banner "Installing extra tools and configs"
 
 # Non-zero on failure, so callers can skip what depends on the clone.
 clone() {
@@ -43,7 +43,7 @@ drop_sudo
 PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 
 # 3. ZSH plugins
-echo "---> Installing ZSH Plugins..."
+echo "---> Installing Zsh plugins..."
 # oh-my-zsh.sh sets ZSH_CUSTOM without exporting it, so set it here too.
 ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 
@@ -105,7 +105,7 @@ else
 fi
 
 # 8. Gruvbox Plus icon pack
-echo "---> Installing Gruvbox Icons..."
+echo "---> Installing the Gruvbox icons..."
 # Only the link GNOME reads the icon theme from belongs in ~/.icons.
 ICON_SRC="$HOME/.local/share/gruvbox-plus-icon-pack"
 mkdir -p ~/.icons
@@ -159,7 +159,7 @@ if have pueued; then
     systemctl --user enable --now pueued.service \
         || echo "!!! Pueue daemon failed to start."
 else
-    echo "!!! SKIPPED: pueued is not installed - see step 5."
+    echo "!!! SKIPPED: pueued is not installed (step 5)."
 fi
 
 # 16. Home dotfiles
@@ -200,7 +200,7 @@ if have ollama; then
         ollama pull "$model" || echo "!!! failed: $model"
     done
 else
-    echo "!!! SKIPPED: ollama is not installed - see step 1."
+    echo "!!! SKIPPED: ollama is not installed (step 1)."
 fi
 
 # 20. Distrobox containers
