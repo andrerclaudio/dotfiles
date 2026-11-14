@@ -1,5 +1,6 @@
-# Gruvbox colors.
 gui:
+  nerdFontsVersion: "3"
+  # Gruvbox colors.
   theme:
     activeBorderColor:
       - "#fabd2f"

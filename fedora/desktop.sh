@@ -24,35 +24,50 @@ if [[ "${XDG_CURRENT_DESKTOP:-}" != *GNOME* ]]; then
     exit 1
 fi
 
-init_stage "$HOME/fedora-setup-desktop.log"
+# No sudo in this stage, so no init_stage and its password prompt.
+require_non_root
+start_logging "$HOME/fedora-setup-desktop.log"
+trap stage_cleanup EXIT
 
 # The running shell only sees new extensions after a login, so edit the setting directly.
-add_to_extension_list() {  # $1 enabled-extensions or disabled-extensions, $2 UUID
+enable_extension() {  # $1 UUID
     local list
-    list=$(gsettings get org.gnome.shell "$1")
+    list=$(gsettings get org.gnome.shell enabled-extensions)
     list=${list#@as }
     if [[ "$list" == "[]" ]]; then
-        list="['$2']"
+        list="['$1']"
     else
-        list="${list%]}, '$2']"
+        list="${list%]}, '$1']"
     fi
-    gsettings set org.gnome.shell "$1" "$list"
+    gsettings set org.gnome.shell enabled-extensions "$list"
+}
+
+# True when the extension zip $1 lists GNOME Shell major version $2.
+supports_shell() {
+    python3 -I - "$1" "$2" <<'EOF'
+import json, sys, zipfile
+meta = json.load(zipfile.ZipFile(sys.argv[1]).open("metadata.json"))
+sys.exit(sys.argv[2] not in {v.split(".")[0] for v in meta.get("shell-version", [])})
+EOF
 }
 
 install_extensions() {
     banner "GNOME extensions (extensions.gnome.org)"
 
-    # The download picks the release built for this GNOME Shell version.
+    # With no release for this shell, the site sends its latest one, so check it.
     local shell_ver uuid zip
     shell_ver=$(gnome-shell --version | grep -oE '[0-9]+' | head -n 1)
     zip=$(mktemp -t extension.XXXXXX.zip)
 
     for uuid in "${EXTENSIONS[@]}"; do
         echo "---> $uuid"
-        if curl -fsSL -o "$zip" \
-            "https://extensions.gnome.org/download-extension/${uuid}.shell-extension.zip?shell_version=${shell_ver}" \
-            && gnome-extensions install "$zip"; then
-            add_to_extension_list enabled-extensions "$uuid"
+        if ! curl --proto '=https' --tlsv1.2 -fsSL -o "$zip" \
+            "https://extensions.gnome.org/download-extension/${uuid}.shell-extension.zip?shell_version=${shell_ver}"; then
+            echo "!!! failed: $uuid"
+        elif ! supports_shell "$zip" "$shell_ver"; then
+            echo "!!! SKIPPED: $uuid has no release for GNOME Shell $shell_ver."
+        elif gnome-extensions install "$zip"; then
+            enable_extension "$uuid"
         else
             echo "!!! failed: $uuid"
         fi

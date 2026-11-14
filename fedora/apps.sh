@@ -12,7 +12,7 @@ source "$SCRIPT_DIR/lib.sh"
 init_stage "$HOME/fedora-setup-apps.log"
 
 add_apps_repo() {
-    banner "Add 3rd-Party Repositories (LazyGit, Ghostty, Yazi, Chrome, VS Code)"
+    banner "Add 3rd-Party Repositories"
 
     # COPRs for packages Fedora doesn't ship.
     sudo dnf copr enable -y dejan/lazygit
@@ -60,7 +60,7 @@ install_dnf_packages() {
     banner "Install packages via DNF package manager"
 
     # Separate call so a bad group name is reported clearly.
-    sudo dnf group install -y development-tools
+    sudo dnf group install -y development-tools || echo "!!! failed: development-tools group"
 
     # Alphabetized. Plain names, no .x86_64 suffixes.
     local packages=(
@@ -127,17 +127,17 @@ install_dnf_packages() {
         "nmap"
         "nodejs-npm"
         "openssl"
-        "openssl-devel"            # headers for cargo builds
+        "openssl-devel"
         "papirus-icon-theme"
         "picocom"
         "pkgconf-pkg-config"
         "podman-compose"
-        "policycoreutils-python-utils"  # semanage, used by tools/change_swap.sh
         "powerline-fonts"
         "python3-devel"
         "python3-pip"
         "python3-tkinter"
         "qemu"
+        "repo"                     # Google's repo tool
         "ripgrep"
         "rpi-imager"
         "ShellCheck"               # lint the scripts before committing

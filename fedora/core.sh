@@ -28,8 +28,7 @@ configure_package_management() {
     sudo dnf config-manager setopt \
         fastestmirror=True \
         max_parallel_downloads=7 \
-        defaultyes=True \
-        keepcache=False
+        defaultyes=True
 }
 
 update_and_upgrade() {
@@ -67,19 +66,9 @@ remove_unwanted_defaults() {
         "snapshot"
     )
 
-    # dnf5 aborts on unmatched names, so pass only installed ones; rpm -qa expands globs.
-    local pkg installed=()
-    for pkg in "${apps[@]}"; do
-        [[ -n "$(rpm -qa "$pkg" 2>/dev/null)" ]] && installed+=("$pkg")
-    done
-
-    if ((${#installed[@]})); then
-        echo "---> Removing ${#installed[@]} package(s) and unused dependencies..."
-        sudo dnf remove -y "${installed[@]}"
-        sudo dnf autoremove -y
-    else
-        echo "---> Nothing to remove."
-    fi
+    echo "---> Removing the packages and unused dependencies..."
+    sudo dnf remove -y "${apps[@]}"
+    sudo dnf autoremove -y
 }
 
 install_flatpak_and_add_flathub() {
@@ -104,7 +93,13 @@ add_rpm_fusion_repository() {
     local fedora_ver
     fedora_ver=$(rpm -E %fedora)
 
-    sudo dnf install -y \
+    # The release RPMs come from mirrors, so check them against RPM Fusion's keys.
+    local keys=/usr/share/distribution-gpg-keys/rpmfusion
+    sudo dnf install -y distribution-gpg-keys
+    sudo rpmkeys --import \
+        "$keys/RPM-GPG-KEY-rpmfusion-free-fedora-${fedora_ver}" \
+        "$keys/RPM-GPG-KEY-rpmfusion-nonfree-fedora-${fedora_ver}"
+    sudo dnf install -y --setopt=localpkg_gpgcheck=1 \
         "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-${fedora_ver}.noarch.rpm" \
         "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${fedora_ver}.noarch.rpm"
 

@@ -22,15 +22,15 @@ start_logging() {
     LOG_FILE="$1"
     exec 3>&1 4>&2
     # Screen keeps the progress bars; the log gets the last redraw, no escapes.
-    exec > >(tee >(sed -u 's/\r*$//; s/.*\r//; s/\x1b\[[0-9;?]*[a-zA-Z]//g' >>"$LOG_FILE")) 2>&1
+    exec > >(tee >(sed -u 's/\r*$//; s/.*\r//; s/\x1b\[[0-9;?]*[a-zA-Z]//g' >>"$LOG_FILE"); wait $!) 2>&1
     TEE_PID=$!
     echo "Logging to $LOG_FILE"
 }
 
-# Keep the sudo timestamp alive. Silenced so it cannot hold the log pipe open.
+# Keep the sudo timestamp alive. Silenced, with fds 3 and 4 closed, so it holds no pipe open.
 start_sudo_keepalive() {
     sudo -v || exit 1
-    { trap exit TERM; while true; do sudo -n true; sleep 50 & wait $!; kill -0 "$$" 2>/dev/null || exit; done; } >/dev/null 2>&1 &
+    { trap exit TERM; while true; do sudo -n true; sleep 50 & wait $!; kill -0 "$$" 2>/dev/null || exit; done; } >/dev/null 2>&1 3>&- 4>&- &
     SUDO_KEEPALIVE_PID=$!
 }
 
@@ -42,7 +42,7 @@ drop_sudo() {
     sudo -k
 }
 
-# Registered on EXIT by init_stage.
+# Registered on EXIT by each stage.
 stage_cleanup() {
     [[ -n "${SUDO_KEEPALIVE_PID:-}" ]] && kill "$SUDO_KEEPALIVE_PID" 2>/dev/null
 

@@ -34,6 +34,7 @@
 2. Run the Apps script and restart:
 
     ```shell
+    cd ~/dotfiles/fedora
     ./apps.sh
     sudo reboot
     ```
@@ -42,7 +43,7 @@
     (Spotify, PyCharm), then starts the Syncthing daemon — its web UI is at
     <http://127.0.0.1:8384>.*
 
-    *The Flatpak stage installs one app at a time, printing `[n/35] <app-id>`.*
+    *The Flatpak stage installs one app at a time, printing `[n/total] <app-id>`.*
 
     *Note: From now on, use the Alacritty or Ghostty terminal.*
 
@@ -88,12 +89,13 @@
     - Go to **GitHub** and log in.
     - Open **VS Code** and start Sync.
 
-6. Run the Extra script and restart. It works through 22 numbered steps —
+6. Run the Extra script and restart. It works through numbered steps —
    Ollama and superfile, then the shell plugins, fonts, the CLI tools and
    themes, the configs, the Pueue daemon, `~/.zshrc`, TPM, the Yazi flavor,
    the Ollama models, the Distrobox containers and the GNOME app grid:
 
     ```shell
+    cd ~/dotfiles/fedora
     ./extra.sh
     sudo reboot
     ```
@@ -116,6 +118,7 @@
     (`tools/gnome_app_grid.sh`). It shows after the reboot. To undo it:*
 
     ```shell
+    cd ~/dotfiles/fedora
     ../tools/gnome_app_grid.sh --revert
     ```
 
@@ -123,12 +126,13 @@
    session, not SSH or a TTY:
 
     ```shell
+    cd ~/dotfiles/fedora
     ./desktop.sh
     sudo reboot
     ```
 
-    *It installs Blur my Shell, Caffeine, Clipboard Indicator, Logo Menu and
-    Mosaic from extensions.gnome.org, then sets the fonts and icons, the
+    *It installs the extensions listed in `desktop.sh` from
+    extensions.gnome.org, then sets the fonts and icons, the
     shortcuts, the default apps and the Gruvbox icons for the Spotify and
     PyCharm snaps. The extensions start after the reboot with their default
     settings.*
@@ -165,12 +169,12 @@
     launcher (a name or icon change), so run it again then:*
 
     ```shell
+    cd ~/dotfiles/fedora
     ../tools/gmail_pwa_mailto.sh
     ```
 
-3. Install any other **Gnome Extensions** you want. `desktop.sh` already
-   installs Blur my Shell, Caffeine, Clipboard Indicator, Logo Menu and
-   Mosaic.
+3. Install any other **Gnome Extensions** you want, on top of the ones
+   `desktop.sh` installs.
 
 4. **Initialize Tmux Plugins:**
     Open a Tmux session and press `prefix + I` (default prefix: `Ctrl+b`) to
@@ -178,4 +182,4 @@
 
     *`prefix + I` does nothing at all unless both halves are in place:
     `~/.config/tmux/tmux.conf`, and the TPM clone at
-    `~/.config/tmux/plugins/tpm` that the last line of that file runs.
+    `~/.config/tmux/plugins/tpm` that the last line of that file runs.*

@@ -17,7 +17,7 @@ MIME="x-scheme-handler/mailto"
 TMP=""
 trap 'rm -f "$TMP"' EXIT
 
-# Prints the launcher with the main Exec set to $1 and mailto added or removed ($2), whatever the name or icon.
+# Prints the launcher with Exec set to $1 and mailto added or removed ($2).
 rewrite_launcher() {
     awk -v cmd="$1" -v mode="$2" -v mime="$MIME" '
         function mime_types(   n, parts, i, out) {

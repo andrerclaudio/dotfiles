@@ -27,12 +27,14 @@ clone() {
 # 1. Ollama
 echo "---> Installing Ollama..."
 # Uses sudo for its systemd service; NVIDIA machines need the driver first.
-curl -fsSL https://ollama.com/install.sh | sh || echo "!!! Ollama install failed."
+curl --proto '=https' --tlsv1.2 -fsSL https://ollama.com/install.sh | sh \
+    || echo "!!! Ollama install failed."
 
 # 2. superfile
 echo "---> Installing superfile..."
-# Moves spf into /usr/local/bin with sudo; its gruvbox config comes with step 15.
-curl -fsSL https://superfile.dev/install.sh | bash || echo "!!! superfile install failed."
+# Needs sudo for /usr/local/bin and exits 0 on failure, so check for spf.
+curl --proto '=https' --tlsv1.2 -fsSL https://superfile.dev/install.sh | bash
+have spf || [[ -x "$HOME/.local/bin/spf" ]] || echo "!!! superfile install failed."
 
 echo "---> Dropping sudo for the remaining steps..."
 drop_sudo
@@ -47,9 +49,12 @@ ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 
 if [[ -d "$HOME/.oh-my-zsh" ]]; then
     mkdir -p "${ZSH_CUSTOM}/plugins"
-    clone https://github.com/zsh-users/zsh-autosuggestions.git "${ZSH_CUSTOM}/plugins/zsh-autosuggestions"
-    clone https://github.com/zsh-users/zsh-syntax-highlighting.git "${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting"
-    clone https://github.com/TamCore/autoupdate-oh-my-zsh-plugins.git "${ZSH_CUSTOM}/plugins/autoupdate"
+    clone https://github.com/zsh-users/zsh-autosuggestions.git "${ZSH_CUSTOM}/plugins/zsh-autosuggestions" \
+        || echo "!!! failed: zsh-autosuggestions"
+    clone https://github.com/zsh-users/zsh-syntax-highlighting.git "${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting" \
+        || echo "!!! failed: zsh-syntax-highlighting"
+    clone https://github.com/TamCore/autoupdate-oh-my-zsh-plugins.git "${ZSH_CUSTOM}/plugins/autoupdate" \
+        || echo "!!! failed: autoupdate"
 else
     echo "!!! SKIPPED: Oh My Zsh is not installed at ~/.oh-my-zsh."
 fi
@@ -60,7 +65,7 @@ echo "---> Installing JetBrainsMono Nerd Font..."
 FONT_DIR="$HOME/.local/share/fonts/JetBrainsMono"
 FONT_TAR=$(mktemp -t JetBrainsMono.XXXXXX.tar.xz)
 mkdir -p "$FONT_DIR"
-if curl -fsSL -o "$FONT_TAR" \
+if curl --proto '=https' --tlsv1.2 -fsSL -o "$FONT_TAR" \
     https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz \
     && tar -xf "$FONT_TAR" -C "$FONT_DIR"; then
     fc-cache -f "$FONT_DIR"
@@ -78,7 +83,8 @@ if [[ -f "$HOME/.cargo/env" ]]; then
     # shellcheck source=/dev/null
     source "$HOME/.cargo/env"
     # --locked builds against the Cargo.lock each author published.
-    cargo install --locked tock dysk pueue leaf-markdown-viewer
+    cargo install --locked tock dysk pueue leaf-markdown-viewer \
+        || echo "!!! cargo install failed."
 else
     echo "!!! rustup failed, skipping cargo installs."
 fi
@@ -94,6 +100,8 @@ echo "---> Configuring Eza Gruvbox theme..."
 mkdir -p ~/.config/eza
 if clone https://github.com/eza-community/eza-themes.git ~/.config/eza/eza-themes; then
     ln -sfn ~/.config/eza/eza-themes/themes/gruvbox-dark.yml ~/.config/eza/theme.yml
+else
+    echo "!!! Eza themes clone failed, skipping."
 fi
 
 # 8. Gruvbox Plus icon pack
@@ -103,46 +111,37 @@ ICON_SRC="$HOME/.local/share/gruvbox-plus-icon-pack"
 mkdir -p ~/.icons
 if clone https://github.com/SylEleuth/gruvbox-plus-icon-pack.git "$ICON_SRC"; then
     ln -sfn "$ICON_SRC/Gruvbox-Plus-Dark" ~/.icons/Gruvbox-Plus-Dark
-fi
-
-# 9. Google repo tool
-echo "---> Installing Google Repo Tool..."
-# -f on every curl: without it an HTTP error page gets saved or piped to sh.
-mkdir -p ~/.local/bin
-REPO_TMP=$(mktemp -t repo.XXXXXX)
-if curl -fsSL -o "$REPO_TMP" \
-    https://commondatastorage.googleapis.com/git-repo-downloads/repo; then
-    chmod a+x "$REPO_TMP"
-    mv -f "$REPO_TMP" ~/.local/bin/repo
-    echo "     installed to ~/.local/bin/repo"
 else
-    echo "!!! Repo tool download failed, skipping."
-    rm -f "$REPO_TMP"
+    echo "!!! Gruvbox icons clone failed, skipping."
 fi
 
-# 10. Zed
+# 9. Zed
 echo "---> Installing Zed..."
-curl -fsSL https://zed.dev/install.sh | sh || echo "!!! Zed install failed."
+curl --proto '=https' --tlsv1.2 -fsSL https://zed.dev/install.sh | sh \
+    || echo "!!! Zed install failed."
 
-# 11. Herdr
+# 10. Herdr
 echo "---> Installing Herdr..."
-curl -fsSL https://herdr.dev/install.sh | sh || echo "!!! Herdr install failed."
+curl --proto '=https' --tlsv1.2 -fsSL https://herdr.dev/install.sh | sh \
+    || echo "!!! Herdr install failed."
 
-# 12. Antigravity CLI
+# 11. Antigravity CLI
 echo "---> Installing Antigravity CLI..."
-curl -fsSL https://antigravity.google/cli/install.sh | bash \
+curl --proto '=https' --tlsv1.2 -fsSL https://antigravity.google/cli/install.sh | bash \
     || echo "!!! Antigravity CLI install failed."
 
-# 13. Claude Code CLI
+# 12. Claude Code CLI
 echo "---> Installing Claude Code CLI..."
-curl -fsSL https://claude.ai/install.sh | bash || echo "!!! Claude Code install failed."
+curl --proto '=https' --tlsv1.2 -fsSL https://claude.ai/install.sh | bash \
+    || echo "!!! Claude Code install failed."
 
-# 14. cliamp
+# 13. cliamp
 echo "---> Installing cliamp..."
 # The PATH above makes the installer use ~/.local/bin, so no root is needed.
-curl -fsSL https://cliamp.stream/install.sh | sh || echo "!!! cliamp install failed."
+curl --proto '=https' --tlsv1.2 -fsSL https://cliamp.stream/install.sh | sh \
+    || echo "!!! cliamp install failed."
 
-# 15. Configs
+# 14. Configs
 echo "---> Copying configs into ~/.config..."
 # config/ mirrors ~/.config exactly; .zshrc lives at the repo root instead.
 if [[ -d "$REPO_ROOT/config" ]]; then
@@ -152,9 +151,9 @@ else
     echo "!!! SKIPPED: no config/ directory found next to this script."
 fi
 
-# 16. Pueue daemon
+# 15. Pueue daemon
 echo "---> Enabling the Pueue daemon..."
-# Needs pueued (step 5) and its unit (step 15); daemon-reload loads the unit.
+# Needs pueued (step 5) and its unit (step 14); daemon-reload loads the unit.
 if have pueued; then
     systemctl --user daemon-reload
     systemctl --user enable --now pueued.service \
@@ -163,7 +162,7 @@ else
     echo "!!! SKIPPED: pueued is not installed - see step 5."
 fi
 
-# 17. Home dotfiles
+# 16. Home dotfiles
 echo "---> Installing ~/.zshrc..."
 # Replaces ~/.zshrc, keeping a differing one as ~/.zshrc.bak.
 if [[ -f "$REPO_ROOT/.zshrc" ]]; then
@@ -177,24 +176,25 @@ else
     echo "!!! SKIPPED: no .zshrc found at the repo root."
 fi
 
-# 18. TPM (Tmux Plugin Manager)
+# 17. TPM (Tmux Plugin Manager)
 echo "---> Installing the Tmux Plugin Manager..."
 # The path tmux.conf runs TPM from; plugins install with 'prefix + I'.
-clone https://github.com/tmux-plugins/tpm "$HOME/.config/tmux/plugins/tpm"
+clone https://github.com/tmux-plugins/tpm "$HOME/.config/tmux/plugins/tpm" \
+    || echo "!!! TPM clone failed."
 
-# 19. Yazi flavor
-echo "---> Installing the Yazi gruvbox-material flavor..."
-# After step 15, which copies the theme.toml that selects this flavor.
+# 18. Yazi flavor
+echo "---> Installing the Yazi Gruvbox flavor..."
+# After step 14, which copies the theme.toml that selects this flavor.
 if have ya; then
-    ya pkg add matt-dong-123/gruvbox-material \
+    ya pkg add bennyyip/gruvbox-dark \
         || echo "!!! Yazi flavor install failed, skipping."
 else
     echo "!!! SKIPPED: yazi is not installed."
 fi
 
-# 20. Ollama models
+# 19. Ollama models
 echo "---> Pulling Ollama models..."
-# Several GB and no resume, so each pull is reported on its own.
+# Several GB each, so each pull is reported on its own.
 if have ollama; then
     for model in deepseek-r1:1.5b gemma3:1b qwen3-vl:4b; do
         ollama pull "$model" || echo "!!! failed: $model"
@@ -203,7 +203,7 @@ else
     echo "!!! SKIPPED: ollama is not installed - see step 1."
 fi
 
-# 21. Distrobox containers
+# 20. Distrobox containers
 echo "---> Creating the Debian and Ubuntu containers..."
 # --home gives each container its own home folder, apart from the host's ~.
 DISTROBOX_HOMES="$HOME/Documents/Distrobox"
@@ -222,7 +222,7 @@ else
     echo "!!! SKIPPED: distrobox is not installed."
 fi
 
-# 22. GNOME app grid and dash
+# 21. GNOME app grid and dash
 echo "---> Laying out the GNOME app grid and dash..."
 # Last, so every app it lays out is installed; undo with tools/gnome_app_grid.sh --revert.
 if have dconf; then

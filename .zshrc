@@ -1,4 +1,3 @@
-# shellcheck shell=bash disable=SC2034,SC2154,SC2206,SC2155,SC2164,SC1091,SC1094
 # ——— PATHS & ENVIRONMENT ——————————————————————————————————————————————
 # Allow trailing '#' comments at the prompt.
 setopt INTERACTIVE_COMMENTS
@@ -38,14 +37,12 @@ else
 fi
 
 # ——— HISTORY SETTINGS —————————————————————————————————————————————————
-# Set AFTER oh-my-zsh.sh to avoid being overridden.
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=1000000
 SAVEHIST=1000000
 
 # Extras not set by Oh My Zsh.
 setopt HIST_REDUCE_BLANKS       # strip extra whitespace
-setopt HIST_VERIFY              # expand !! before executing
 setopt HIST_IGNORE_ALL_DUPS     # remove older duplicates
 
 # ——— ALIASES & FUNCTIONS ——————————————————————————————————————————————
@@ -53,11 +50,9 @@ alias my-ip="ip -c -h -s addr"
 alias e="eza -lbhHigaUm --git --group-directories-first --icons=auto --color-scale=all --colour=auto"
 alias zoom="tree -shaCL 2 --du"
 
-# bat as cat, without the pager.
+# bat without the pager.
 if (( $+commands[bat] )); then
-    alias cat="bat --paging=never"
-elif (( $+commands[batcat] )); then
-    alias cat="batcat --paging=never"
+    alias b="bat --paging=never"
 fi
 
 # Man pages through bat, in the BAT_THEME colors.
@@ -145,6 +140,13 @@ function update() {
         print -P "${skip} cliamp not installed"
     fi
 
+    print -P "${hdr}🦆 Yazi Flavor${end}"
+    if (( $+commands[ya] )); then
+        ya pkg upgrade
+    else
+        print -P "${skip} ya not installed"
+    fi
+
     print -P "\n%F{green}%B✨ All updates complete!%b%f\n"
 }
 
@@ -153,11 +155,6 @@ function update() {
 # Disk overview on first interactive shell.
 if [[ -o interactive && $SHLVL -eq 1 ]] && (( $+commands[dysk] )); then
     dysk -c label+default || true
-fi
-
-# grc: colorize common commands.
-if [[ -s /etc/grc.zsh ]]; then
-    source /etc/grc.zsh
 fi
 
 # atuin: enhanced shell history.
@@ -176,5 +173,5 @@ fi
 # Auto-attach tmux on SSH login.
 if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -n "$SSH_CONNECTION" ]] \
    && (( $+commands[tmux] )); then
-    tmux attach-session -t "$USER" || tmux new-session -s "$USER"
+    tmux new-session -A -s "$USER"
 fi

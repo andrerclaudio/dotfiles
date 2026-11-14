@@ -5,6 +5,8 @@ Layout:
 - `.zshrc` — installed into `~` as-is. Dotfiles the shell or program reads
   straight from `~` live at the repo root, never under `config/`. The installer
   keeps the file it replaces as `~/.zshrc.bak`.
+- `atuin/` — my Atuin config and theme, never installed. Atuin writes its own
+  config at install time; compare it with this one by hand.
 - `config/` — copied verbatim into `~/.config`. Only put things here that belong
   under `~/.config`.
 - `fedora/` — post-install scripts, run in order: `core.sh` → `apps.sh` →
@@ -16,7 +18,11 @@ Layout:
 
 To use these dotfiles:
 
-- Clone this repository to your home directory
+- Clone this repository to your home directory:
+  `git clone https://github.com/andrerclaudio/dotfiles.git ~/dotfiles`
+- Set your own name and email in `fedora/core.sh` (`GIT_USER_NAME`,
+  `GIT_USER_EMAIL`) first: it writes them to your global git config
+- Follow `fedora/Fedora-Config-Guide.md`
 - Review the files and customize them as you please
 
 License:

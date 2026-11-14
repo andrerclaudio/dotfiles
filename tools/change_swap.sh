@@ -5,6 +5,7 @@
 set -euo pipefail
 
 SIZE_GIB=16
+MARGIN_GIB=10
 
 # 1. Check what is already there
 if [[ -e /swapfile ]]; then
@@ -17,8 +18,9 @@ if [[ "$(findmnt -no FSTYPE /)" != btrfs ]]; then
     exit 1
 fi
 
-if (($(df --output=avail -B1 / | tail -n 1) < SIZE_GIB << 30)); then
-    echo "!!! Less than ${SIZE_GIB} GiB free on /."
+# Room for the file plus a margin, so / is not left full.
+if (($(df --output=avail -B1 / | tail -n 1) < (SIZE_GIB + MARGIN_GIB) << 30)); then
+    echo "!!! Less than $((SIZE_GIB + MARGIN_GIB)) GiB free on / (swap plus ${MARGIN_GIB} GiB margin)."
     exit 1
 fi
 
@@ -43,7 +45,7 @@ sudo swapon /swapfile
 if ! grep -q '^/swapfile ' /etc/fstab; then
     echo "---> Adding /swapfile to /etc/fstab..."
     sudo cp /etc/fstab /etc/fstab.bak
-    echo '/swapfile none swap sw,nofail,x-systemd.device-timeout=1s 0 0' | sudo tee -a /etc/fstab
+    echo '/swapfile none swap sw,nofail 0 0' | sudo tee -a /etc/fstab
     sudo systemctl daemon-reload
 fi
 

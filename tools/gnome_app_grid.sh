@@ -9,10 +9,11 @@ set -euo pipefail
 
 BACKUP_ROOT="$HOME/.config"
 PRISTINE="$BACKUP_ROOT/gnome-app-grid-backup-pristine"
+# The only /org/gnome/shell/ keys this script writes.
+SHELL_KEYS=(favorite-apps app-picker-layout)
 
 # ------------------- the layout: Fedora-default and fedora/*.sh apps only
 # One block per folder: id|name|apps; apps not installed are skipped.
-# GNOME hides dash apps from the grid.
 
 FOLDERS=(
     "office|Office|
@@ -37,9 +38,6 @@ FOLDERS=(
         com.mitchellh.ghostty.desktop
         Alacritty.desktop
         kitty.desktop"
-
-    "google|Google|
-        google-chrome.desktop"
 
     "downloads|Downloads & Sync|
         syncthing-start.desktop
@@ -114,7 +112,7 @@ LOOSE=(
     org.gnome.Nautilus.desktop
 )
 
-# The dash, left to right.
+# The dash, left to right; GNOME hides these apps from the grid.
 DASH=(
     spotify_spotify.desktop
     google-chrome.desktop
@@ -169,6 +167,7 @@ keep_installed() {
 
 # Render a bash array as a GVariant string list: ['a', 'b']
 as_gvariant_list() {
+    (( $# )) || { printf '@as []'; return; }
     local out="[" first=1 item
     for item in "$@"; do
         (( first )) || out+=", "
@@ -188,7 +187,11 @@ backup() {
     fi
     mkdir -p "$dir"
     dconf dump /org/gnome/desktop/app-folders/ > "$dir/app-folders.dconf"
-    dconf dump /org/gnome/shell/            > "$dir/shell.dconf"
+    # An empty file stands for a key that was unset.
+    local key
+    for key in "${SHELL_KEYS[@]}"; do
+        dconf read "/org/gnome/shell/$key" > "$dir/$key"
+    done
     say "  backed up to $dir"
 
     # Written once, so --revert always restores the pre-script state.
@@ -200,13 +203,22 @@ backup() {
 
 revert() {
     local dir=${1:-$PRISTINE}
+    local key value
     [[ -d "$dir" ]] || { warn "no such backup: $dir"; exit 1; }
-    [[ -f "$dir/app-folders.dconf" && -f "$dir/shell.dconf" ]] \
-        || { warn "incomplete backup: $dir"; exit 1; }
+    for key in app-folders.dconf "${SHELL_KEYS[@]}"; do
+        [[ -f "$dir/$key" ]] || { warn "incomplete backup: $dir"; exit 1; }
+    done
     say "Reverting from $dir"
     dconf reset -f /org/gnome/desktop/app-folders/
     dconf load  /org/gnome/desktop/app-folders/ < "$dir/app-folders.dconf"
-    dconf load  /org/gnome/shell/               < "$dir/shell.dconf"
+    for key in "${SHELL_KEYS[@]}"; do
+        value=$(<"$dir/$key")
+        if [[ -n "$value" ]]; then
+            dconf write "/org/gnome/shell/$key" "$value"
+        else
+            dconf reset "/org/gnome/shell/$key"
+        fi
+    done
     say "Done. Log out and back in to see it."
 }
 
