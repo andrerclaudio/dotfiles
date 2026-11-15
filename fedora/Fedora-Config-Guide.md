@@ -1,4 +1,4 @@
-# Fedora Initial Configuration Guide
+# Fedora initial configuration guide
 
 > Target: Fedora 44 and later (dnf5, GNOME 50+, Wayland-only session).
 >
@@ -86,8 +86,8 @@
     modinfo -F version nvidia
     ```
 
-    *If Secure Boot is enabled, the module must be signed or Secure Boot
-    disabled, or it will refuse to load.*
+    *With Secure Boot on, the module won't load until you sign it or turn
+    Secure Boot off.*
 
     ```shell
     sudo reboot
@@ -95,20 +95,19 @@
 
     *Do this before `extra.sh`, or the Ollama install fails.*
 
-4. Install Oh My ZSH:
-    Open your terminal and run:
+4. Install Oh My Zsh and restart:
 
     ```shell
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
     ```
 
-    *If it leaves you in a new ZSH prompt, type `exit`, then restart:*
+    *If it leaves you in a new Zsh prompt, type `exit` before you restart:*
 
     ```shell
     sudo reboot
     ```
 
-5. Start your personal accounts:
+5. Sign in to your accounts:
     - Open Google Chrome and log in.
     - Go to GitHub and log in.
     - Open VS Code and start Sync.
@@ -121,7 +120,7 @@
     sudo reboot
     ```
 
-    *Only steps 1-2 run with sudo.*
+    *Only its first two steps use sudo.*
 
     *It replaces `~/.zshrc`, keeping the old one as `~/.zshrc.bak`.*
 
@@ -156,6 +155,7 @@
     ```
 
 2. Change the DNS addresses:
+
     Go to Wi-Fi settings, change DNS from automatic to manual, and add:
     - IPv4: `8.8.8.8, 8.8.4.4`
     - IPv6: `2001:4860:4860::8888, 2001:4860:4860::8844`
@@ -163,6 +163,7 @@
 ## Phase 3: Checks and extras
 
 1. Check the inotify limit (VS Code):
+
     `core.sh` already writes `/etc/sysctl.d/99-inotify.conf` and applies it.
     Confirm it stuck:
 
@@ -174,7 +175,8 @@
 
 2. Install your preferred PWA applications.
 
-    *To list the Gmail PWA as a Mail app, run this, and again if Chrome drops it:*
+    *To list the Gmail PWA under Default Apps > Mail, run this, and again
+    whenever Chrome rewrites the Gmail launcher:*
 
     ```shell
     cd ~/dotfiles/fedora
@@ -185,6 +187,7 @@
    `desktop.sh` installs.
 
 4. Initialize the tmux plugins:
+
     Open a tmux session and press `prefix + I` (default prefix: `Ctrl+b`) to
     install the plugins listed in `tmux.conf`.
 

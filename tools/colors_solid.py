@@ -89,12 +89,12 @@ def normalize_hex(hex_str: str) -> str:
     """Normalize a hex color to 6 lowercase digits without '#'; raise ValueError if invalid."""
     s = hex_str.strip().lstrip("#").lower()
     if len(s) != 6 or any(c not in "0123456789abcdef" for c in s):
-        raise ValueError(f"Invalid 6-hex color: {hex_str!r}")
+        raise ValueError(f"Invalid 6-digit hex color: {hex_str!r}")
     return s
 
 
 def hex_to_rgb(hex6: str) -> tuple[int, int, int]:
-    """Convert a normalized 6-hex string (e.g., 'aabbcc') to an (R, G, B) tuple."""
+    """Convert a normalized 6-digit hex string (e.g., 'aabbcc') to an (R, G, B) tuple."""
     return (int(hex6[0:2], 16), int(hex6[2:4], 16), int(hex6[4:6], 16))
 
 
@@ -108,7 +108,7 @@ def unique_hex_values(palettes: Iterable[dict[str, str]]) -> set[str]:
 
 
 def generate_rect(hex6: str, size: tuple[int, int], out_dir: Path = OUT_DIR) -> Path:
-    """Save a solid hex6 PNG as out_dir/'<hex6>_<width>-<height>.png' and return its path."""
+    """Save a PNG filled with hex6 as out_dir/'<hex6>_<width>-<height>.png' and return its path."""
     rgb = hex_to_rgb(hex6)
     img = Image.new("RGB", size, rgb)
     out_path = out_dir / f"{hex6}_{size[0]}-{size[1]}.png"

@@ -54,7 +54,7 @@ update_launcher() {
     fi
 }
 
-# Opens Gmail, or its compose window for a mailto: link.
+# Writes a wrapper that opens Gmail, or compose for a mailto: link.
 write_wrapper() {
     echo "---> Writing $WRAPPER..."
     mkdir -p "${WRAPPER%/*}"

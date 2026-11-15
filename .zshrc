@@ -79,7 +79,7 @@ function update() {
 
     print -P "\n%F{green}%B🚀 Starting full system update...%b%f"
 
-    print -P "${hdr}📦 System Packages (DNF)${end}"
+    print -P "${hdr}📦 System packages (DNF)${end}"
     # Do not return here: the rest of the function is independent of dnf.
     sudo dnf upgrade --refresh || print -P "%F{red}  ✗ dnf upgrade failed%f"
 
@@ -90,21 +90,21 @@ function update() {
         print -P "${skip} flatpak not installed"
     fi
 
-    print -P "${hdr}🦀 Rust Toolchain${end}"
+    print -P "${hdr}🦀 Rust toolchain${end}"
     if (( $+commands[rustup] )); then
         rustup update
     else
         print -P "${skip} rustup not installed"
     fi
 
-    print -P "${hdr}🐢 Atuin History${end}"
+    print -P "${hdr}🐢 Atuin${end}"
     if (( $+commands[atuin] )); then
         atuin update
     else
         print -P "${skip} atuin not installed"
     fi
 
-    print -P "${hdr}🚚 Cargo Binaries${end}"
+    print -P "${hdr}🚚 Cargo binaries${end}"
     if (( $+commands[cargo] )); then
         # Upgrades only what has a newer release; same list as extra.sh.
         cargo install --locked tock dysk pueue leaf-markdown-viewer
@@ -140,19 +140,19 @@ function update() {
         print -P "${skip} cliamp not installed"
     fi
 
-    print -P "${hdr}🦆 Yazi Flavor${end}"
+    print -P "${hdr}🦆 Yazi flavor${end}"
     if (( $+commands[ya] )); then
         ya pkg upgrade
     else
         print -P "${skip} ya not installed"
     fi
 
-    print -P "\n%F{green}%B✨ All updates complete!%b%f\n"
+    print -P "\n%F{green}%B✨ Update run finished.%b%f\n"
 }
 
 # ——— INITIALIZATIONS & TOOLS ——————————————————————————————————————————
 
-# Disk overview on first interactive shell.
+# Disk overview in each new top-level shell.
 if [[ -o interactive && $SHLVL -eq 1 ]] && (( $+commands[dysk] )); then
     dysk -c label+default || true
 fi

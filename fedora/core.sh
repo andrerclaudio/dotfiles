@@ -24,7 +24,7 @@ ensure_dnf_prereqs() {
 configure_package_management() {
     banner "Setting DNF options"
 
-    # Above ~7 the streams starve each other and dnf times mirrors out.
+    # More than ~7 parallel downloads make mirrors time out.
     sudo dnf config-manager setopt \
         fastestmirror=True \
         max_parallel_downloads=7 \
@@ -89,7 +89,7 @@ install_snapd() {
 }
 
 add_rpm_fusion_repository() {
-    banner "Adding RPM Fusion repository"
+    banner "Adding the RPM Fusion repositories"
     local fedora_ver
     fedora_ver=$(rpm -E %fedora)
 
@@ -111,9 +111,9 @@ add_rpm_fusion_repository() {
 }
 
 tune_inotify_limit() {
-    banner "Raising the inotify watch limit (VS Code, syncthing)"
+    banner "Raising the inotify watch limit (VS Code, Syncthing)"
 
-    # A drop-in, since /etc/sysctl.conf is deprecated.
+    # A drop-in, kept apart from /etc/sysctl.conf.
     echo "fs.inotify.max_user_watches=524288" \
         | sudo tee /etc/sysctl.d/99-inotify.conf >/dev/null
 
@@ -153,7 +153,7 @@ generate_solid_wallpapers() {
     # Pillow draws the PNGs.
     sudo dnf install -y python3-pillow
 
-    # Log only the summary line.
+    # Show only the summary line.
     python3 "$REPO_ROOT/tools/colors_solid.py" | tail -n 1 \
         || echo "!!! Wallpaper generation failed; see $LOG_FILE."
 }

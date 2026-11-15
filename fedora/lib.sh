@@ -14,7 +14,7 @@ have() {
 
 # Under sudo, --user flatpaks and ~/ paths would land in root's home.
 require_non_root() {
-    ((EUID)) || { echo "Run this as your normal user, not with sudo."; exit 1; }
+    ((EUID)) || { echo "!!! Run this as your normal user, not with sudo."; exit 1; }
 }
 
 # Copy all output into the log file $1.

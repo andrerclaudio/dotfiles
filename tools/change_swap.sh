@@ -32,7 +32,7 @@ echo "---> Creating a ${SIZE_GIB} GiB /swapfile..."
 sudo btrfs filesystem mkswapfile --size "${SIZE_GIB}g" /swapfile
 
 # 3. Label it for SELinux (swapon needs it)
-echo "---> Labelling /swapfile for SELinux..."
+echo "---> Labeling /swapfile for SELinux..."
 # -m if the rule already exists.
 sudo semanage fcontext -a -t swapfile_t '/swapfile' 2>/dev/null \
     || sudo semanage fcontext -m -t swapfile_t '/swapfile'

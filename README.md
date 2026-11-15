@@ -13,12 +13,12 @@ Layout:
 
 To use these dotfiles:
 
-- Clone this repository to your home directory:
-  `git clone https://github.com/andrerclaudio/dotfiles.git ~/dotfiles`
-- Set your own name and email in `fedora/core.sh` (`GIT_USER_NAME`,
-  `GIT_USER_EMAIL`) first: it writes them to your global git config
-- Follow `fedora/Fedora-Config-Guide.md`
-- Review the files and customize them as you please
+1. Clone this repository to your home directory:
+   `git clone https://github.com/andrerclaudio/dotfiles.git ~/dotfiles`
+2. Review the files; the scripts replace `~/.zshrc` and files in `~/.config`.
+3. Set your own name and email in `fedora/core.sh` (`GIT_USER_NAME`,
+   `GIT_USER_EMAIL`); it writes them to your global git config.
+4. Follow `fedora/Fedora-Config-Guide.md`.
 
 License:
 

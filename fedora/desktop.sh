@@ -20,7 +20,7 @@ EXTENSIONS=(
 
 # dconf, gsettings and xdg-settings must act on the GNOME session.
 if [[ "${XDG_CURRENT_DESKTOP:-}" != *GNOME* ]]; then
-    echo "Run this from a terminal inside your GNOME session."
+    echo "!!! Run this from a terminal inside your GNOME session."
     exit 1
 fi
 
@@ -101,7 +101,7 @@ www=['<Super>w']
 [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0]
 binding='<Super>c'
 command='code'
-name='VsCode'
+name='VS Code'
 
 [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1]
 binding='<Super>t'

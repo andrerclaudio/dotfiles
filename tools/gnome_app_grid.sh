@@ -3,7 +3,7 @@
 #   gnome_app_grid.sh               apply the layout
 #   gnome_app_grid.sh --dry-run     show what would change, touch nothing
 #   gnome_app_grid.sh --revert      restore the pre-script state
-#   gnome_app_grid.sh --revert DIR  restore a specific backup directory
+#   gnome_app_grid.sh --revert DIR  restore from a specific backup directory
 
 set -euo pipefail
 
@@ -160,7 +160,7 @@ keep_installed() {
         if installed "$app"; then
             KEPT+=("$app")
         else
-            warn "$label: not installed, skipped: $app"
+            warn "$label: skipped $app (not installed)"
         fi
     done
 }
@@ -259,7 +259,6 @@ apply() {
         printf '  %-18s %2d apps\n' "$name" "${#KEPT[@]}"
     done
 
-    # Loose apps trail the folders.
     keep_installed "loose" "${LOOSE[@]}"
     local -a loose=("${KEPT[@]}")
     for app in "${loose[@]}"; do

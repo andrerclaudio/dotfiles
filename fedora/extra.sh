@@ -42,7 +42,7 @@ drop_sudo
 # Later steps call binaries the earlier ones drop in these dirs.
 PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 
-# 3. ZSH plugins
+# 3. Zsh plugins
 echo "---> Installing Zsh plugins..."
 # oh-my-zsh.sh sets ZSH_CUSTOM without exporting it, so set it here too.
 ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
@@ -71,7 +71,7 @@ if curl --proto '=https' --tlsv1.2 -fsSL -o "$FONT_TAR" \
     fc-cache -f "$FONT_DIR"
     echo "     installed to $FONT_DIR"
 else
-    echo "!!! Font install failed, skipping."
+    echo "!!! Font install failed."
 fi
 rm -f "$FONT_TAR"
 
@@ -106,7 +106,7 @@ fi
 
 # 8. Gruvbox Plus icon pack
 echo "---> Installing the Gruvbox icons..."
-# Only the link GNOME reads the icon theme from belongs in ~/.icons.
+# The clone stays in ~/.local/share; only its link goes in ~/.icons.
 ICON_SRC="$HOME/.local/share/gruvbox-plus-icon-pack"
 mkdir -p ~/.icons
 if clone https://github.com/SylEleuth/gruvbox-plus-icon-pack.git "$ICON_SRC"; then
@@ -162,7 +162,7 @@ else
     echo "!!! SKIPPED: pueued is not installed (step 5)."
 fi
 
-# 16. Home dotfiles
+# 16. Zsh config
 echo "---> Installing ~/.zshrc..."
 # Replaces ~/.zshrc, keeping a differing one as ~/.zshrc.bak.
 if [[ -f "$REPO_ROOT/.zshrc" ]]; then
@@ -187,7 +187,7 @@ echo "---> Installing the Yazi Gruvbox flavor..."
 # After step 14, which copies the theme.toml that selects this flavor.
 if have ya; then
     ya pkg add bennyyip/gruvbox-dark \
-        || echo "!!! Yazi flavor install failed, skipping."
+        || echo "!!! Yazi flavor install failed."
 else
     echo "!!! SKIPPED: yazi is not installed."
 fi
@@ -213,7 +213,7 @@ if have distrobox; then
         mkdir -p "$DISTROBOX_HOMES/$1"
         distrobox create --yes --name "$1" --hostname "$1" --init --image "$2" \
             --additional-packages "$DB_PKGS" --home "$DISTROBOX_HOMES/$1" \
-            || echo "!!! failed to create $1"
+            || echo "!!! failed: $1"
     }
     create_box Debian debian:latest
     create_box Ubuntu ubuntu:24.04
@@ -231,4 +231,4 @@ else
     echo "!!! SKIPPED: dconf is not installed."
 fi
 
-banner "Extra scripts installed. Reboot, then run ./desktop.sh"
+banner "Extra tools and configs installed. Reboot, then run ./desktop.sh"

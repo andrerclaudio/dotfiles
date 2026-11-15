@@ -36,7 +36,7 @@ gpgcheck=1
 gpgkey=https://packages.microsoft.com/keys/microsoft.asc
 EOF
     else
-        echo "!!! No Microsoft signing key, so the VS Code repo was not added."
+        echo "!!! Could not import the Microsoft key, so the VS Code repo was not added."
     fi
 
     sudo dnf makecache
@@ -62,7 +62,7 @@ install_dnf_packages() {
     # Separate call so a bad group name is reported clearly.
     sudo dnf group install -y development-tools || echo "!!! failed: development-tools group"
 
-    # Alphabetized. Plain names, no .x86_64 suffixes.
+    # Alphabetized, plain package names.
     local packages=(
         "0ad"
         "alacritty"
@@ -251,7 +251,7 @@ enable_syncthing() {
         return
     fi
 
-    # --user, never sudo: the daemon owns the synced files.
+    # --user, so the synced files stay yours.
     if systemctl --user enable --now syncthing.service; then
         echo "---> Syncthing is running; its web UI is at http://127.0.0.1:8384"
     else
@@ -265,4 +265,4 @@ install_flatpak_apps
 install_snap_apps
 enable_syncthing
 
-banner "Application installation complete. Reboot, then continue the guide."
+banner "Apps installed. Reboot, then continue the guide."
