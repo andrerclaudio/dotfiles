@@ -75,7 +75,7 @@ else
 fi
 rm -f "$FONT_TAR"
 
-# 5. Rust and cargo utilities
+# 5. Rust and Cargo utilities
 echo "---> Installing Rust and Cargo utilities..."
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
@@ -94,14 +94,14 @@ echo "---> Installing Atuin..."
 curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh \
     || echo "!!! Atuin install failed."
 
-# 7. Eza gruvbox theme
-echo "---> Configuring Eza Gruvbox theme..."
+# 7. Eza Gruvbox theme
+echo "---> Configuring the Eza Gruvbox theme..."
 # Link only on a good clone, so theme.yml never dangles.
 mkdir -p ~/.config/eza
 if clone https://github.com/eza-community/eza-themes.git ~/.config/eza/eza-themes; then
     ln -sfn ~/.config/eza/eza-themes/themes/gruvbox-dark.yml ~/.config/eza/theme.yml
 else
-    echo "!!! Eza themes clone failed, skipping."
+    echo "!!! Eza themes clone failed; skipping the theme link."
 fi
 
 # 8. Gruvbox Plus icon pack
@@ -112,7 +112,7 @@ mkdir -p ~/.icons
 if clone https://github.com/SylEleuth/gruvbox-plus-icon-pack.git "$ICON_SRC"; then
     ln -sfn "$ICON_SRC/Gruvbox-Plus-Dark" ~/.icons/Gruvbox-Plus-Dark
 else
-    echo "!!! Gruvbox icons clone failed, skipping."
+    echo "!!! Gruvbox icons clone failed; skipping the icon link."
 fi
 
 # 9. Zed
@@ -133,7 +133,7 @@ curl --proto '=https' --tlsv1.2 -fsSL https://antigravity.google/cli/install.sh 
 # 12. Claude Code CLI
 echo "---> Installing Claude Code CLI..."
 curl --proto '=https' --tlsv1.2 -fsSL https://claude.ai/install.sh | bash \
-    || echo "!!! Claude Code install failed."
+    || echo "!!! Claude Code CLI install failed."
 
 # 13. cliamp
 echo "---> Installing cliamp..."
@@ -213,11 +213,11 @@ if have distrobox; then
         mkdir -p "$DISTROBOX_HOMES/$1"
         distrobox create --yes --name "$1" --hostname "$1" --init --image "$2" \
             --additional-packages "$DB_PKGS" --home "$DISTROBOX_HOMES/$1" \
+            && echo "     enter it with 'distrobox enter $1'" \
             || echo "!!! failed: $1"
     }
     create_box Debian debian:latest
     create_box Ubuntu ubuntu:24.04
-    echo "     enter them with 'distrobox enter Debian' / 'distrobox enter Ubuntu'."
 else
     echo "!!! SKIPPED: distrobox is not installed."
 fi

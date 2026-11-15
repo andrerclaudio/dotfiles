@@ -80,7 +80,6 @@ function update() {
     print -P "\n%F{green}%B🚀 Starting full system update...%b%f"
 
     print -P "${hdr}📦 System packages (DNF)${end}"
-    # Do not return here: the rest of the function is independent of dnf.
     sudo dnf upgrade --refresh || print -P "%F{red}  ✗ dnf upgrade failed%f"
 
     print -P "${hdr}🧩 Flatpaks${end}"

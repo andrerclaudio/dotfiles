@@ -83,7 +83,7 @@ install_dnf_packages() {
         "codespell"
         "dbus-devel"
         "distrobox"
-        "du-dust"                  # the binary is 'dust'; the package is du-dust
+        "du-dust"                  # the binary is 'dust'
         "expect"
         "eza"
         "fastfetch"

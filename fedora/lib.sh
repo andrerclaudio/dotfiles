@@ -24,10 +24,10 @@ start_logging() {
     # The log gets each line's last redraw, without escape codes.
     exec > >(tee >(sed -u 's/\r*$//; s/.*\r//; s/\x1b\[[0-9;?]*[a-zA-Z]//g' >>"$LOG_FILE"); wait $!) 2>&1
     TEE_PID=$!
-    echo "Logging to $LOG_FILE"
+    echo "---> Logging to $LOG_FILE"
 }
 
-# Keep the sudo timestamp alive in the background.
+# Keep the sudo ticket alive in the background.
 start_sudo_keepalive() {
     sudo -v || exit 1
     { trap exit TERM; while true; do sudo -n true; sleep 50 & wait $!; kill -0 "$$" 2>/dev/null || exit; done; } >/dev/null 2>&1 3>&- 4>&- &
@@ -54,7 +54,7 @@ stage_cleanup() {
     return 0
 }
 
-# One call per stage: refuse root, log, keep sudo warm, clean up after.
+# One call per stage: refuse root, log, keep the sudo ticket alive, clean up.
 init_stage() {
     require_non_root
     start_logging "$1"

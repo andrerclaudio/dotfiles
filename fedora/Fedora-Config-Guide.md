@@ -80,7 +80,7 @@
     ```
 
     *Wait for the kernel module to finish building before rebooting, or you
-    boot to a black screen. Check with:*
+    boot to a black screen. It's done when this prints a version:*
 
     ```shell
     modinfo -F version nvidia
@@ -108,8 +108,8 @@
     ```
 
 5. Sign in to your accounts:
-    - Open Google Chrome and log in.
-    - Go to GitHub and log in.
+    - Open Google Chrome and sign in.
+    - Go to GitHub and sign in.
     - Open VS Code and start Sync.
 
 6. Run the Extra script and restart:
@@ -124,7 +124,7 @@
 
     *It replaces `~/.zshrc`, keeping the old one as `~/.zshrc.bak`.*
 
-    *The Ollama models and the Distrobox containers are the slow steps.*
+    *The Ollama models are the slow step.*
 
     *The first `distrobox enter` of each container takes a few minutes.*
 
@@ -146,9 +146,9 @@
 
     *The extensions it installs start after the reboot, with default settings.*
 
-## Phase 2: Logins and network settings
+## Phase 2: Sign-ins and network settings
 
-1. Log into Atuin:
+1. Sign in to Atuin:
 
     ```shell
     atuin login -u andrerc-outlook
@@ -171,12 +171,12 @@
     sysctl fs.inotify.max_user_watches
     ```
 
-    *Should print `524288`. If it prints the default, re-run `sudo sysctl --system`.*
+    *Should print `524288`. If not, run `sudo sysctl --system`.*
 
 2. Install your preferred PWA applications.
 
-    *To list the Gmail PWA under Default Apps > Mail, run this, and again
-    whenever Chrome rewrites the Gmail launcher:*
+    *To list the Gmail PWA under Default Apps > Mail, run this, and again if
+    Gmail drops out of that list:*
 
     ```shell
     cd ~/dotfiles/fedora

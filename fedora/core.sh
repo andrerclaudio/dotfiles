@@ -72,7 +72,7 @@ remove_unwanted_defaults() {
 }
 
 install_flatpak_and_add_flathub() {
-    banner "Adding Flatpak and the Flathub remote"
+    banner "Installing Flatpak and adding Flathub"
     sudo dnf install -y flatpak
 
     # Per-user remote, as apps.sh installs with --user.
@@ -105,7 +105,7 @@ add_rpm_fusion_repository() {
 
     # Stop here: without RPM Fusion, apps.sh would skip the codecs.
     if ! rpm -q rpmfusion-free-release rpmfusion-nonfree-release >/dev/null 2>&1; then
-        echo "!!! RPM Fusion is missing. Run ./core.sh again before apps.sh."
+        echo "!!! RPM Fusion is missing. Run ./core.sh again before ./apps.sh."
         exit 1
     fi
 }
@@ -187,4 +187,4 @@ configure_git_credentials
 generate_solid_wallpapers
 add_serial_permissions
 
-banner "Core installs done. Reboot, then run ./apps.sh"
+banner "Core setup done. Reboot, then run ./apps.sh"

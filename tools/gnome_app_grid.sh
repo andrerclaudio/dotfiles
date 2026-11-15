@@ -165,7 +165,7 @@ keep_installed() {
     done
 }
 
-# Render a bash array as a GVariant string list: ['a', 'b']
+# Prints its arguments as a GVariant string list, e.g. ['a', 'b'].
 as_gvariant_list() {
     (( $# )) || { printf '@as []'; return; }
     local out="[" first=1 item
@@ -233,7 +233,7 @@ apply() {
     local -a children=() layout_entries=()
     local pos=0 app block id name apps_raw path
 
-    say "Writing ${#FOLDERS[@]} folders"
+    say "Writing folders"
     for block in "${FOLDERS[@]}"; do
         id=${block%%|*}
         name=${block#*|}; name=${name%%|*}

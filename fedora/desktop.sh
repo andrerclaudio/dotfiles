@@ -139,7 +139,7 @@ set_snap_icons_style() {
         icon="$icon_dir/${icons[$launcher]}.svg"
         if [[ -f "$src_dir/$launcher" && -f "$icon" ]]; then
             sed "s|^Icon=.*|Icon=$icon|" "$src_dir/$launcher" > "$dst_dir/$launcher"
-            echo "---> Wrote $dst_dir/$launcher"
+            echo "     wrote $dst_dir/$launcher"
         else
             echo "!!! SKIPPED: $launcher or its Gruvbox icon is not installed."
         fi
